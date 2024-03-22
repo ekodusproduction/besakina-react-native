@@ -66,7 +66,7 @@ const BottomTabNavigator = () => {
                                 marginBottom: 50,
 
                             }}>
-                                <FontAwesome name="plus" color='#3184b6' size={size} />
+                                <FontAwesome name="plus" color='#3184b6' size={size} />  
                             </View>
                         ),
                         // tabBarShowLabel: true,
