@@ -47,7 +47,9 @@ const OtpScreen = () => {
                         borderRadius: 12,
                         height: 60,
                         justifyContent: 'center'
-                    }}>
+                    }}
+                    onPress={()=>navigation.navigate("HomeScreen")}
+                    >
                     <Text style={{ textAlign: 'center', fontSize: 18, color: "black" }}>Skip</Text>
                 </TouchableOpacity>
             </View>

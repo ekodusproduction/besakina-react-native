@@ -23,8 +23,7 @@ const FeaturedAds = (props) => {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         renderItem={({ item }) => {
-                            console.log('item ---', item)
-                            return (
+                             return (
                                 <View style={{ width: 300, padding: 10 }}>
                                     <Card onPress={() => navigation.navigate('FeaturedAdsDetails')}>
                                         <Image source={{ uri: 'https://picsum.photos/700' }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />

@@ -16,7 +16,6 @@ const array1 = [FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds,
 
 const CategoryDetails = ({ route }) => {
     const data = route.params;
-    console.log('data---', data)
     const navigation = useNavigation();
     const image = [
         require('../../../assets/banner1.png'),
@@ -62,18 +61,18 @@ const CategoryDetails = ({ route }) => {
                     />
                 </View>
 
-                <View style={{ marginTop: 15, flex: 1, marginBottom: 50 }}>
+                <View style={{ marginTop: 15, flex: 1, }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
                         <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                            <View style={{ backgroundColor: '#ddd', paddingHorizontal: 3, paddingVertical: 2, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
                                 <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Featured Ads</Text>
                             </View>
-                            <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
                                 <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
                                 <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Verified</Text>
                             </View>
                         </View>
-                        <View style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
                             <AntDesign name='filter' style={{ color: '#3184b6', marginRight: 5 }} />
                             <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Budget</Text>
                         </View>
@@ -85,7 +84,7 @@ const CategoryDetails = ({ route }) => {
                             data={[1]}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item }) => (
-                                <View style={{ width: '100%', paddingHorizontal: 5, marginBottom: 10 }}>
+                                <View style={{ width: '100%', marginBottom: 10 }}>
                                     <AllAds data={item} />
                                 </View>
                             )}

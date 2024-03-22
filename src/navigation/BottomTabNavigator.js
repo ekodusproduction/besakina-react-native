@@ -4,28 +4,30 @@ import { StyleSheet, View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import RootNavigator from './RootNavigator';
 import AuthNavigator from './AuthNavigator';
-import CategoryList from '../screens/categories/CategoryList';
+import CategoryList from '../screens/categories/SelectCategoryList';
 import FeaturedAds from '../screens/FeaturedAds/FeaturedAds';
 import AllAds from '../screens/AllAds/AllAds';
 import { NavigationContainer } from '@react-navigation/native';
 import { categories, home, user } from '../svg/svg';
 import { SvgXml } from 'react-native-svg';
+import HomeScreen from '../screens/Home/HomeScreen ';
+import ViewCategories from '../screens/categories/ViewCategories';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
     return (
-        <NavigationContainer>
+        // <NavigationContainer>
             <Tab.Navigator
-                initialRouteName='RootNavigator'
+                initialRouteName='HomeScreen'
                 screenOptions={{
                     headerShown: false,
                     tabBarStyle: styles.tabBar,
                 }}
             >
                 <Tab.Screen
-                    name='Home'
-                    component={RootNavigator}
+                    name='HomeScreen'
+                    component={HomeScreen}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <FontAwesome name="home" size={30} color={focused ? "#3184b6" : ""} />
@@ -35,8 +37,8 @@ const BottomTabNavigator = () => {
                     }}
                 />
                 <Tab.Screen
-                    name='Auth'
-                    component={AuthNavigator}
+                    name='ViewCategories'
+                    component={ViewCategories}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <SvgXml
@@ -69,8 +71,8 @@ const BottomTabNavigator = () => {
                                 <FontAwesome name="plus" color='#3184b6' size={size} />  
                             </View>
                         ),
-                        // tabBarShowLabel: true,
-                        // tabBarLabel: 'Add Post',
+                        tabBarShowLabel: false,
+                        tabBarLabel: '',
                     }}
                 />
                 <Tab.Screen
@@ -100,7 +102,7 @@ const BottomTabNavigator = () => {
                     }}
                 />
             </Tab.Navigator>
-        </NavigationContainer>
+        // </NavigationContainer>
     );
 };
 

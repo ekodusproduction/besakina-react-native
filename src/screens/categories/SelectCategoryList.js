@@ -1,14 +1,7 @@
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import style from '../../style';
-import { Searchbar } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
 import { ServicesSVG, electronics, health, property, vehicle } from '../../svg/svg';
-import { ImageSlider } from "react-native-image-slider-banner";
-import FeaturedAds from '../FeaturedAds/FeaturedAds';
-import AllAds from '../AllAds/AllAds';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
@@ -30,9 +23,32 @@ const array = [
     id: 5, filename: vehicle, name: "Vehicle"
   }
 ];
-const CategoryList = () => {
+const SelectCategoryList = () => {
   const navigation = useNavigation();
+  
+  const handlePress = (itemName) => {
+    switch (itemName) {
+      case 'Property':
+        navigation.navigate('Property');
+        break;
+      case 'Health':
+        navigation.navigate('Health');
+        break;
+      case 'Vehicle':
+        navigation.navigate('Vehicle');
+        break;
+      case 'Services':
+        navigation.navigate('Services');
+        break;
+      case 'Electronics':
+        navigation.navigate('Electronics');
+        break;
 
+      default:
+        // Handle default case
+        break;
+    }
+  };
   return (
     <View>
 
@@ -68,6 +84,7 @@ const CategoryList = () => {
                   height: 2,
                 },
               }}
+              onPress={() => handlePress(item.name)}
             >
               <SvgXml
                 xml={item.filename}
@@ -86,4 +103,4 @@ const CategoryList = () => {
   )
 }
 
-export default CategoryList
+export default SelectCategoryList

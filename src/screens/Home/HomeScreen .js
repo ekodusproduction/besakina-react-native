@@ -13,23 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
-const array = [
-  {
-    id: 1, filename: ServicesSVG, name: "Services"
-  },
-  {
-    id: 2, filename: electronics, name: "Electronics"
-  },
-  {
-    id: 3, filename: health, name: "Health"
-  },
-  {
-    id: 4, filename: property, name: "Property"
-  },
-  {
-    id: 5, filename: vehicle, name: "Vehicle"
-  }
-];
+ 
 const array1 = [FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds,];
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -89,14 +73,30 @@ const HomeScreen = () => {
         <View>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
             <Text style={style.subtitle}>Categories</Text>
-            <Text style={[style.subtitle, { color: "#3184b6" }]}>See all</Text>
+            <Text style={[style.subtitle, { color: "#3184b6" }]} onPress={()=>navigation.navigate('ViewCategories')}>See all</Text>
           </View>
         </View>
 
         <View>
 
           <FlatList
-            data={array}
+            data={[
+              {
+                id: 1, filename: ServicesSVG, name: "Services"
+              },
+              {
+                id: 2, filename: electronics, name: "Electronics"
+              },
+              {
+                id: 3, filename: health, name: "Health"
+              },
+              {
+                id: 4, filename: property, name: "Property"
+              },
+              {
+                id: 5, filename: vehicle, name: "Vehicle"
+              }
+            ]}
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (

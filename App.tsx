@@ -3,12 +3,15 @@ import SplashScreen from 'react-native-splash-screen';
 import { View, Text, Image } from 'react-native';
 import { Provider } from 'react-native-paper';
 import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import RootNavigator from './src/navigation/RootNavigator';
+import {LogBox} from 'react-native';
 
 const App = () => {
   const [isSplashScreenHidden, setIsSplashScreenHidden] = useState(false);
   // const isLoggedin = true;
 
   useEffect(() => {
+    LogBox.ignoreAllLogs();
     setTimeout(() => {
       SplashScreen.hide();
       setIsSplashScreenHidden(true);
@@ -22,8 +25,8 @@ const App = () => {
           {isSplashScreenHidden ? (
             <>
               {/* {isLoggedin ? <RootNavigator /> : <AuthNavigator />} */}
-              {/* <RootNavigator /> */}
-              <BottomTabNavigator />
+              <RootNavigator />
+              {/* <BottomTabNavigator /> */}
             </>
           ) : (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

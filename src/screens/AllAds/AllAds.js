@@ -17,8 +17,7 @@ const AllAds = (props) => {
                 numColumns={2} 
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => {
-                    console.log('item ---', item)
-                    return (
+                     return (
                         <View style={{ flex: 1, margin: 5 }}>
                             <Card style={{ borderRadius: 12 }}>
                                 <Image 

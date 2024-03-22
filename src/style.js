@@ -72,4 +72,28 @@ export default StyleSheet.create({
     icon: {
         marginLeft: 10,
     },
+    dropdown: {
+        height: 50,
+        borderBottomColor: 'gray',
+        borderWidth: 0.5,
+        borderRadius: 5
+    },
+    icon: {
+        marginRight: 5,
+    },
+    placeholderStyle: {
+        fontSize: 16,
+        left: 10
+    },
+    selectedTextStyle: {
+        fontSize: 16,
+    },
+    iconStyle: {
+        width: 20,
+        height: 20,
+    },
+    inputSearchStyle: {
+        height: 40,
+        fontSize: 16,
+    },
 })
