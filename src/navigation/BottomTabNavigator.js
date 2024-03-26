@@ -12,6 +12,7 @@ import { categories, home, user } from '../svg/svg';
 import { SvgXml } from 'react-native-svg';
 import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
+import Mywishlist from '../screens/wishlist/Mywishlist';
 
 const Tab = createBottomTabNavigator();
 
@@ -76,8 +77,8 @@ const BottomTabNavigator = () => {
                     }}
                 />
                 <Tab.Screen
-                    name='FeaturedAds'
-                    component={FeaturedAds}
+                    name='Mywishlist'
+                    component={Mywishlist}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />

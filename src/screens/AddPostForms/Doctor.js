@@ -1,4 +1,4 @@
-import {Image, View, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity,Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -8,27 +8,20 @@ import style from '../../style';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Dimensions } from 'react-native';
 
-const Vehicle = () => {
+const Doctor = () => {
   const navigation = useNavigation();
-  const [vehiclevalue, setVehiclevalue] = useState(null);
-  const [modelvalue, setModelValue] = useState(null);
-  const modelData = [
-    { label: 'Select Brand', value: '1' },
-    { label: 'BMW', value: '2' },
-    { label: 'Ford', value: '3' },
-    { label: 'Fiat', value: '4' },
-    { label: 'Honda', value: '5' },
-    { label: 'Hyundai', value: '6' },
-    { label: 'Jeep', value: '7' },
-    { label: 'Mercedes', value: '8' },
-    { label: 'Toyota', value: '9' },
-  ];
-  const Vehicledata = [
-    { label: 'Select Vehicle Type', value: '1' },
-    { label: 'Car', value: '2' },
-    { label: 'MotorCycle', value: '3' },
-    { label: 'Scooty', value: '4' },
-    { label: 'Bike', value: '5' },
+  const [expertisevalue, setExpertiseValue] = useState(null);
+  const Expertisedata = [
+    { label: 'Select Expertise', value: '1' },
+    { label: 'Child', value: '2' },
+    { label: 'Gastro intestine', value: '3' },
+    { label: 'Cardiology', value: '4' },
+    { label: 'Ophthalmology', value: '5' },
+    { label: 'Orthopaedic', value: '6' },
+    { label: 'Gynecology', value: '7' },
+    { label: 'Emergency Medicine', value: '8' },
+    { label: 'Physician', value: '9' },
+    { label: 'Other', value: '10' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   console.log('selectedImages--->', selectedImages);
@@ -59,7 +52,7 @@ const Vehicle = () => {
     <View style={{ flex: 1, }}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-        <Appbar.Content title="Vehicle" />
+        <Appbar.Content title="Doctor" />
       </Appbar.Header>
 
       <ScrollView style={{ flex: 1, }}>
@@ -69,65 +62,10 @@ const Vehicle = () => {
 
             <View style={{ borderWidth: 0.5, height: '1500px', marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
               <View style={{ padding: 5 }}>
-                <View>
-                  <Dropdown
-                    style={style.dropdown}
-                    placeholderStyle={style.placeholderStyle}
-                    selectedTextStyle={style.selectedTextStyle}
-                    inputSearchStyle={style.inputSearchStyle}
-                    iconStyle={style.iconStyle}
-                    data={Vehicledata}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Vehicle Type"
-                    searchPlaceholder="Search..."
-                    value={vehiclevalue}
-                    onChange={item => {
-                      setVehiclevalue(item.value);
-                    }}
-                  />
-                </View>
-                <View style={{ marginTop: 10 }}>
-                  <Dropdown
-                    style={style.dropdown}
-                    placeholderStyle={style.placeholderStyle}
-                    selectedTextStyle={style.selectedTextStyle}
-                    inputSearchStyle={style.inputSearchStyle}
-                    iconStyle={style.iconStyle}
-                    data={modelData}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Vehicle model"
-                    searchPlaceholder="Search..."
-                    value={modelvalue}
-                    onChange={item => {
-                      setModelValue(item.value);
-                    }}
-                  />
-                </View>
+
                 <View style={{ marginTop: 10 }}>
                   <Text>
-                    Registration Year*
-                  </Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                  // inputMode="numeric"
-                  />
-                </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>
-                    Kilometer Driven*
+                    Full Name*
                   </Text>
                   <TextInput
                     placeholderTextColor='black'
@@ -142,8 +80,31 @@ const Vehicle = () => {
                   />
                 </View>
 
+                <View style={{ marginTop: 15 }}>
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={Expertisedata}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select Expertise"
+                    searchPlaceholder="Search..."
+                    value={expertisevalue}
+                    onChange={item => {
+                      setExpertiseValue(item.value);
+                    }}
+                  />
+                </View>
+
                 <View style={{ marginTop: 10 }}>
-                  <Text>Ad Title*</Text>
+                  <Text>
+                    Total Experiance (years)*
+                  </Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -153,16 +114,43 @@ const Vehicle = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
+                    inputMode="numeric"
                   />
-                  <Text style={{ fontSize: 12 }}>Mention the key features of your item (<Text>E.g brand,model,age,type</Text>)</Text>
+                </View>
+
+                <View style={{ marginTop: 10 }}>
+                  <Text>Price (per visit)*</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    inputMode="numeric"
+                  />
                 </View>
                 <View style={{ marginTop: 10 }}>
-                  <Text>Describe what you are selling</Text>
+                  <Text>Title*</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    inputMode="numeric"
+                  />
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>Describe about yourself</Text>
                   <TextInput
                     placeholderTextColor='black'
                     multiline={true}
-                    numberOfLines={3}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
@@ -171,7 +159,6 @@ const Vehicle = () => {
                     }}
                   // inputMode="numeric"
                   />
-                  <Text style={{ fontSize: 12 }}>Include condition,reason and features for selling</Text>
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Address*</Text>
@@ -191,23 +178,7 @@ const Vehicle = () => {
               </View>
             </View>
 
-            <View style={{ borderWidth: 0.5, borderColor: "gray", height: 120, padding: 10, borderRadius: 5, marginTop: 10 }}>
-              <View style={{ padding: 0 }}>
-                <Text style={style.subsubtitle}>SET A PRICE</Text>
-                <TextInput
-                  placeholderTextColor='black'
-                  style={{
-                    backgroundColor: 'white',
-                    borderRadius: 5,
-                    height: 60,
-                    paddingLeft: 20,
-                    borderWidth: 0.5,
-                    marginTop: 10
-                  }}
-                  inputMode="numeric"
-                />
-              </View>
-            </View>
+
 
             <View style={{ borderWidth: 0.5, borderColor: "gray", padding: 10, borderRadius: 5, marginTop: 10 }}>
               <View style={{ padding: 0 }}>
@@ -221,8 +192,8 @@ const Vehicle = () => {
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
-                        height: itemWidth,
-                        width: itemWidth,
+                        height: itemWidth, 
+                        width: itemWidth,  
                         borderRadius: 5,
                         backgroundColor: 'white',
                         alignItems: 'center',
@@ -243,7 +214,7 @@ const Vehicle = () => {
                       {selectedImages[item] ? (
                         <Image
                           source={{ uri: selectedImages[item] }}
-                          style={{ height: '100%', width: '100%' }}
+                          style={{ height: '100%', width: '100%' }}  
                           resizeMode="cover"
                         />
                       ) : (
@@ -255,6 +226,7 @@ const Vehicle = () => {
                 />
               </View>
             </View>
+
 
           </View>
         </KeyboardAvoidingView>
@@ -277,4 +249,4 @@ const Vehicle = () => {
   )
 }
 
-export default Vehicle;
+export default Doctor;

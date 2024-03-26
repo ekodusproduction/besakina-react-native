@@ -67,19 +67,20 @@ export default StyleSheet.create({
         flex: 1,
         marginLeft: 5,
         fontSize: 16,
-        height: '100%', // Ensure TextInput takes full height of the container
+        height: '100%', 
     },
     icon: {
         marginLeft: 10,
     },
     dropdown: {
-        height: 50,
-        borderBottomColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 5
+        borderRadius: 5,
+        height: 60,
+        borderWidth: 1,
+        backgroundColor: "white",
+        borderColor: "gray"
     },
-    icon: {
-        marginRight: 5,
+    iconsearch: {
+        marginLeft: 10
     },
     placeholderStyle: {
         fontSize: 16,

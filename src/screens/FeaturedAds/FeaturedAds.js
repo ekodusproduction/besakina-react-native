@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Avatar, Button, Card } from 'react-native-paper';
 import style from '../../style';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -11,6 +11,22 @@ import { location } from '../../svg/svg';
 
 const FeaturedAds = (props) => {
     const navigation = useNavigation();
+    const [wishlist, setWishlist] = useState([]);
+
+    const handleWishlist = (id) => {
+        const updatedWishlist = [...wishlist];
+        const index = updatedWishlist.indexOf(id);
+        if (index === -1) {
+            updatedWishlist.push(id);
+        } else {
+            updatedWishlist.splice(index, 1);
+        }
+        setWishlist(updatedWishlist);
+    }
+
+    const isWishlisted = (id) => {
+        return wishlist.includes(id);
+    }
     return (
         <View>
             <View style={{ marginTop: 10 }}>
@@ -22,14 +38,22 @@ const FeaturedAds = (props) => {
                         data={[1, 2, 3, 4, 5]}
                         horizontal
                         showsHorizontalScrollIndicator={false}
-                        renderItem={({ item }) => {
-                             return (
+                        renderItem={({ item, index }) => {
+                            return (
                                 <View style={{ width: 300, padding: 10 }}>
                                     <Card onPress={() => navigation.navigate('FeaturedAdsDetails')}>
                                         <Image source={{ uri: 'https://picsum.photos/700' }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />
-                                        <View style={{ position: 'absolute', top: 10, left: 10, backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                            <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                            <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
+                                            <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                                <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                                            </View>
+                                            <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                {isWishlisted(index) ?
+                                                    <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                                    :
+                                                    <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                            </TouchableOpacity>
                                         </View>
 
                                         <View style={{ marginTop: 10, marginLeft: 10 }}>

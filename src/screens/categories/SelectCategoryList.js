@@ -1,17 +1,17 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SvgXml } from 'react-native-svg';
-import { ServicesSVG, electronics, health, property, vehicle } from '../../svg/svg';
+import { Hospitality, Education, health, property, vehicle } from '../../svg/svg';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
 
 const array = [
   {
-    id: 1, filename: ServicesSVG, name: "Services"
+    id: 1, filename: Hospitality, name: "Hospitality"
   },
   {
-    id: 2, filename: electronics, name: "Electronics"
+    id: 2, filename: Education, name: "Education"
   },
   {
     id: 3, filename: health, name: "Health"
@@ -25,7 +25,7 @@ const array = [
 ];
 const SelectCategoryList = () => {
   const navigation = useNavigation();
-  
+
   const handlePress = (itemName) => {
     switch (itemName) {
       case 'Property':
@@ -37,11 +37,11 @@ const SelectCategoryList = () => {
       case 'Vehicle':
         navigation.navigate('Vehicle');
         break;
-      case 'Services':
-        navigation.navigate('Services');
+      case 'Education':
+        navigation.navigate('Education');
         break;
-      case 'Electronics':
-        navigation.navigate('Electronics');
+      case 'Hospitality':
+        navigation.navigate('Hospitality');
         break;
 
       default:

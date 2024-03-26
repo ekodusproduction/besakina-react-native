@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-paper';
+import React, { useState } from 'react';
+import { Appbar, Card } from 'react-native-paper';
 import style from '../../style';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 import { location } from '../../svg/svg';
 
-const AllAds = (props) => {
+const Mywishlist = (props) => {
+    const navigation = useNavigation();
     const [wishlist, setWishlist] = useState([]);
 
     const handleWishlist = (id) => {
@@ -23,23 +25,21 @@ const AllAds = (props) => {
     const isWishlisted = (id) => {
         return wishlist.includes(id);
     }
+
     return (
-        <View style={{ marginTop: 10 }}>
-            <Text style={[style.subtitle, { marginLeft: 10 }]}>All Ads</Text>
+        <View style={{ flex: 1, marginBottom: 60 }}>
+            <Appbar.Header>
+                <Appbar.BackAction onPress={() => { navigation.goBack() }} />
+                <Appbar.Content title="Wishlist" />
+            </Appbar.Header>
 
             <FlatList
-                data={[1, 2, 3, 4, 5, 6]}
-                horizontal={false}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
+                data={[1, 2, 3, 4, 5]}
                 renderItem={({ item, index }) => {
                     return (
-                        <View style={{ flex: 1, margin: 5, width: '50%' }}>
-                            <Card style={{ borderRadius: 12, }}>
-                                <Image
-                                    source={{ uri: 'https://picsum.photos/700' }}
-                                    style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                />
+                        <View style={{ padding: 10 }}>
+                            <Card onPress={() => navigation.navigate('FeaturedAdsDetails')}>
+                                <Image source={{ uri: 'https://picsum.photos/700' }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
                                     <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
                                         <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
@@ -54,21 +54,20 @@ const AllAds = (props) => {
                                 </View>
 
                                 <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                    <Text style={style.subsubtitle}>$ 35,50,900</Text>
-                                    <Text numberOfLines={1} style={{ width: 150 }}>Hyundai i20 black color car</Text>
+                                    <Text variant="titleLarge" style={style.subsubtitle}>$ 35,50,900</Text>
+                                    <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">Hyundai i20 black color car model</Text>
                                 </View>
-
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
+                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>
                                     <View style={{ flexDirection: "row" }}>
                                         <SvgXml
                                             xml={location}
                                             width="15px"
                                             height="15px"
-                                            style={{ marginTop: 3, marginRight: 5 }}
+                                            style={{ marginTop: 3, marginRight: 0 }}
                                         />
-                                        <Text>Ganeshguri</Text>
+                                        <Text variant="titleLarge">Ganeshguri</Text>
                                     </View>
-                                    <Text>Today</Text>
+                                    <Text variant="titleLarge">Today</Text>
                                 </View>
                             </Card>
                         </View>
@@ -80,4 +79,4 @@ const AllAds = (props) => {
     )
 }
 
-export default AllAds;
+export default Mywishlist;

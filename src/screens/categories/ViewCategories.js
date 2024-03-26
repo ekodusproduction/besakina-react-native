@@ -1,14 +1,7 @@
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import style from '../../style';
-import { Searchbar } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
-import { ServicesSVG, electronics, health, property, vehicle } from '../../svg/svg';
-import { ImageSlider } from "react-native-image-slider-banner";
-import FeaturedAds from '../FeaturedAds/FeaturedAds';
-import AllAds from '../AllAds/AllAds';
+import { Education, ServicesSVG,  health, property, vehicle } from '../../svg/svg';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
@@ -18,7 +11,7 @@ const array = [
     id: 1, filename: ServicesSVG, name: "Services"
   },
   {
-    id: 2, filename: electronics, name: "Electronics"
+    id: 2, filename: Education, name: "Education"
   },
   {
     id: 3, filename: health, name: "Health"

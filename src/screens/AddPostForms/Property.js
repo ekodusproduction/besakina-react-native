@@ -1,20 +1,13 @@
-import { View, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import { View,Image, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
+import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import { Dimensions } from 'react-native';
 
-const data = [
-  { label: 'All Properties', value: '1' },
-  { label: 'For Sale: Houses and Apartments', value: '2' },
-  { label: 'For Rent: Houses and Apartments', value: '3' },
-  { label: 'Lands and Plots', value: '4' },
-  { label: 'For Sale: Shops and Offices', value: '5' },
-  { label: 'For Rent: Shops and Offices', value: '6' },
-  { label: 'PG and Guest Houses', value: '7' },
-];
 const Property = () => {
   const navigation = useNavigation();
   const [value, setValue] = useState(null);
@@ -25,7 +18,46 @@ const Property = () => {
   const FurnishingData = ['Furnished', 'semi-Furnished', 'UnFurnished'];
   const ConstructionData = ['New Launch', 'Ready to move', 'Under Construction'];
   const ListedData = ['Builder', 'Dealer', 'Owner'];
+  const data = [
+    { label: 'All Properties', value: '1' },
+    { label: 'For Sale: Houses and Apartments', value: '2' },
+    { label: 'For Rent: Houses and Apartments', value: '3' },
+    { label: 'Lands and Plots', value: '4' },
+    { label: 'For Sale: Shops and Offices', value: '5' },
+    { label: 'For Rent: Shops and Offices', value: '6' },
+    { label: 'PG and Guest Houses', value: '7' },
+  ];
+  const [selectedType, setSelectedType] = useState(null);
+  const [selectedbedrooms, setSelectedbedrooms] = useState(null);
+  const [selectedbathrooms, setSelectedbathrooms] = useState(null);
+  const [furnishing, setFurnishing] = useState(null);
+  const [constructionstatus, setConstructionstatus] = useState(null);
+  const [listedby, setListedby] = useState(null);
+  const [carparking, setCarparking] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
+  console.log('selectedImages--->', selectedImages);
+  const screenWidth = Dimensions.get('window').width;
+  const itemWidth = (screenWidth - 20) / 4.7;
 
+  const handleCameraLaunch = () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 1000,
+      maxWidth: 1000,
+    };
+
+    launchCamera(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled camera');
+      } else if (response.error) {
+        console.log('Camera Error: ', response.error);
+      } else {
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        setSelectedImages([...selectedImages, imageUri]);
+      }
+    });
+  }
 
   useEffect(() => {
   }, []);
@@ -65,24 +97,51 @@ const Property = () => {
                 <Text style={[style.subtitle, { textAlign: "center" }]}>INCLUDE SOME DETAILS</Text>
 
 
-                <View >
+                <View>
                   <Text>Type*</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {TypesData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 115, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: selectedType === index ? '#3184b6' : 'transparent' // Set background color based on selection
+                        }}
+                        onPress={() => setSelectedType(index)}
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: selectedType === index ? 'white' : 'black' }}>{item}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>
-
                 </View>
 
                 <View style={{ marginTop: 10 }}>
                   <Text>Bedrooms</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {BedroomsData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 60, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 60,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: selectedbedrooms === index ? '#3184b6' : 'transparent'
+                        }}
+                        onPress={() => setSelectedbedrooms(index)}
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: selectedbedrooms === index ? 'white' : 'black' }}>{item}</Text>
                       </TouchableOpacity>
                     ))}
                   </View>
@@ -93,8 +152,23 @@ const Property = () => {
                   <Text>Bathrooms</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {BathroomData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 60, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 60,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: selectedbathrooms === index ? '#3184b6' : 'transparent'
+                        }}
+                        onPress={() => setSelectedbathrooms(index)}
+
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: selectedbathrooms === index ? 'white' : 'black' }}>{item}</Text>
 
                       </TouchableOpacity>
                     ))}
@@ -107,8 +181,23 @@ const Property = () => {
                   <Text>Furnishing</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {FurnishingData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 100, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 100,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: furnishing === index ? '#3184b6' : 'transparent'
+                        }}
+                        onPress={() => setFurnishing(index)}
+
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: furnishing === index ? 'white' : 'black' }}>{item}</Text>
 
                       </TouchableOpacity>
                     ))}
@@ -121,8 +210,23 @@ const Property = () => {
                   <Text>Construction Status</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {ConstructionData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 115, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: constructionstatus === index ? '#3184b6' : 'transparent'
+                        }}
+                        onPress={() => setConstructionstatus(index)}
+
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500",color: constructionstatus === index ? 'white' : 'black' }}>{item}</Text>
 
                       </TouchableOpacity>
                     ))}
@@ -134,8 +238,23 @@ const Property = () => {
                   <Text>Listed By</Text>
                   <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {ListedData.map((item, index) => (
-                      <TouchableOpacity key={index} style={{ height: 40, width: 100, borderWidth: 0.5, borderRadius: 5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 100,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: listedby === index ? '#3184b6' : 'transparent',
+                        }}
+                        onPress={() => setListedby(index)}
+
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: listedby === index ? 'white' : 'black' }}>{item}</Text>
 
                       </TouchableOpacity>
                     ))}
@@ -218,16 +337,31 @@ const Property = () => {
                   // inputMode="numeric"
                   />
                 </View>
-                <View >
-                  <Text>Car Parking</Text>
-                  <View style={{ marginTop: 10, flexDirection: "row", flexWrap: "wrap" }}>
+                
+
+                <View>
+                <Text>Car Parking</Text>
+                  <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
                     {ParkingData.map((item, index) => (
-                      <View key={index} style={{ height: 40, width: 60, borderWidth: 0.5, justifyContent: 'center', alignItems: 'center', margin: 5, flexDirection: "row" }}>
-                        <Text style={{ fontSize: 12, fontWeight: "500", color: "black" }}>{item}</Text>
-                      </View>
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 60,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: "row",
+                          backgroundColor: carparking === index ? '#3184b6' : 'transparent' // Set background color based on selection
+                        }}
+                        onPress={() => setCarparking(index)}
+                      >
+                        <Text style={{ fontSize: 12, fontWeight: "500", color: carparking === index ? 'white' : 'black' }}>{item}</Text>
+                      </TouchableOpacity>
                     ))}
                   </View>
-
                 </View>
                 {/* <View style={{ marginTop: 10 }}>
                   <Text>Facing</Text>
@@ -316,19 +450,20 @@ const Property = () => {
               </View>
             </View>
 
-            <View style={{ borderWidth: 0.5, borderColor: "gray", height: 550, padding: 10, borderRadius: 5, marginTop: 10 }}>
+            <View style={{ borderWidth: 0.5, borderColor: "gray", padding: 10, borderRadius: 5, marginTop: 10 }}>
               <View style={{ padding: 0 }}>
                 <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
                 <FlatList
-                  data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]}
+                  data={[...Array(20).keys()]}
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
                   renderItem={({ item }) => (
                     <TouchableOpacity
+                      onPress={handleCameraLaunch}
                       style={{
-                        height: 83,
-                        width: 83,
+                        height: itemWidth,
+                        width: itemWidth,
                         borderRadius: 5,
                         backgroundColor: 'white',
                         alignItems: 'center',
@@ -346,13 +481,15 @@ const Property = () => {
                         },
                       }}
                     >
-                      {/* <SvgXml
-                        xml={item.filename}
-                        width="50px"
-                        height="50px"
-                      /> */}
-                      <AntDesign name="camera" size={50}/>
-                      {/* <Text>{item}</Text> */}
+                      {selectedImages[item] ? (
+                        <Image
+                          source={{ uri: selectedImages[item] }}
+                          style={{ height: '100%', width: '100%' }}
+                          resizeMode="cover"
+                        />
+                      ) : (
+                        <AntDesign name="camera" size={50} />
+                      )}
                     </TouchableOpacity>
                   )}
                   keyExtractor={(item, index) => index.toString()}
@@ -366,7 +503,7 @@ const Property = () => {
       <View style={{ marginTop: 0 }} >
         <TouchableOpacity
           style={{
-            backgroundColor: '#fff',
+            backgroundColor: style.button.backgroundColor,
             borderRadius: 0,
             height: 60,
             justifyContent: 'center',
@@ -374,7 +511,7 @@ const Property = () => {
             borderWidth: 0.5
           }}
         >
-          <Text style={{ textAlign: 'center', fontSize: 18, color: "black" }}>Post My Ad</Text>
+          <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Post My Ad</Text>
         </TouchableOpacity>
       </View>
     </View>

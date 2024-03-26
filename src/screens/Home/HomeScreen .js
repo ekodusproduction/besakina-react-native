@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { Searchbar } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
-import { ServicesSVG, electronics, health, property, vehicle, location } from '../../svg/svg';
+import { ServicesSVG, electronics, health, property, vehicle, location, Education } from '../../svg/svg';
 import { SliderBox } from "react-native-image-slider-box";
 import FeaturedAds from '../FeaturedAds/FeaturedAds';
 import AllAds from '../AllAds/AllAds';
@@ -14,8 +14,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 
  
-const array1 = [FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds, FeaturedAds,];
-const HomeScreen = () => {
+ const HomeScreen = () => {
   const navigation = useNavigation();
   const image = [
     require('../../../assets/banner1.png'),
@@ -85,7 +84,7 @@ const HomeScreen = () => {
                 id: 1, filename: ServicesSVG, name: "Services"
               },
               {
-                id: 2, filename: electronics, name: "Electronics"
+                id: 2, filename: Education, name: "Education"
               },
               {
                 id: 3, filename: health, name: "Health"

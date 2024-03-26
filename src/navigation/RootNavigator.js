@@ -13,9 +13,13 @@ import AuthNavigator from './AuthNavigator';
 import ViewCategories from '../screens/categories/ViewCategories';
 import Property from '../screens/AddPostForms/Property';
 import Health from '../screens/AddPostForms/Health';
-import Electronics from '../screens/AddPostForms/Electronics';
+import Education from '../screens/AddPostForms/Education';
 import Services from '../screens/AddPostForms/Services';
 import Vehicle from '../screens/AddPostForms/Vehicle';
+import Doctor from '../screens/AddPostForms/Doctor';
+import HospitalorClinic from '../screens/AddPostForms/HospitalorClinic';
+import Hospitality from '../screens/AddPostForms/Hospitality';
+import Mywishlist from '../screens/wishlist/Mywishlist';
 
 const Stack = createNativeStackNavigator();
 
@@ -179,8 +183,8 @@ const RootNavigator = () => {
           }}
         />
         <Stack.Screen
-          name="Electronics"
-          component={Electronics}
+          name="Education"
+          component={Education}
           options={{
             headerShown: false,
             headerStyle: {
@@ -211,6 +215,66 @@ const RootNavigator = () => {
         <Stack.Screen
           name="Vehicle"
           component={Vehicle}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              textAlign: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Doctor"
+          component={Doctor}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              textAlign: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="HospitalorClinic"
+          component={HospitalorClinic}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              textAlign: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Hospitality"
+          component={Hospitality}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              textAlign: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Mywishlist"
+          component={Mywishlist}
           options={{
             headerShown: false,
             headerStyle: {
