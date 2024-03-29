@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-paper';
+import { Card, TouchableRipple } from 'react-native-paper';
 import style from '../../style';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { SvgXml } from 'react-native-svg';
 import { location } from '../../svg/svg';
+import { useNavigation } from '@react-navigation/native';
 
 const AllAds = (props) => {
+    const navigation = useNavigation();
     const [wishlist, setWishlist] = useState([]);
+    const [data,setData]=useState(null);
 
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
@@ -23,21 +26,30 @@ const AllAds = (props) => {
     const isWishlisted = (id) => {
         return wishlist.includes(id);
     }
+
+    const fetchproductApi = () => {
+        fetch('https://dummyjson.com/products')
+            .then(res => res.json())
+            .then(response=>setData(response));
+    }
+    useEffect(() => {
+        fetchproductApi();
+    }, [])
     return (
         <View style={{ marginTop: 10 }}>
             <Text style={[style.subtitle, { marginLeft: 10 }]}>All Ads</Text>
 
             <FlatList
-                data={[1, 2, 3, 4, 5, 6]}
+                data={data?.products}
                 horizontal={false}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, index }) => {
                     return (
-                        <View style={{ flex: 1, margin: 5, width: '50%' }}>
+                        <TouchableRipple style={{ flex: 1, margin: 5, width: '50%' }} onPress={() => navigation.navigate('AllAdsDetails')}>
                             <Card style={{ borderRadius: 12, }}>
                                 <Image
-                                    source={{ uri: 'https://picsum.photos/700' }}
+                                    source={{ uri: `${item.images[0]}` }}
                                     style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
                                 />
                                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
@@ -54,8 +66,8 @@ const AllAds = (props) => {
                                 </View>
 
                                 <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                    <Text style={style.subsubtitle}>$ 35,50,900</Text>
-                                    <Text numberOfLines={1} style={{ width: 150 }}>Hyundai i20 black color car</Text>
+                                    <Text style={style.subsubtitle}>$ {item.price}</Text>
+                                    <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
                                 </View>
 
                                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
@@ -71,7 +83,7 @@ const AllAds = (props) => {
                                     <Text>Today</Text>
                                 </View>
                             </Card>
-                        </View>
+                        </TouchableRipple>
                     )
                 }}
                 keyExtractor={(item, index) => index.toString()}

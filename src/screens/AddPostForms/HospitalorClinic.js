@@ -109,7 +109,7 @@ const HospitalorClinic = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -123,19 +123,19 @@ const HospitalorClinic = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Write some description</Text>
                   <TextInput
                     placeholderTextColor='black'
-                    multiline={true}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
+                      height: 60,
                     }}
                   // inputMode="numeric"
                   />
@@ -151,7 +151,7 @@ const HospitalorClinic = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
+                  inputMode="numeric"
                   />
                 </View>
 

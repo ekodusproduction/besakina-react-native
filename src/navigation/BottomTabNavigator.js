@@ -1,109 +1,91 @@
+// BottomTabNavigator.js
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, View } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import RootNavigator from './RootNavigator';
-import AuthNavigator from './AuthNavigator';
-import CategoryList from '../screens/categories/SelectCategoryList';
-import FeaturedAds from '../screens/FeaturedAds/FeaturedAds';
-import AllAds from '../screens/AllAds/AllAds';
-import { NavigationContainer } from '@react-navigation/native';
-import { categories, home, user } from '../svg/svg';
-import { SvgXml } from 'react-native-svg';
+import { StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
 import Mywishlist from '../screens/wishlist/Mywishlist';
+import AllAds from '../screens/AllAds/AllAds';
+import CategoryList from '../screens/categories/SelectCategoryList';
+import { SvgXml } from 'react-native-svg';
+import { categories, user } from '../svg/svg';
+import Profile from '../screens/Profile/Profile';
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
     return (
-        // <NavigationContainer>
-            <Tab.Navigator
-                initialRouteName='HomeScreen'
-                screenOptions={{
-                    headerShown: false,
-                    tabBarStyle: styles.tabBar,
+        <Tab.Navigator
+            initialRouteName="HomeScreen"
+            screenOptions={{
+                tabBarStyle: styles.tabBar,
+                headerShown: false
+            }}
+        >
+            <Tab.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <FontAwesome name="home" size={30} color={focused ? "#3184b6" : ""} />
+                    ),
+                    tabBarShowLabel: false,
                 }}
-            >
-                <Tab.Screen
-                    name='HomeScreen'
-                    component={HomeScreen}
-                    options={{
-                        tabBarIcon: ({ focused }) => (
-                            <FontAwesome name="home" size={30} color={focused ? "#3184b6" : ""} />
-                        ),
-                        tabBarShowLabel: false,
-                        tabBarLabel: '',
-                    }}
-                />
-                <Tab.Screen
-                    name='ViewCategories'
-                    component={ViewCategories}
-                    options={{
-                        tabBarIcon: ({ focused }) => (
-                            <SvgXml
-                                xml={categories}
-                                width="30px"
-                                height="30px"
-                                style={{ fill: focused ? "#3184b6" : ""}}
-                            />),
-                        tabBarShowLabel: false,
-                        tabBarLabel: '',
-                    }}
-                />
-                <Tab.Screen
-                    name='Add-Ads'
-                    component={CategoryList}
-                    options={{
-                        tabBarIcon: ({ focused, color, size }) => (
-                            <View style={{
-                                width: 50,
-                                height: 50,
-                                borderWidth: 2,
-                                borderColor: '#3184b6',
-                                borderRadius: 25,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: "#fff",
-                                marginBottom: 50,
-
-                            }}>
-                                <FontAwesome name="plus" color='#3184b6' size={size} />  
-                            </View>
-                        ),
-                        tabBarShowLabel: false,
-                        tabBarLabel: '',
-                    }}
-                />
-                <Tab.Screen
-                    name='Mywishlist'
-                    component={Mywishlist}
-                    options={{
-                        tabBarIcon: ({ focused }) => (
-                            <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />
-                        ),
-                        tabBarShowLabel: false,
-                        tabBarLabel: '',
-                    }}
-                />
-                <Tab.Screen
-                    name='AllAds'
-                    component={AllAds}
-                    options={{
-                        tabBarIcon: ({ focused }) => (
-                            <SvgXml
-                                xml={user}
-                                width="30px"
-                                height="30px"
-                                style={{ fill: focused ? "#3184b6" : ""}}
-                            />),
-                        tabBarShowLabel: false,
-                        tabBarLabel: '',
-                    }}
-                />
-            </Tab.Navigator>
-        // </NavigationContainer>
+            />
+            <Tab.Screen
+                name="ViewCategories"
+                component={ViewCategories}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <SvgXml
+                            xml={categories}
+                            width="30px"
+                            height="30px"
+                            style={{ fill: focused ? "#3184b6" : "" }}
+                        />
+                    ),
+                    tabBarShowLabel: false,
+                }}
+            />
+            <Tab.Screen
+                name="AddAds"
+                component={CategoryList}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <View style={styles.addAdsIcon}>
+                            <FontAwesome name="plus" color='#3184b6' size={30} />
+                        </View>
+                    ),
+                    tabBarShowLabel: false,
+                }}
+            />
+            <Tab.Screen
+                name="Mywishlist"
+                component={Mywishlist}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />
+                    ),
+                    tabBarShowLabel: false,
+                }}
+            />
+            <Tab.Screen
+                name="Profile"
+                component={Profile}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <SvgXml
+                            xml={user}
+                            width="30px"
+                            height="30px"
+                            style={{ fill: focused ? "#3184b6" : "" }}
+                        />
+                    ),
+                    tabBarShowLabel: false,
+                }}
+            />
+        </Tab.Navigator>
     );
 };
 
@@ -120,6 +102,17 @@ const styles = StyleSheet.create({
         borderColor: '#dadada',
         borderTopLeftRadius: 15,
         borderTopRightRadius: 15,
+    },
+    addAdsIcon: {
+        width: 50,
+        height: 50,
+        borderWidth: 2,
+        borderColor: '#3184b6',
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "#fff",
+        marginBottom: 50,
     },
 });
 

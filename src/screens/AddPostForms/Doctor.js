@@ -150,12 +150,12 @@ const Doctor = () => {
                   <Text>Describe about yourself</Text>
                   <TextInput
                     placeholderTextColor='black'
-                    multiline={true}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
+                      height: 60,
                     }}
                   // inputMode="numeric"
                   />

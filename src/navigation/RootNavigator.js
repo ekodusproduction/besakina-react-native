@@ -20,16 +20,32 @@ import Doctor from '../screens/AddPostForms/Doctor';
 import HospitalorClinic from '../screens/AddPostForms/HospitalorClinic';
 import Hospitality from '../screens/AddPostForms/Hospitality';
 import Mywishlist from '../screens/wishlist/Mywishlist';
+import Profile from '../screens/Profile/Profile';
 
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
     <NavigationContainer independent>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName='BottomTabNavigator'>
         <Stack.Screen
           name="BottomTabNavigator"
           component={BottomTabNavigator}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              align: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="AuthNavigator"
+          component={AuthNavigator}
           options={{
             headerShown: false,
             headerStyle: {
@@ -125,21 +141,6 @@ const RootNavigator = () => {
         <Stack.Screen
           name="FeaturedAdsDetails"
           component={FeaturedAdsDetails}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="AuthNavigator"
-          component={AuthNavigator}
           options={{
             headerShown: false,
             headerStyle: {
@@ -275,6 +276,21 @@ const RootNavigator = () => {
         <Stack.Screen
           name="Mywishlist"
           component={Mywishlist}
+          options={{
+            headerShown: false,
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerTintColor: 'black',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              textAlign: "center"
+            },
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
           options={{
             headerShown: false,
             headerStyle: {

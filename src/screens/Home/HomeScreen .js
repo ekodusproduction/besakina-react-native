@@ -1,25 +1,35 @@
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar, StyleSheet } from 'react-native';
-import React from 'react';
-import Entypo from 'react-native-vector-icons/Entypo';
+import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
+import React, { useEffect } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
-import { Searchbar } from 'react-native-paper';
 import { SvgXml } from 'react-native-svg';
-import { ServicesSVG, electronics, health, property, vehicle, location, Education } from '../../svg/svg';
+import { ServicesSVG, health, property, vehicle, location, Education } from '../../svg/svg';
 import { SliderBox } from "react-native-image-slider-box";
 import FeaturedAds from '../FeaturedAds/FeaturedAds';
 import AllAds from '../AllAds/AllAds';
 import { useNavigation } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { handleGetToken } from '../../constant/tokenUtils';
 
 
- 
- const HomeScreen = () => {
+const HomeScreen = () => {
   const navigation = useNavigation();
   const image = [
     require('../../../assets/banner1.png'),
     require('../../../assets/banner2.png'),
+    // require('../../../assets/banner.png'),
   ]
+  // useEffect(() => {
+  //   someAsyncFunction();
+  // }, []);
+
+  // const someAsyncFunction = async () => {
+  //   let data = await handleGetToken();
+  //   console.log('data--->', data);
+  // }
+
   return (
     <ScrollView style={{ flex: 1, marginBottom: 70 }} alwaysBounceVertical showsVerticalScrollIndicator={false} >
       <StatusBar
@@ -27,6 +37,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
         backgroundColor=""
         translucent={false}
       />
+      {/* <Snackbar
+        message="This is a custom Snackbar"
+        actionText="Dismiss"
+        onActionPress={() => {
+          console.log('clicked snackbar')
+        }}
+        duration={10000}  
+        position="bottom"
+        backgroundColor="#2E67F8"
+        textColor="white"
+        actionTextColor="white"
+        containerStyle={{ marginHorizontal: 12 }}
+        messageStyle={{}}
+        actionTextStyle={{}}
+      /> */}
       <View style={{ flex: 1, padding: 10 }}>
         <View style={{ justifyContent: "center", alignItems: "center", height: 40 }}>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
@@ -59,12 +84,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
         <View>
           <View style={{ marginTop: 15 }}>
             <View style={style.inputContainer}>
-              <MaterialIcons name="search" size={24} color="#999" style={style.icon} />
+              <MaterialIcons name="search" size={24} color="gray" style={style.icon} />
               <TextInput
                 placeholder="Search product, business or Services"
-                placeholderTextColor="#999"
+                placeholderTextColor="gray"
                 style={style.input}
               />
+              <MaterialIcons name="mic" size={24} color="gray" style={[style.icon, { marginRight: 10 }]} />
             </View>
           </View>
         </View>
@@ -72,7 +98,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
         <View>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
             <Text style={style.subtitle}>Categories</Text>
-            <Text style={[style.subtitle, { color: "#3184b6" }]} onPress={()=>navigation.navigate('ViewCategories')}>See all</Text>
+            <Text style={[style.subtitle, { color: "#3184b6" }]} onPress={() => navigation.navigate('ViewCategories')}>See all</Text>
           </View>
         </View>
 
@@ -167,7 +193,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
         <FeaturedAds />
 
-        <AllAds/>
+        <AllAds />
 
 
       </View>

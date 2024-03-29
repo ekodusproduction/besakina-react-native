@@ -91,7 +91,6 @@ const Hospitality = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
                   />
                 </View>
 
@@ -129,7 +128,7 @@ const Hospitality = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -143,7 +142,7 @@ const Hospitality = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -171,7 +170,7 @@ const Hospitality = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
+                  inputMode="numeric"
                   />
                 </View>
 

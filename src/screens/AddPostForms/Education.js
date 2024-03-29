@@ -123,7 +123,7 @@ const Education = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
+                  inputMode="numeric"
                   />
                 </View>
 
@@ -139,7 +139,7 @@ const Education = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -153,19 +153,19 @@ const Education = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
+                    // inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Describe about the course</Text>
                   <TextInput
                     placeholderTextColor='black'
-                    multiline={true}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
+                      height: 60,
                     }}
                   // inputMode="numeric"
                   />
@@ -179,7 +179,8 @@ const Education = () => {
                       backgroundColor: 'white',
                       borderRadius: 5,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
+                      height: 60,
                     }}
                   // inputMode="numeric"
                   />
@@ -195,7 +196,7 @@ const Education = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                  // inputMode="numeric"
+                  inputMode="numeric"
                   />
                 </View>
 
