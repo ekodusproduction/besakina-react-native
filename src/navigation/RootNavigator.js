@@ -26,285 +26,275 @@ const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
-    <NavigationContainer independent>
-      <Stack.Navigator initialRouteName='BottomTabNavigator'>
-        <Stack.Screen
-          name="BottomTabNavigator"
-          component={BottomTabNavigator}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              align: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="AuthNavigator"
-          component={AuthNavigator}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              align: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="OtpScreen"
-          component={OtpScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="VerifyOtpScreen"
-          component={VerifyOtpScreen}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="CategoryList"
-          component={CategoryList}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="ViewCategories"
-          component={ViewCategories}
-          options={{
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="CategoryDetails"
-          component={CategoryDetails}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="AllAdsDetails"
-          component={AllAdsDetails}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="FeaturedAdsDetails"
-          component={FeaturedAdsDetails}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Property"
-          component={Property}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Health"
-          component={Health}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Education"
-          component={Education}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Services"
-          component={Services}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Vehicle"
-          component={Vehicle}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Doctor"
-          component={Doctor}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="HospitalorClinic"
-          component={HospitalorClinic}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Hospitality"
-          component={Hospitality}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Mywishlist"
-          component={Mywishlist}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: 'white',
-            },
-            headerTintColor: 'black',
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              textAlign: "center"
-            },
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator initialRouteName='BottomTabNavigator' screenOptions={{
+      headerShown: false
+    }}>
+      <Stack.Screen
+        name="BottomTabNavigator"
+        component={BottomTabNavigator}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            align: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="AuthNavigator"
+        component={AuthNavigator}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            align: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="OtpScreen"
+        component={OtpScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="VerifyOtpScreen"
+        component={VerifyOtpScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="CategoryList"
+        component={CategoryList}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="ViewCategories"
+        component={ViewCategories}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="CategoryDetails"
+        component={CategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="AllAdsDetails"
+        component={AllAdsDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="FeaturedAdsDetails"
+        component={FeaturedAdsDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Property"
+        component={Property}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Health"
+        component={Health}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Education"
+        component={Education}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Services"
+        component={Services}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Vehicle"
+        component={Vehicle}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Doctor"
+        component={Doctor}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="HospitalorClinic"
+        component={HospitalorClinic}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Hospitality"
+        component={Hospitality}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Mywishlist"
+        component={Mywishlist}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 

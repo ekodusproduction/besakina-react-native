@@ -1,4 +1,4 @@
-import { View, Image, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import { View, Image, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -13,9 +13,7 @@ import axios from 'axios';
 
 const Property = () => {
   const navigation = useNavigation();
-  const [value, setValue] = useState(null);
-  const [token, setToken] = useState(null);
-  console.log('token---', token);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const TypesData = ['Apartments', 'Builders Floors', 'Farm Houses', 'Houses and Villas'];
   const BedroomsData = ['1', '2', '3', '4', '4+'];
@@ -44,15 +42,47 @@ const Property = () => {
   const [builtuparea, setBuiltuparea] = useState("");
   const [carpetarea, setCarpetarea] = useState("");
   const [maintenance, setMaintenance] = useState("");
-  const [totalfloor, setTotalfloor] = useState("");
+  const [totalrooms, setTotalrooms] = useState("");
   const [floorno, setFloorno] = useState("");
   const [projectname, setProjectname] = useState("");
   const [adtitle, setAdtitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-  console.log('selectedImages--->', selectedImages);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
+
+
+  let body = {
+    "plan_id": 1,
+    "title": "Burj Khalifa",
+    "type": selectedType,
+    "bedrooms": selectedbedrooms,
+    "bathrooms": selectedbathrooms,
+    "furnishing": furnishing,
+    "construction_status": constructionstatus,
+    "listed_by": listedby,
+    "super_builtup_area": builtuparea,
+    "carpet_area": carpetarea,
+    "maintenance": maintenance,
+    "total_rooms": totalrooms,
+    "floor_no": floorno,
+    "car_parking": carparking,
+    "price": price,
+    "images": selectedImages,
+    "category": data.filter((item) => item.value == selectedCategory).map((i) => i.label).toString(),
+    "video": null,
+    "map_location": "https://maps.app.goo.gl/eZ4ykMq3w2byz6Vp9",
+    "latitude": 26.00000000,
+    "longitude": 91.00000000,
+    "street": "suraj",
+    "address": "suraj",
+    "city": "suraj",
+    "pincode": 123,
+    "state": "suraj"
+
+  };
+  console.log('bodypost--->', body);
+
 
   const handleCameraLaunch = () => {
     const options = {
@@ -68,76 +98,87 @@ const Property = () => {
       } else if (response.error) {
         console.log('Camera Error: ', response.error);
       } else {
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setSelectedImages([...selectedImages, imageUri]);
+        // let imageUri = response.uri || response.assets?.[0]?.uri; //old code
+        let imageUri = response.uri || response.assets?.[0]; //new code
+        setSelectedImages([...selectedImages, imageUri]); //old code
+        // const formData = new FormData();
+        // formData.append('file', {
+        //   uri: response.assets?.[0]?.uri,
+        //   type: response.assets?.[0]?.type,
+        //   name: response.assets?.[0]?.fileName,
+        // })
+        // console.log('formdata', formData)
+        // setSelectedImages(formData);
+
       }
     });
   }
 
-  const handlePostAd = async () => {
-    let data = await handleGetToken();
-    console.log('data', data);
-    if (data) {
-      console.log('returned back');
-      setToken(data);
-      PostAdApi();
-    } else {
-      navigation.navigate('OtpScreen', { PropertyScreen: "PropertyScreen" });
-    }
+  const handlePostAd = () => {
+    handleGetToken()
+      .then((token) => {
+        if (token) {
+          console.log('Token retrieved successfully--->', token);
+          console.log('--------------------------------------------')
+          setLoading(true);
+          axios.post(`${Baseurl}api/property`, body, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`
+            }
+          })
+            .then((response) => {
+              console.log("response of the api--->", response);
+              console.log('--------------------------------------------')
+            })
+            .catch((error) => {
+              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+              console.error('Catch Error :---->', error.response);
+              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          console.log('Token not retrieved');
+          navigation.navigate('OtpScreen', { PropertyScreen: "PropertyScreen" });
+        }
+      })
+      .catch((error) => {
+        console.error('Error while handling post ad:', error);
+      });
   };
 
-  const PostAdApi = async () => {
-    console.log('body--->', body)
-    try {
-      console.log('clicked')
-      setLoading(true);
-      const response = await axios.post(`${Baseurl}api/users/property`, {});
 
-      if (response.status !== 200) {
-        console.log('response data--->', response.data)
-      }
 
-      // setData(response.data);
-      // if (response.data.success === true) {
-      //   if (PropertyScreen) {
-      //     navigation.navigate("VerifyOtpScreen", { mobile, PropertyScreen });
-      //   } else {
-      //     navigation.navigate("VerifyOtpScreen", { mobile });
-      //   }
-      // }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const PostAdApi = async (token) => {
+  //   console.log('Token in PostAdApi:', token);
 
-  let body = {
-    "plan_id": 1,
-    "title": "Burj Khalifa",
-    "type": selectedType,
-    "bedrooms": selectedbedrooms,
-    "bathrooms": selectedbathrooms,
-    "furnishing": furnishing,
-    "construction_status": constructionstatus,
-    "listed_by": listedby,
-    "super_builtup_area": builtuparea,
-    "carpet_area": carpetarea,
-    "maintenance": maintenance,
-    "total_rooms": 9,
-    "floor_no": 8,
-    "car_parking": 2,
-    "price": 25000,
-    "photos": [
-      "public/images/1711519574639-burj_khalifa.jpg",
-      "public/images/1711519574640-electricity.jpg"
-    ],
-    "category": "VILLA",
-    "video": null,
-    "map_location": "https://maps.app.goo.gl/eZ4ykMq3w2byz6Vp9",
-    "latitude": 26.00000000,
-    "longitude": 91.00000000
-  }
+  //   try {
+  //     setLoading(true);
+  //     const response = await axios.post(
+  //       `${Baseurl}}api/property`,
+  //       body,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`
+  //         }
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       console.log('Post Ad successful');
+  //     } else {
+  //       console.log('Error: Post Ad failed');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error in PostAdApi:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
 
   return (
     <View style={{ flex: 1, }}>
@@ -157,15 +198,15 @@ const Property = () => {
                 inputSearchStyle={style.inputSearchStyle}
                 iconStyle={style.iconStyle}
                 data={data}
-                search
+                // search
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="All Properties"
                 searchPlaceholder="Search..."
-                value={value}
+                value={selectedCategory}
                 onChange={item => {
-                  setValue(item.label);
+                  setSelectedCategory(item.value);
                 }}
               />
             </View>
@@ -394,7 +435,7 @@ const Property = () => {
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
-                  <Text>   Total Floors </Text>
+                  <Text>Total Rooms</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -405,8 +446,8 @@ const Property = () => {
                       borderWidth: 0.5
                     }}
                     inputMode="numeric"
-                    value={totalfloor}
-                    onChangeText={built => setTotalfloor(built)}
+                    value={totalrooms}
+                    onChangeText={built => setTotalrooms(built)}
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -546,57 +587,53 @@ const Property = () => {
               </View>
             </View>
 
-            <View style={{ borderWidth: 0.5, borderColor: "gray", padding: 10, borderRadius: 5, marginTop: 10 }}>
-              <View style={{ padding: 0 }}>
-                <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
-                <FlatList
-                  data={[...Array(20).keys()]}
-                  vertical
-                  numColumns={4}
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      onPress={handleCameraLaunch}
-                      style={{
-                        height: itemWidth,
-                        width: itemWidth,
-                        borderRadius: 5,
-                        backgroundColor: 'white',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginHorizontal: 5,
-                        marginTop: 10,
-                        marginBottom: 10,
-                        elevation: 5,
-                        shadowColor: '#000',
-                        shadowOpacity: 0.3,
-                        shadowRadius: 5,
-                        shadowOffset: {
-                          width: 0,
-                          height: 2,
-                        },
-                      }}
-                    >
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{ uri: selectedImages[item] }}
-                          style={{ height: '100%', width: '100%' }}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <AntDesign name="camera" size={50} />
-                      )}
-                    </TouchableOpacity>
+            <FlatList
+              data={[...Array(20).keys()]}
+              vertical
+              numColumns={4}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={handleCameraLaunch}
+                  style={{
+                    height: itemWidth,
+                    width: itemWidth,
+                    borderRadius: 5,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginHorizontal: 5,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                  }}
+                >
+                  {selectedImages[item] ? (
+                    <Image
+                      source={{ uri: typeof selectedImages[item] === 'string' ? selectedImages[item] : selectedImages[item].uri }}
+                      style={{ height: '100%', width: '100%' }}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <AntDesign name="camera" size={50} />
                   )}
-                  keyExtractor={(item, index) => index.toString()}
-                />
-              </View>
-            </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+
 
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
-      <View style={{ marginTop: 0 }} >
+      <View style={{ marginTop: 0 }}>
         <TouchableOpacity
           style={{
             backgroundColor: style.button.backgroundColor,
@@ -607,10 +644,18 @@ const Property = () => {
             borderWidth: 0.5
           }}
           onPress={handlePostAd}
+          disabled={loading ? true : false}
         >
-          <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Post My Ad</Text>
+          {loading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>
+              Post My Ad
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
+
     </View>
   )
 }

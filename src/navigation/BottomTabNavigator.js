@@ -24,13 +24,14 @@ const BottomTabNavigator = () => {
             }}
         >
             <Tab.Screen
-                name="Home"
+                name="HomeScreen"
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome name="home" size={30} color={focused ? "#3184b6" : ""} />
                     ),
                     tabBarShowLabel: false,
+                    headerShown: false
                 }}
             />
             <Tab.Screen
@@ -46,6 +47,7 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
+                    headerShown: false
                 }}
             />
             <Tab.Screen
@@ -58,6 +60,7 @@ const BottomTabNavigator = () => {
                         </View>
                     ),
                     tabBarShowLabel: false,
+                    headerShown: false
                 }}
             />
             <Tab.Screen
@@ -68,6 +71,7 @@ const BottomTabNavigator = () => {
                         <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />
                     ),
                     tabBarShowLabel: false,
+                    headerShown: false
                 }}
             />
             <Tab.Screen
@@ -83,6 +87,7 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
+                    headerShown: false
                 }}
             />
         </Tab.Navigator>

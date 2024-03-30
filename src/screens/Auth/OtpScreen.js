@@ -57,7 +57,7 @@ const OtpScreen = ({ route }) => {
         <View style={{ padding: 20 }}>
             <View style={{ marginTop: 100 }}>
                 <Text style={styles.header}>Welcome</Text>
-                <Text style={styles.header}>back</Text>
+                <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
             </View>
             <View style={{ marginTop: 25 }}>
                 <Text style={style.title}>Enter Mobile Number</Text>

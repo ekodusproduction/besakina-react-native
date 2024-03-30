@@ -5,7 +5,7 @@ import { LogBox } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { NavigationContainer } from '@react-navigation/native';  
+import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import RootNavigator from './src/navigation/RootNavigator';
 
@@ -25,7 +25,7 @@ const App = () => {
   const handleGetToken = async () => {
     try {
       const dataToken = await AsyncStorage.getItem("UserData");
-      setIsLoggedIn(!!dataToken); 
+      setIsLoggedIn(!!dataToken);
     } catch (error) {
       console.error('Error retrieving user token:', error);
     }
@@ -33,6 +33,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <NavigationContainer>
         <View style={{ flex: 1 }}>
           {isSplashScreenHidden ? (
             <>
@@ -50,6 +51,8 @@ const App = () => {
             </View>
           )}
         </View>
+      </NavigationContainer>
+
     </Provider>
   );
 };
