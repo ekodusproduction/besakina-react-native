@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { SvgXml } from 'react-native-svg';
-import { ServicesSVG, health, property, vehicle, location, Education } from '../../svg/svg';
+import { ServicesSVG, health, property, vehicle, location, Education, Hospitality } from '../../svg/svg';
 import { SliderBox } from "react-native-image-slider-box";
 import FeaturedAds from '../FeaturedAds/FeaturedAds';
 import AllAds from '../AllAds/AllAds';
@@ -106,20 +106,21 @@ const HomeScreen = () => {
 
           <FlatList
             data={[
+              
               {
-                id: 1, filename: ServicesSVG, name: "Services"
+                id: 1, filename: Education, name: "Education"
               },
               {
-                id: 2, filename: Education, name: "Education"
+                id: 2, filename: health, name: "Health"
               },
               {
-                id: 3, filename: health, name: "Health"
+                id: 3, filename: property, name: "Property"
               },
               {
-                id: 4, filename: property, name: "Property"
+                id: 4, filename: vehicle, name: "Vehicle"
               },
               {
-                id: 5, filename: vehicle, name: "Vehicle"
+                id: 5, filename: Hospitality, name: "Hospitality"
               }
             ]}
             horizontal

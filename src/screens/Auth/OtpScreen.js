@@ -28,7 +28,7 @@ const OtpScreen = ({ route }) => {
     const sendOtp = async () => {
         try {
             setLoading(true);
-            const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
+            const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
             if (response.status !== 200) {
                 console.log('response data--->', response.data)

@@ -40,7 +40,7 @@ const VerifyOtpScreen = ({ route }) => {
             };
             console.log('postData---', postData);
 
-            const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+            const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
                 headers: {
                     'Content-Type': 'application/json',
                 },

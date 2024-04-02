@@ -59,6 +59,7 @@ const Vehicle = () => {
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
 
+
   const handleCameraLaunch = () => {
     const options = {
       mediaType: 'photo',
@@ -119,9 +120,10 @@ const Vehicle = () => {
           formData.append("city",city);
           formData.append("state", state);
           formData.append("pincode", pincode);
+        
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}api/vehicles`, formData, {
+          axios.post(`${Baseurl}/api/vehicles`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -374,6 +376,7 @@ const Vehicle = () => {
                     onChangeText={built => setStreet(built)}
                   />
                  </View>
+               
                 <View style={{ marginTop: 10 }}>
                   <Text>Locality</Text>
                   <TextInput

@@ -121,7 +121,7 @@ const Hospitality = () => {
 
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}api/hospitality`, formData, {
+          axios.post(`${Baseurl}/api/hospitality`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,

@@ -15,7 +15,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Property = () => {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(null);
-  console.log('selectedCategory----',selectedCategory)
   const [loading, setLoading] = useState(false);
   const TypesData = ['Apartments', 'Builders Floors', 'Farm Houses', 'Houses and Villas'];
   const BedroomsData = ['1', '2', '3', '4', '4+'];
@@ -33,7 +32,7 @@ const Property = () => {
     { label: 'For Rent: Shops and Offices', value: '6' },
     { label: 'PG and Guest Houses', value: '7' },
   ];
-   const [selectedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
   const [selectedbedrooms, setSelectedbedrooms] = useState(null);
   const [selectedbathrooms, setSelectedbathrooms] = useState(null);
   const [furnishing, setFurnishing] = useState(null);
@@ -51,13 +50,13 @@ const Property = () => {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [street, setStreet] = useState("");
-  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
-
+  const [houseno, setHouseno] = useState("");
+  const [landmark, setLandmark] = useState("");
 
   const handleCameraLaunch = () => {
     const options = {
@@ -119,13 +118,14 @@ const Property = () => {
 
           const category = data.filter(item => item.value === selectedCategory).map(i => i.label).toString();
           formData.append("category", category);
-          formData.append("Street", street);
-          formData.append("address", address);
-          formData.append("city",city);
+          formData.append("street", street);
+          formData.append("city", city);
           formData.append("state", state);
           formData.append("pincode", pincode);
+          formData.append("house_no", houseno);
+          formData.append("landmark", landmark);
 
-          axios.post(`${Baseurl}api/property`, formData, {
+          axios.post(`${Baseurl}/api/property`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -623,7 +623,7 @@ const Property = () => {
                   />
                   <Text style={{ fontSize: 12 }}>Mention the key features of your item (<Text>E.g brand,model,age,type</Text>)</Text>
                 </View>
-               
+
                 <View style={{ marginTop: 10 }}>
                   <Text>Street</Text>
                   <TextInput
@@ -639,23 +639,8 @@ const Property = () => {
                     value={street}
                     onChangeText={built => setStreet(built)}
                   />
-                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Address</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                    // inputMode="numeric"
-                    value={address}
-                    onChangeText={built => setAddress(built)}
-                  />
-                 </View>
+                </View>
+
                 <View style={{ marginTop: 10 }}>
                   <Text>City</Text>
                   <TextInput
@@ -671,7 +656,39 @@ const Property = () => {
                     value={city}
                     onChangeText={built => setCity(built)}
                   />
-                 </View>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>house no.</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={houseno}
+                    onChangeText={built => setHouseno(built)}
+                  />
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>Landmark</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={landmark}
+                    onChangeText={built => setLandmark(built)}
+                  />
+                </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>State</Text>
                   <TextInput
@@ -687,7 +704,7 @@ const Property = () => {
                     value={state}
                     onChangeText={built => setstate(built)}
                   />
-                 </View>
+                </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Pincode</Text>
                   <TextInput
@@ -703,7 +720,7 @@ const Property = () => {
                     value={pincode}
                     onChangeText={built => setPincode(built)}
                   />
-                 </View>
+                </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Description*</Text>
                   <TextInput

@@ -114,7 +114,7 @@ const Education = () => {
           formData.append("pincode", pincode);
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}api/education`, formData, {
+          axios.post(`${Baseurl}/api/education`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
