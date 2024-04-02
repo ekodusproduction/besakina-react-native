@@ -1,4 +1,4 @@
-import { View, Image, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { Image, View, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator, Modal, StyleSheet, ToastAndroid } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -10,10 +10,12 @@ import { Dimensions } from 'react-native';
 import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Property = () => {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(null);
+  console.log('selectedCategory----',selectedCategory)
   const [loading, setLoading] = useState(false);
   const TypesData = ['Apartments', 'Builders Floors', 'Farm Houses', 'Houses and Villas'];
   const BedroomsData = ['1', '2', '3', '4', '4+'];
@@ -31,7 +33,7 @@ const Property = () => {
     { label: 'For Rent: Shops and Offices', value: '6' },
     { label: 'PG and Guest Houses', value: '7' },
   ];
-  const [selectedType, setSelectedType] = useState(null);
+   const [selectedType, setSelectedType] = useState(null);
   const [selectedbedrooms, setSelectedbedrooms] = useState(null);
   const [selectedbathrooms, setSelectedbathrooms] = useState(null);
   const [furnishing, setFurnishing] = useState(null);
@@ -48,48 +50,22 @@ const Property = () => {
   const [adtitle, setAdtitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [street, setStreet] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setstate] = useState("");
+  const [pincode, setPincode] = useState("");
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
-
-
-  let body = {
-    "plan_id": 1,
-    "title": "Burj Khalifa",
-    "type": selectedType,
-    "bedrooms": selectedbedrooms,
-    "bathrooms": selectedbathrooms,
-    "furnishing": furnishing,
-    "construction_status": constructionstatus,
-    "listed_by": listedby,
-    "super_builtup_area": builtuparea,
-    "carpet_area": carpetarea,
-    "maintenance": maintenance,
-    "total_rooms": totalrooms,
-    "floor_no": floorno,
-    "car_parking": carparking,
-    "price": price,
-    "images": selectedImages,
-    "category": data.filter((item) => item.value == selectedCategory).map((i) => i.label).toString(),
-    "video": null,
-    "map_location": "https://maps.app.goo.gl/eZ4ykMq3w2byz6Vp9",
-    "latitude": 26.00000000,
-    "longitude": 91.00000000,
-    "street": "suraj",
-    "address": "suraj",
-    "city": "suraj",
-    "pincode": 123,
-    "state": "suraj"
-
-  };
-  console.log('bodypost--->', body);
 
 
   const handleCameraLaunch = () => {
     const options = {
       mediaType: 'photo',
       includeBase64: false,
-      maxHeight: 1000,
-      maxWidth: 1000,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      quality: 0.5,
     };
 
     launchCamera(options, response => {
@@ -98,18 +74,13 @@ const Property = () => {
       } else if (response.error) {
         console.log('Camera Error: ', response.error);
       } else {
-        // let imageUri = response.uri || response.assets?.[0]?.uri; //old code
-        let imageUri = response.uri || response.assets?.[0]; //new code
-        setSelectedImages([...selectedImages, imageUri]); //old code
-        // const formData = new FormData();
-        // formData.append('file', {
-        //   uri: response.assets?.[0]?.uri,
-        //   type: response.assets?.[0]?.type,
-        //   name: response.assets?.[0]?.fileName,
-        // })
-        // console.log('formdata', formData)
-        // setSelectedImages(formData);
 
+        const imageInfo = {
+          uri: response.assets?.[0]?.uri,
+          type: response.assets?.[0]?.type,
+          fileName: response.assets?.[0]?.fileName,
+        };
+        setSelectedImages([...selectedImages, imageInfo]);
       }
     });
   }
@@ -119,29 +90,76 @@ const Property = () => {
       .then((token) => {
         if (token) {
           console.log('Token retrieved successfully--->', token);
-          console.log('--------------------------------------------')
           setLoading(true);
-          axios.post(`${Baseurl}api/property`, body, {
+
+          const formData = new FormData();
+
+          // formData.append("plan_id", "1");
+          formData.append("title", adtitle);
+          formData.append("type", selectedType);
+          formData.append("bedrooms", selectedbedrooms);
+          formData.append("bathrooms", selectedbathrooms);
+          formData.append("furnishing", furnishing);
+          formData.append("construction_status", constructionstatus);
+          formData.append("listed_by", listedby);
+          formData.append("super_builtup_area", builtuparea);
+          formData.append("carpet_area", carpetarea);
+          formData.append("maintenance", maintenance);
+          formData.append("total_rooms", totalrooms);
+          formData.append("floor_no", floorno);
+          formData.append("car_parking", carparking);
+          formData.append("price", price);
+          selectedImages.forEach((image, index) => {
+            formData.append(`images[${index}]`, {
+              uri: image.uri,
+              type: image.type,
+              name: image.fileName,
+            });
+          });
+
+          const category = data.filter(item => item.value === selectedCategory).map(i => i.label).toString();
+          formData.append("category", category);
+          formData.append("Street", street);
+          formData.append("address", address);
+          formData.append("city",city);
+          formData.append("state", state);
+          formData.append("pincode", pincode);
+
+          axios.post(`${Baseurl}api/property`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${token}`,
             }
           })
             .then((response) => {
               console.log("response of the api--->", response);
-              console.log('--------------------------------------------')
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+              setShowTokenModal(false);
+
             })
             .catch((error) => {
-              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
               console.error('Catch Error :---->', error.response);
-              console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+              console.log("error message--->", error.response.data.message)
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
             })
             .finally(() => {
               setLoading(false);
             });
         } else {
           console.log('Token not retrieved');
-          navigation.navigate('OtpScreen', { PropertyScreen: "PropertyScreen" });
+          setShowTokenModal(true);
         }
       })
       .catch((error) => {
@@ -150,36 +168,95 @@ const Property = () => {
   };
 
 
+  const [loadingotp, setLoadingotp] = useState(false);
+  const [loadingverifyotp, setLoadingverifyotp] = useState(false);
+  const [showTokenModal, setShowTokenModal] = useState(false);
+  const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
+  const [sss, setData] = useState(null);
 
-  // const PostAdApi = async (token) => {
-  //   console.log('Token in PostAdApi:', token);
+  const closeModal = () => {
+    setShowTokenModal(false);
+    setShowNestedModal(false);
+    setLoadingotp(false)
+    setLoadingverifyotp(false)
+  };
 
-  //   try {
-  //     setLoading(true);
-  //     const response = await axios.post(
-  //       `${Baseurl}}api/property`,
-  //       body,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`
-  //         }
-  //       }
-  //     );
+  const [mobile, setMobile] = useState('');
+  const [showNestedModal, setShowNestedModal] = useState(false);
+  const sendOtp = async () => {
+    try {
+      setLoadingotp(true);
+      const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
 
-  //     if (response.status === 200) {
-  //       console.log('Post Ad successful');
-  //     } else {
-  //       console.log('Error: Post Ad failed');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error in PostAdApi:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+      if (response.status !== 200) {
+        console.log('response data--->', response.data)
+      }
+
+      setData(response.data);
+      if (response.data.success === true) {
+        handleNestedModal();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoadingotp(false);
+    }
+  };
+
+  const closeNestedModal = () => {
+    setShowTokenModal(false);
+    setShowNestedModal(false);
+    setLoadingotp(false)
+    setLoadingverifyotp(false)
+  };
+
+  const handleNestedModal = () => {
+    setShowNestedModal(true);
+  };
 
 
+  const verifyOtp = async () => {
+    try {
+      setLoadingverifyotp(true);
+      const postData = {
+        mobile: parseInt(mobile),
+        otp: parseInt(verifyotpvalue),
+      };
+      console.log('postData---', postData);
 
+      const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('response data--->', response.data);
+      setData(response.data);
+      if (response.data.success == true) {
+        handleNavigation(response.data.token);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoadingverifyotp(false);
+    }
+  };
+
+
+  const handleNavigation = async (information) => {
+    console.log('information--->', information);
+    try {
+      await AsyncStorage.setItem("UserData", JSON.stringify(information));
+      setLoadingverifyotp(true);
+      setTimeout(() => {
+        setLoadingverifyotp(false);
+        setShowTokenModal(false);
+        setShowNestedModal(false);
+      }, 1000);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -202,8 +279,8 @@ const Property = () => {
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
-                placeholder="All Properties"
-                searchPlaceholder="Search..."
+                placeholder="Select Properties"
+                // searchPlaceholder="Search..."
                 value={selectedCategory}
                 onChange={item => {
                   setSelectedCategory(item.value);
@@ -397,7 +474,7 @@ const Property = () => {
                     }}
                     value={builtuparea}
                     onChangeText={built => setBuiltuparea(built)}
-                  // inputMode="numeric"
+                    inputMode="numeric"
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -413,7 +490,7 @@ const Property = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    // inputMode="numeric"
+                    inputMode="numeric"
                     value={carpetarea}
                     onChangeText={built => setCarpetarea(built)}
                   />
@@ -429,7 +506,7 @@ const Property = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    // inputMode="numeric"
+                    inputMode="numeric"
                     value={maintenance}
                     onChangeText={built => setMaintenance(built)}
                   />
@@ -461,7 +538,7 @@ const Property = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    // inputMode="numeric"
+                    inputMode="numeric"
                     value={floorno}
                     onChangeText={built => setFloorno(built)}
                   />
@@ -546,6 +623,87 @@ const Property = () => {
                   />
                   <Text style={{ fontSize: 12 }}>Mention the key features of your item (<Text>E.g brand,model,age,type</Text>)</Text>
                 </View>
+               
+                <View style={{ marginTop: 10 }}>
+                  <Text>Street</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={street}
+                    onChangeText={built => setStreet(built)}
+                  />
+                 </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>Address</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={address}
+                    onChangeText={built => setAddress(built)}
+                  />
+                 </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>City</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={city}
+                    onChangeText={built => setCity(built)}
+                  />
+                 </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>State</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    // inputMode="numeric"
+                    value={state}
+                    onChangeText={built => setstate(built)}
+                  />
+                 </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>Pincode</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    inputMode="numeric"
+                    value={pincode}
+                    onChangeText={built => setPincode(built)}
+                  />
+                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Description*</Text>
                   <TextInput
@@ -633,6 +791,148 @@ const Property = () => {
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showTokenModal}
+        onRequestClose={closeModal}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 10, width: '100%', height: '100%' }}>
+
+            <TouchableOpacity
+              onPress={closeModal}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}
+            >
+              <AntDesign name="close" size={30} />
+            </TouchableOpacity>
+
+            <View style={{ padding: 10 }}>
+              {/* <View style={{ marginTop: 10 }}>
+                <Text style={styles.header}>Welcome</Text>
+                <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
+              </View> */}
+              <View style={{ marginTop: 25 }}>
+                <Text style={style.title}>Enter Mobile Number</Text>
+              </View>
+              <View style={{ marginTop: 20 }}>
+                <TextInput
+                  placeholder='Enter here'
+                  placeholderTextColor='black'
+                  style={styles.textinput}
+                  inputMode="numeric"
+                  value={mobile}
+                  onChangeText={phone => setMobile(phone)}
+                />
+              </View>
+
+              <View style={{ marginTop: 20 }}>
+                <TouchableOpacity
+                  onPress={sendOtp}
+                  style={[styles.button, { opacity: loadingotp ? 0.5 : 1 }]}
+                  disabled={loadingotp}>
+                  {loadingotp ? (
+                    <ActivityIndicator size="small" color="white" />
+                  ) : (
+                    <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showNestedModal}
+        onRequestClose={closeNestedModal}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+          <View style={{ backgroundColor: 'white', padding: 10, width: '100%', height: '100%' }}>
+            <TouchableOpacity
+              onPress={closeModal}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+              }}
+            >
+              <AntDesign name="close" size={30} />
+            </TouchableOpacity>
+
+            <View style={{ padding: 20 }}>
+              <View>
+                <Text style={style.title}>
+                  We've sent your verification code to +91 {mobile}
+                </Text>
+              </View>
+
+              <View style={{ marginTop: 50 }}>
+                <TextInput
+                  placeholder='Enter Code'
+                  placeholderTextColor='black'
+                  style={style.inputfield}
+                  inputMode='numeric'
+                  value={verifyotpvalue}
+                  onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
+                />
+              </View>
+
+              <View style={{ marginTop: 20 }}>
+                <TouchableOpacity
+                  onPress={verifyOtp}
+                  style={[style.button, { opacity: loadingverifyotp ? 0.5 : 1 }]}
+                  disabled={loadingverifyotp}>
+                  {loadingverifyotp ? (
+                    <ActivityIndicator size="small" color="black" />
+                  ) : (
+                    <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Verify Otp</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ marginTop: 20 }}>
+                  <TouchableOpacity
+                    style={{
+                      borderRadius: 12,
+                      height: 60,
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{ textAlign: 'center', fontSize: 18, color: 'black' }}>
+                      Resend Code
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={{ marginTop: 20 }}>
+                  <TouchableOpacity
+                    style={{
+                      borderRadius: 12,
+                      height: 60,
+                      justifyContent: 'center',
+                    }}>
+                    <Text style={{ textAlign: 'center', fontSize: 18 }}>
+                      1:20 min left
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+
       <View style={{ marginTop: 0 }}>
         <TouchableOpacity
           style={{
@@ -661,3 +961,28 @@ const Property = () => {
 }
 
 export default Property;
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 36 * 1.33,
+    marginTop: 0,
+    fontWeight: "600",
+    color: "black"
+  },
+  title: {
+    fontSize: 16 * 1.33,
+    fontWeight: "300",
+    color: "black"
+  },
+  textinput: {
+    backgroundColor: 'lightgray',
+    borderRadius: 12,
+    height: 60,
+    paddingLeft: 20
+  },
+  button: {
+    backgroundColor: '#3184b6',
+    borderRadius: 12,
+    height: 60,
+    justifyContent: 'center'
+  }
+});

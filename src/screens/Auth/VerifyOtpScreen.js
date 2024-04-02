@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VerifyOtpScreen = ({ route }) => {
     const navigation = useNavigation();
-    const { mobile, PropertyScreen } = route.params;
+    const { mobile } = route.params;
     console.log('verifyscreen mobile ===', mobile);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,11 +22,8 @@ const VerifyOtpScreen = ({ route }) => {
             await AsyncStorage.setItem("UserData", JSON.stringify(information));
             setIsLoading(true);
             setTimeout(() => {
-                if (PropertyScreen) {
-                    navigation.navigate("Property");
-                } else {
-                    navigation.navigate("RootNavigator");
-                }
+
+                navigation.navigate("RootNavigator");
                 setIsLoading(false);
             }, 1000);
         } catch (error) {

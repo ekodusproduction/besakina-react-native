@@ -6,7 +6,6 @@ import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 
 const OtpScreen = ({ route }) => {
-    const { PropertyScreen } = route.params;
 
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
@@ -20,11 +19,8 @@ const OtpScreen = ({ route }) => {
     const handleNavigation = () => {
         setIsLoading(true);
         setTimeout(() => {
-            if (PropertyScreen) {
-                navigation.navigate("Property");
-            } else {
-                navigation.navigate("RootNavigator");
-            }
+
+            navigation.navigate("RootNavigator");
             setIsLoading(false);
         }, 1000);
     };
@@ -40,11 +36,8 @@ const OtpScreen = ({ route }) => {
 
             setData(response.data);
             if (response.data.success === true) {
-                if (PropertyScreen) {
-                    navigation.navigate("VerifyOtpScreen", { mobile, PropertyScreen });
-                } else {
-                    navigation.navigate("VerifyOtpScreen", { mobile });
-                }
+
+                navigation.navigate("VerifyOtpScreen", { mobile });
             }
         } catch (error) {
             console.error('Error:', error);

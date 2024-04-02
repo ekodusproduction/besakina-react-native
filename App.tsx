@@ -8,11 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import RootNavigator from './src/navigation/RootNavigator';
-
+ 
 const App = () => {
   const [isSplashScreenHidden, setIsSplashScreenHidden] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  
   useEffect(() => {
     LogBox.ignoreAllLogs();
     handleGetToken();
