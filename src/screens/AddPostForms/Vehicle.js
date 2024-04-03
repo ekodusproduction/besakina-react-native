@@ -123,7 +123,7 @@ const Vehicle = () => {
         
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/vehicles`, formData, {
+          axios.post(`${Baseurl}/api/vehicles/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -180,7 +180,7 @@ const Vehicle = () => {
   const sendOtp = async () => {
     try {
       setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
+      const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
       if (response.status !== 200) {
         console.log('response data--->', response.data)
@@ -219,7 +219,7 @@ const Vehicle = () => {
       };
       console.log('postData---', postData);
 
-      const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+      const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
         headers: {
           'Content-Type': 'application/json',
         },

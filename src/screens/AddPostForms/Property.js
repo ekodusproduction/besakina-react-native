@@ -125,7 +125,7 @@ const Property = () => {
           formData.append("house_no", houseno);
           formData.append("landmark", landmark);
 
-          axios.post(`${Baseurl}/api/property`, formData, {
+          axios.post(`${Baseurl}/api/property/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -186,7 +186,7 @@ const Property = () => {
   const sendOtp = async () => {
     try {
       setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
+      const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
       if (response.status !== 200) {
         console.log('response data--->', response.data)
@@ -224,7 +224,7 @@ const Property = () => {
       };
       console.log('postData---', postData);
 
-      const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+      const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
         headers: {
           'Content-Type': 'application/json',
         },

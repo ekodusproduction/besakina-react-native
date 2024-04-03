@@ -1,14 +1,14 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { SvgXml } from 'react-native-svg';
-import { Education, ServicesSVG,  health, property, vehicle } from '../../svg/svg';
+import { Education, Hospitality, ServicesSVG,  health, property, vehicle } from '../../svg/svg';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
 
 
 const array = [
   {
-    id: 1, filename: ServicesSVG, name: "Services"
+    id: 1, filename: Hospitality, name: "Hospitality"
   },
   {
     id: 2, filename: Education, name: "Education"

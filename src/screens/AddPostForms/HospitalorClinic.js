@@ -102,7 +102,7 @@ const HospitalorClinic = () => {
 
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/hospitals`, formData, {
+          axios.post(`${Baseurl}/api/hospitals/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -159,7 +159,7 @@ const HospitalorClinic = () => {
   const sendOtp = async () => {
     try {
       setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
+      const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
       if (response.status !== 200) {
         console.log('response data--->', response.data)
@@ -198,7 +198,7 @@ const HospitalorClinic = () => {
       };
       console.log('postData---', postData);
 
-      const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+      const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
         headers: {
           'Content-Type': 'application/json',
         },

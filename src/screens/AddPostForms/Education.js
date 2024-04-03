@@ -114,7 +114,7 @@ const Education = () => {
           formData.append("pincode", pincode);
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/education`, formData, {
+          axios.post(`${Baseurl}/api/education/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -163,7 +163,7 @@ const Education = () => {
   const sendOtp = async () => {
     try {
       setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}api/users/sendotp`, { mobile });
+      const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
       if (response.status !== 200) {
         console.log('response data--->', response.data)
@@ -202,7 +202,7 @@ const Education = () => {
       };
       console.log('postData---', postData);
 
-      const response = await axios.post(`${Baseurl}api/users/login`, postData, {
+      const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
         headers: {
           'Content-Type': 'application/json',
         },

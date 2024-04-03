@@ -162,7 +162,7 @@ const HomeScreen = () => {
         <View style={style.sliderContainer}>
           <SliderBox
             images={image}
-            dotStyle={{ height: 10, width: 30, borderRadius: 12 }}
+            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
             dotColor="#3184b6"
             inactiveDotColor="white"
             imageLoadingColor="white"
