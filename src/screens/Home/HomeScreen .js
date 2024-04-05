@@ -34,24 +34,10 @@ const HomeScreen = () => {
     <ScrollView style={{ flex: 1, marginBottom: 70 }} alwaysBounceVertical showsVerticalScrollIndicator={false} >
       <StatusBar
         animated={true}
-        backgroundColor="transparent"
+        backgroundColor=""
         translucent={false}
       />
-      {/* <Snackbar
-        message="This is a custom Snackbar"
-        actionText="Dismiss"
-        onActionPress={() => {
-          console.log('clicked snackbar')
-        }}
-        duration={10000}  
-        position="bottom"
-        backgroundColor="#2E67F8"
-        textColor="white"
-        actionTextColor="white"
-        containerStyle={{ marginHorizontal: 12 }}
-        messageStyle={{}}
-        actionTextStyle={{}}
-      /> */}
+
       <View style={{ flex: 1, padding: 10 }}>
         <View style={{ justifyContent: "center", alignItems: "center", height: 40 }}>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: "100%" }}>

@@ -27,7 +27,7 @@ const HealthCategory = ({ item }) => {
     console.log('data-----', data);
     const information = [
         { label: 'Doctors', value: '1' },
-        { label: 'Hospital and Clinic', value: '2' },
+        { label: 'Clinic', value: '2' },
     ];
 
     const handleWishlist = (id) => {
@@ -151,24 +151,7 @@ const HealthCategory = ({ item }) => {
                         </View>
 
 
-                        <View style={{ marginHorizontal: 10, marginTop: 10 }}>
-                            <Dropdown
-                                style={style.dropdown}
-                                placeholderStyle={style.placeholderStyle}
-                                selectedTextStyle={style.selectedTextStyle}
-                                inputSearchStyle={style.inputSearchStyle}
-                                iconStyle={style.iconStyle}
-                                data={information}
-                                maxHeight={300}
-                                labelField="label"
-                                valueField="value"
-                                placeholder="Select Health Services"
-                                value={selectedCategory}
-                                onChange={item => {
-                                    setSelectedCategory(item.value);
-                                }}
-                            />
-                        </View>
+
 
                         {selectedCategory == 1 ? <FlatList
                             data={data}
@@ -369,6 +352,28 @@ const HealthCategory = ({ item }) => {
                     </TouchableOpacity>
                 </View>
             </RBSheet>
+
+
+            <View style={{ position: 'relative', bottom: 0, width: '100%' }}>
+                <View style={{ marginHorizontal: 10 }}>
+                    <Dropdown
+                        style={style.dropdown}
+                        placeholderStyle={style.placeholderStyle}
+                        selectedTextStyle={style.selectedTextStyle}
+                        inputSearchStyle={style.inputSearchStyle}
+                        iconStyle={style.iconStyle}
+                        data={information}
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        placeholder="Select Health Services"
+                        value={selectedCategory}
+                        onChange={item => {
+                            setSelectedCategory(item.value);
+                        }}
+                    />
+                </View>
+            </View>
 
         </View>
     )

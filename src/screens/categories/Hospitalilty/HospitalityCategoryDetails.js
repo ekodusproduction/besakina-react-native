@@ -16,16 +16,18 @@ const HospitalityCategoryDetails = ({ route }) => {
     const [info, setInfo] = useState(null);
     console.log('info----', info)
     const [createdAtLabel, setCreatedAtLabel] = useState("");
-
+    let imageUrls = info && info?.images && info?.images.length > 0
+    ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+    : [];
+  
+   let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+  
     const headers = ['Property Type', '', '', `${info?.type}`];
     const rows = [
         ['Locality', '', '', `${info?.locality}`],
         ['Location', '', '', `${info?.city}`],
     ];
-    const image = [
-        require('../../../../assets/banner1.png'),
-        require('../../../../assets/banner2.png'),
-    ]
+     
 
     const fetchproductApibyid = (id) => {
         axios.get(`${Baseurl}/api/hospitality/id/${id}`)

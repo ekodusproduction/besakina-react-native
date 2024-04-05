@@ -16,7 +16,12 @@ const EducationCategoryDetails = ({ route }) => {
     const [info, setInfo] = useState(null);
     console.log('info----', info)
     const [createdAtLabel, setCreatedAtLabel] = useState("");
-
+    let imageUrls = info && info?.images && info?.images.length > 0
+    ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+    : [];
+  
+   let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+  
     const headers = ['Property Type', '', '', `${info?.type}`];
     const rows = [
         ['Institute Name', '', '', `${info?.institution_name}`],
@@ -25,10 +30,7 @@ const EducationCategoryDetails = ({ route }) => {
         ['Course Duration', '', '', `${info?.course_duration}years`],
         ['Price', '', '', `${info?.price}`],
     ];
-    const image = [
-        require('../../../../assets/banner1.png'),
-        require('../../../../assets/banner2.png'),
-    ]
+    
 
     const fetchproductApibyid = (id) => {
         axios.get(`${Baseurl}/api/education/id/${id}`)

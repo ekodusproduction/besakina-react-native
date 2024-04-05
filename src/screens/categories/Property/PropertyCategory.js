@@ -19,10 +19,13 @@ import { Baseurl } from '../../../constant/globalparams';
 const PropertyCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
     const [data, setData] = useState(null);
+    const [filtereddata, setFiltereddata] = useState(null);
     const screenWidth = Dimensions.get('window').width;
     const [refreshing, setRefreshing] = useState(false);
-
+    const [minbudget, setMinbudget] = useState('');
+    const [maxbudget, setMaxbudget] = useState('');
     console.log('data----->>>', data);
+    console.log('filtereddata----->>>', filtereddata);
 
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
@@ -61,9 +64,7 @@ const PropertyCategory = ({ item }) => {
         fetchproductApi();
     }, []);
 
-
     const getCreatedAtLabel = (created_at) => {
-        console.log('created_at-------', created_at)
         const currentDate = new Date();
         const createdDate = new Date(created_at);
 
@@ -85,9 +86,22 @@ const PropertyCategory = ({ item }) => {
         setRefreshing(true);
         fetchproductApi();
         setTimeout(() => {
-          setRefreshing(false);
-        }, 1000);  
-      };
+            setRefreshing(false);
+        }, 1000);
+    };
+
+    const handlebudget = () => {
+        axios.get(`${Baseurl}/api/property/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`)
+            .then(response => {
+                console.log('response --->>', response.data.data.advertisements);
+                setFiltereddata(response.data.data.advertisements);
+                refRBSheet.current.close();
+            })
+            .catch(error => {           
+                console.error('Error: ', error?.response);
+                navigation.navigate('Error404');
+            });
+    }
     return (
         <View >
             <Appbar.Header>
@@ -113,9 +127,9 @@ const PropertyCategory = ({ item }) => {
                 </TouchableOpacity>
             </Appbar.Header>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}  refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                              }>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }} refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
                 <View style={{ padding: 1 }}>
                     <View style={style.sliderContainer}>
                         <SliderBox
@@ -149,20 +163,17 @@ const PropertyCategory = ({ item }) => {
 
 
                         <FlatList
-                            data={data}
+                            data={filtereddata ? filtereddata : data}
                             horizontal={false}
                             numColumns={2}
                             showsVerticalScrollIndicator={false}
-                           
+
                             renderItem={({ item, index }) => {
                                 let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                console.log('imageurl---', imageurl)
                                 console.log('item ---', item);
-
-
                                 return (
                                     <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('PropertyCategoryDetails', { data: item })}>
-                                        <View style={{   borderWidth:0.5,borderTopLeftRadius: 12, borderTopRightRadius: 12,borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
                                             <Image
                                                 source={{ uri: imageurl }}
                                                 style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
@@ -258,6 +269,8 @@ const PropertyCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={minbudget}
+                            onChangeText={(min) => setMinbudget(min)}
                         />
                     </View>
                     <View>
@@ -275,6 +288,8 @@ const PropertyCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={maxbudget}
+                            onChangeText={(max) => setMaxbudget(max)}
                         />
                     </View>
                 </View>
@@ -288,6 +303,7 @@ const PropertyCategory = ({ item }) => {
                             borderColor: "gray",
                             borderWidth: 0.5
                         }}
+                        onPress={handlebudget}
                     >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
                     </TouchableOpacity>

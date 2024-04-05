@@ -27,6 +27,7 @@ import EducationCategoryDetails from '../screens/categories/Education/EducationC
 import VehicleCategoryDetails from '../screens/categories/Vehicle/VehicleCategoryDetails';
 import DoctorCategoryDetails from '../screens/categories/Health/DoctorCategoryDetails';
 import HospitalorClinicCategoryDetails from '../screens/categories/Health/HospitalorClinicCategoryDetails';
+import Error404 from '../Error404';
 
 const Stack = createNativeStackNavigator();
 
@@ -198,6 +199,21 @@ const RootNavigator = () => {
       <Stack.Screen
         name="CategoryDetails"
         component={CategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Error404"
+        component={Error404}
         options={{
           headerShown: false,
           headerStyle: {

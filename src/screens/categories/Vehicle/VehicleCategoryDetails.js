@@ -16,6 +16,12 @@ const VehicleCategoryDetails = ({ route }) => {
     const [info, setInfo] = useState(null);
     console.log('info----', info)
     const [createdAtLabel, setCreatedAtLabel] = useState("");
+    let imageUrls = info && info?.images && info?.images.length > 0
+    ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+    : [];
+  
+   let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+  
 
     const headers = ['Vehicle Type', '', '', `${info?.type}`];
     const rows = [
@@ -25,10 +31,7 @@ const VehicleCategoryDetails = ({ route }) => {
         ['Kilometer Driven', '', '', `${info?.kilometer_driven}`],
         ['Location', '', '', `${info?.city}`],
     ];
-    const image = [
-        require('../../../../assets/banner1.png'),
-        require('../../../../assets/banner2.png'),
-    ]
+
 
     const fetchproductApibyid = (id) => {
         axios.get(`${Baseurl}/api/vehicles/id/${id}`)
@@ -81,18 +84,17 @@ const VehicleCategoryDetails = ({ route }) => {
 
             <ScrollView style={{ marginBottom: 10 }}>
                 <View style={{ padding: 10 }}>
-                    <View style={style.sliderContainer}>
-                        <SliderBox
-                            images={image}
-                            dotColor="#3184b6"
-                            inactiveDotColor="white"
-                            imageLoadingColor="white"
-                            autoplay={true}
-                            circleLoop={true}
-                            resizeMode="contain"
-                            autoplayInterval={3000}
-                        />
-                    </View>
+                    <SliderBox
+                        images={image}
+                        dotColor="#3184b6"
+                        inactiveDotColor="white"
+                        imageLoadingColor="white"
+                        autoplay={true}
+                        circleLoop={true}
+                        resizeMode="contain"
+                        autoplayInterval={3000}
+                    />
+
                     <View>
                         <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
