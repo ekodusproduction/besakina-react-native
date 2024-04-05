@@ -21,6 +21,12 @@ import HospitalorClinic from '../screens/AddPostForms/HospitalorClinic';
 import Hospitality from '../screens/AddPostForms/Hospitality';
 import Mywishlist from '../screens/wishlist/Mywishlist';
 import Profile from '../screens/Profile/Profile';
+import PropertyCategoryDetails from '../screens/categories/Property/PropertyCategoryDetails';
+import HospitalityCategoryDetails from '../screens/categories/Hospitalilty/HospitalityCategoryDetails';
+import EducationCategoryDetails from '../screens/categories/Education/EducationCategoryDetails';
+import VehicleCategoryDetails from '../screens/categories/Vehicle/VehicleCategoryDetails';
+import DoctorCategoryDetails from '../screens/categories/Health/DoctorCategoryDetails';
+import HospitalorClinicCategoryDetails from '../screens/categories/Health/HospitalorClinicCategoryDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -72,6 +78,96 @@ const RootNavigator = () => {
       <Stack.Screen
         name="CategoryList"
         component={CategoryList}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="PropertyCategoryDetails"
+        component={PropertyCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="HospitalityCategoryDetails"
+        component={HospitalityCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="EducationCategoryDetails"
+        component={EducationCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="VehicleCategoryDetails"
+        component={VehicleCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="DoctorCategoryDetails"
+        component={DoctorCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="HospitalorClinicCategoryDetails"
+        component={HospitalorClinicCategoryDetails}
         options={{
           headerShown: false,
           headerStyle: {

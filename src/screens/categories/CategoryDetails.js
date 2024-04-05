@@ -13,11 +13,11 @@ import { SvgXml } from 'react-native-svg';
 import { location } from '../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import HomeScreen from '../Home/HomeScreen ';
-import EducationCategoryDetails from './EducationCategoryDetails';
-import PropertyCategoryDetails from './PropertyCategoryDetails';
-import VehicleCategoryDetails from './VehicleCategoryDetails';
-import HospitalityCategoryDetails from './HospitalityCategoryDetails';
-import HealthCategoryDetails from './HealthCategoryDetails';
+import EducationCategory from './Education/EducationCategory';
+import PropertyCategory from './Property/PropertyCategory';
+import VehicleCategory from './Vehicle/VehicleCategory';
+import HospitalityCategory from './Hospitalilty/HospitalityCategory';
+import HealthCategory from './Health/HealthCategory';
 
 const CategoryDetails = ({ route }) => {
     const data = route.params;
@@ -33,15 +33,15 @@ const CategoryDetails = ({ route }) => {
     return (
         <View style={style.container}>
             {data.item.name === 'Education' ? (
-                <EducationCategoryDetails item={data.item} />
+                <EducationCategory item={data.item} />
             ) : data.item.name === 'Health' ? (
-                <HealthCategoryDetails item={data.item} />
+                <HealthCategory item={data.item} />
             ) : data.item.name === 'Property' ? (
-                <PropertyCategoryDetails item={data.item} />
+                <PropertyCategory item={data.item} />
             ) : data.item.name === 'Hospitality' ? (
-                <HospitalityCategoryDetails item={data.item} />
+                <HospitalityCategory item={data.item} />
             ) : data.item.name === 'Vehicle' ? (
-                <VehicleCategoryDetails item={data.item} />
+                <VehicleCategory item={data.item} />
             ) : data.item.name === 'AnotherCategory' ? (
                 <Text>This is Another Category</Text>
             ) : (

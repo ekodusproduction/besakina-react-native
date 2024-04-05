@@ -22,10 +22,10 @@ const App = () => {
 
   useLayoutEffect(() => {
     if (isVideoLoaded) {
-      setTimeout(() => {
+      setInterval(() => {
         SplashScreen.hide();
-        setIsSplashScreenHidden(true); 
-      }, 2200);  
+        setIsSplashScreenHidden(true);
+      }, 1000/2);
     }
   }, [isVideoLoaded]);
 
@@ -49,29 +49,29 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <View style={{ flex: 1 }}>
-          {isSplashScreenHidden ? (
-            <>
-              {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
-            </>
-          ) : (
-            <View style={{ flex: 1 }}>
-              {!isVideoLoaded && <ActivityIndicator size="large" color="red"/>}
-              <Video
-                source={require('./assets/BKtrial.mp4')}
-                style={{ width: '100%', height: '100%', display: isVideoLoaded ? 'flex' : 'none' }}
-                resizeMode="cover"
-                repeat
-                muted
-                controls={false}
-                onLoad={onVideoLoad}
-                onEnd={onVideoEnd}
-              />
-            </View>
-          )}
-        </View>
-      </NavigationContainer>
+
+      <View style={{ flex: 1 }}>
+        {isSplashScreenHidden ? (
+          <NavigationContainer>
+            {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
+          </NavigationContainer>
+        ) : (
+          <View style={{ flex: 1 }}>
+            {!isVideoLoaded && <ActivityIndicator size="small" color="red" />}
+            <Video
+              source={require('./assets/Bksplashscreen.mp4')}
+              style={{ width: '100%', height: '100%', display: isVideoLoaded ? 'flex' : 'none' }}
+              resizeMode="cover"
+              repeat
+              muted
+              controls={false}
+              onLoad={onVideoLoad}
+              onEnd={onVideoEnd}
+            />
+          </View>
+        )}
+      </View>
+
     </Provider>
   );
 };

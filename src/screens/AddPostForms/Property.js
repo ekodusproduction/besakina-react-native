@@ -105,6 +105,7 @@ const Property = () => {
           formData.append("carpet_area", carpetarea);
           formData.append("maintenance", maintenance);
           formData.append("total_rooms", totalrooms);
+          formData.append("description", description);
           formData.append("floor_no", floorno);
           formData.append("car_parking", carparking);
           formData.append("price", price);

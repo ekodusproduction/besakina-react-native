@@ -27,13 +27,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         borderBottomWidth: 0,
         borderBottomColor: '',
-        paddingVertical: 10,
-        justifyContent: "space-between"
+        paddingVertical: 5,
+        justifyContent: "space-between",
     },
     cell: {
-        flex: 1,
-        textAlign: '',
-        justifyContent: "space-between"
+        textAlign: 'center',
+        justifyContent: "space-between",
     },
 });
 

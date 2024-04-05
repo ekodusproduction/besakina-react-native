@@ -1,27 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Appbar, Card } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import style from '../../style';
-import FeaturedAds from '../FeaturedAds/FeaturedAds';
-import AllAds from '../AllAds/AllAds';
+import style from '../../../style';
+import FeaturedAds from '../../FeaturedAds/FeaturedAds';
+import AllAds from '../../AllAds/AllAds';
 import { SliderBox } from "react-native-image-slider-box";
 import { SvgXml } from 'react-native-svg';
-import { location } from '../../svg/svg';
+import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
-import { Baseurl } from '../../constant/globalparams';
+import { Baseurl } from '../../../constant/globalparams';
 
 
-const HospitalityCategoryDetails = ({ item }) => {
+const PropertyCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
     const [data, setData] = useState(null);
     const screenWidth = Dimensions.get('window').width;
+    const [refreshing, setRefreshing] = useState(false);
 
-    console.log('data-----', data)
+    console.log('data----->>>', data);
+
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
         const index = updatedWishlist.indexOf(id);
@@ -37,16 +39,16 @@ const HospitalityCategoryDetails = ({ item }) => {
         return wishlist.includes(id);
     }
     const image = [
-        require('../../../assets/banner1.png'),
-        require('../../../assets/banner2.png'),
+        require('../../../../assets/banner1.png'),
+        require('../../../../assets/banner2.png'),
     ];
     const navigation = useNavigation();
     const refRBSheet = useRef();
 
     const fetchproductApi = () => {
-        axios.get(`${Baseurl}/api/hospitality/list`)
+        axios.get(`${Baseurl}/api/property/list`)
             .then(response => {
-                console.log('response ---', response.data);
+                console.log('response --->>', response);
                 setData(response.data.data.advertisements);
             })
             .catch(error => {
@@ -57,13 +59,40 @@ const HospitalityCategoryDetails = ({ item }) => {
 
     useEffect(() => {
         fetchproductApi();
-    }, [])
+    }, []);
 
+
+    const getCreatedAtLabel = (created_at) => {
+        console.log('created_at-------', created_at)
+        const currentDate = new Date();
+        const createdDate = new Date(created_at);
+
+        const diffTime = Math.abs(currentDate - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays === 1) {
+            return "Today";
+        } else if (diffDays === 2) {
+            return "Yesterday";
+        } else if (diffDays <= 7) {
+            return `${diffDays} days ago`;
+        } else {
+            return created_at;
+        }
+    };
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetchproductApi();
+        setTimeout(() => {
+          setRefreshing(false);
+        }, 1000);  
+      };
     return (
         <View >
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-                <Appbar.Content title='Hospitality' />
+                <Appbar.Content title='Property' />
                 <TouchableOpacity onPress={() => { }} style={{ bottom: 10, marginRight: 5 }} >
                     <View style={{
                         flexDirection: 'row',
@@ -78,13 +107,15 @@ const HospitalityCategoryDetails = ({ item }) => {
                             width="15px"
                             height="15px"
                         />
-                        <Text style={{ fontSize: 14, fontWeight: "500" }}>Guwahati</Text>
+                        <Text style={style.subsubtitle}>Guwahati</Text>
                         <AntDesign name="caretdown" size={12} />
                     </View>
                 </TouchableOpacity>
             </Appbar.Header>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}  refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                              }>
                 <View style={{ padding: 1 }}>
                     <View style={style.sliderContainer}>
                         <SliderBox
@@ -121,15 +152,17 @@ const HospitalityCategoryDetails = ({ item }) => {
                             data={data}
                             horizontal={false}
                             numColumns={2}
-                            contentContainerStyle={{ alignItems: 'center' }}
                             showsVerticalScrollIndicator={false}
+                           
                             renderItem={({ item, index }) => {
                                 let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                console.log('item ---', item)
+                                console.log('imageurl---', imageurl)
+                                console.log('item ---', item);
+
 
                                 return (
-                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5 }} onPress={() => navigation.navigate('AllAdsDetails')}>
-                                        <Card style={{ borderRadius: 12, }}>
+                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('PropertyCategoryDetails', { data: item })}>
+                                        <View style={{   borderWidth:0.5,borderTopLeftRadius: 12, borderTopRightRadius: 12,borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
                                             <Image
                                                 source={{ uri: imageurl }}
                                                 style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
@@ -162,18 +195,20 @@ const HospitalityCategoryDetails = ({ item }) => {
                                                     />
                                                     <Text>{item.city}</Text>
                                                 </View>
-                                                <Text>Today</Text>
+                                                <Text>{getCreatedAtLabel(item.created_at)}</Text>
                                             </View>
-                                        </Card>
+                                        </View>
                                     </TouchableOpacity>
                                 )
                             }}
-                            keyExtractor={(item, index) => item.id}
+                            keyExtractor={(item, index) => index.toString()}
                         />
                     </View>
                 </View>
-            </ScrollView>
 
+
+
+            </ScrollView>
 
             <RBSheet
                 ref={refRBSheet}
@@ -203,7 +238,7 @@ const HospitalityCategoryDetails = ({ item }) => {
                     enabled: false,
                 }}
             >
-                <View style={{ flex: 1,  padding: 20 }}>
+                <View style={{ flex: 1, padding: 20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={[style.subtitle, { textAlign: "left", }]}>Budget</Text>
                         <Entypo name="cross" size={30} onPress={() => refRBSheet.current.close()} />
@@ -259,9 +294,8 @@ const HospitalityCategoryDetails = ({ item }) => {
                 </View>
             </RBSheet>
 
-
         </View>
     )
 }
 
-export default HospitalityCategoryDetails
+export default PropertyCategory

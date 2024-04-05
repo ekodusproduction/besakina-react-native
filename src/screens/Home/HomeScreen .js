@@ -34,7 +34,7 @@ const HomeScreen = () => {
     <ScrollView style={{ flex: 1, marginBottom: 70 }} alwaysBounceVertical showsVerticalScrollIndicator={false} >
       <StatusBar
         animated={true}
-        backgroundColor=""
+        backgroundColor="transparent"
         translucent={false}
       />
       {/* <Snackbar

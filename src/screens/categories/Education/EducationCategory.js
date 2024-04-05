@@ -1,25 +1,26 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Dimensions, RefreshControl } from 'react-native';
 import { Appbar, Card } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import style from '../../style';
-import FeaturedAds from '../FeaturedAds/FeaturedAds';
-import AllAds from '../AllAds/AllAds';
+import style from '../../../style';
+import FeaturedAds from '../../FeaturedAds/FeaturedAds';
+import AllAds from '../../AllAds/AllAds';
 import { SliderBox } from "react-native-image-slider-box";
 import { SvgXml } from 'react-native-svg';
-import { location } from '../../svg/svg';
+import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
-import { Baseurl } from '../../constant/globalparams';
+import { Baseurl } from '../../../constant/globalparams';
 
 
-const EducationCategoryDetails = ({ item }) => {
+const EducationCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
     const [data, setData] = useState(null);
     const screenWidth = Dimensions.get('window').width;
+    const [refreshing, setRefreshing] = useState(false);
 
     console.log('data0-----', data)
     const handleWishlist = (id) => {
@@ -37,8 +38,8 @@ const EducationCategoryDetails = ({ item }) => {
         return wishlist.includes(id);
     }
     const image = [
-        require('../../../assets/banner1.png'),
-        require('../../../assets/banner2.png'),
+        require('../../../../assets/banner1.png'),
+        require('../../../../assets/banner2.png'),
     ];
     const navigation = useNavigation();
     const refRBSheet = useRef();
@@ -59,6 +60,15 @@ const EducationCategoryDetails = ({ item }) => {
         fetchproductApi();
     }, [])
 
+    
+    const onRefresh = () => {
+        setRefreshing(true);
+        fetchproductApi();
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    };
+
     return (
         <View >
             <Appbar.Header>
@@ -78,14 +88,16 @@ const EducationCategoryDetails = ({ item }) => {
                             width="15px"
                             height="15px"
                         />
-                        <Text style={{ fontSize: 14, fontWeight: "500" }}>Guwahati</Text>
+                        <Text style={style.subsubtitle}>Guwahati</Text>
                         <AntDesign name="caretdown" size={12} />
                     </View>
                 </TouchableOpacity>
             </Appbar.Header>
 
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}  refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                              }>
                 <View style={{ padding: 1 }}>
                     <View style={style.sliderContainer}>
                         <SliderBox
@@ -128,8 +140,8 @@ const EducationCategoryDetails = ({ item }) => {
                                 console.log('item ---', item)
 
                                 return (
-                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5 }} onPress={() => navigation.navigate('AllAdsDetails')}>
-                                        <Card style={{ borderRadius: 12, }}>
+                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('EducationCategoryDetails', { data: item })}>
+                                        <View style={{   borderWidth:0.5,borderTopLeftRadius: 12, borderTopRightRadius: 12,borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
                                             <Image
                                                 source={{ uri: imageurl }}
                                                 style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
@@ -164,7 +176,7 @@ const EducationCategoryDetails = ({ item }) => {
                                                 </View>
                                                 <Text>Today</Text>
                                             </View>
-                                        </Card>
+                                        </View>
                                     </TouchableOpacity>
                                 )
                             }}
@@ -261,4 +273,4 @@ const EducationCategoryDetails = ({ item }) => {
     )
 }
 
-export default EducationCategoryDetails
+export default EducationCategory
