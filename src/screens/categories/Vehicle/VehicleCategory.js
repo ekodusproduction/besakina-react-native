@@ -14,14 +14,26 @@ import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import { Baseurl } from '../../../constant/globalparams';
-
+import { useIsFocused } from '@react-navigation/native';
 
 const VehicleCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
     const [data, setData] = useState(null);
-    console.log('data-----', data)
+    const [filtereddata, setFiltereddata] = useState(null);
     const screenWidth = Dimensions.get('window').width;
     const [refreshing, setRefreshing] = useState(false);
+    const [minbudget, setMinbudget] = useState('');
+    const [maxbudget, setMaxbudget] = useState('');
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    console.log('data----->>>', data);
+    console.log('filtereddata----->>>', filtereddata);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused && isSheetOpen) {
+            refRBSheet.current.open();
+        }
+    }, [isFocused, isSheetOpen]);
 
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
@@ -64,10 +76,22 @@ const VehicleCategory = ({ item }) => {
         setRefreshing(true);
         fetchproductApi();
         setTimeout(() => {
-          setRefreshing(false);
-        }, 1000);  
-      };
-      
+            setRefreshing(false);
+        }, 1000);
+    };
+
+    const handlebudget = () => {
+        axios.get(`${Baseurl}/api/vehicles/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`)
+            .then(response => {
+                console.log('response --->>', response.data.data.advertisements);
+                setFiltereddata(response.data.data.advertisements);
+                refRBSheet.current.close();
+            })
+            .catch(error => {
+                console.error('Error: ', error?.response);
+                navigation.navigate('Error404');
+            });
+    }
     return (
         <View >
             <Appbar.Header>
@@ -93,98 +117,98 @@ const VehicleCategory = ({ item }) => {
                 </TouchableOpacity>
             </Appbar.Header>
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}  refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                              }>
-           <View style={{ padding: 1 }}>
-                <View style={style.sliderContainer}>
-                    <SliderBox
-                        images={image}
-                        dotColor="#3184b6"
-                        inactiveDotColor="white"
-                        imageLoadingColor="white"
-                        autoplay={true}
-                        circleLoop={true}
-                        resizeMode="contain"
-                        autoplayInterval={3000}
-                    />
-                </View>
-
-                <View style={{ marginTop: 15, }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
-                        <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                            <View style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Featured Ads</Text>
-                            </View>
-                            <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Verified</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity onPress={() => refRBSheet.current.open()} style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                            <AntDesign name='filter' style={{ color: '#3184b6', marginRight: 5 }} />
-                            <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Budget</Text>
-                        </TouchableOpacity>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }} refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+                <View style={{ padding: 1 }}>
+                    <View style={style.sliderContainer}>
+                        <SliderBox
+                            images={image}
+                            dotColor="#3184b6"
+                            inactiveDotColor="white"
+                            imageLoadingColor="white"
+                            autoplay={true}
+                            circleLoop={true}
+                            resizeMode="contain"
+                            autoplayInterval={3000}
+                        />
                     </View>
 
+                    <View style={{ marginTop: 15, }}>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
+                            <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
+                                <View style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
+                                    <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Featured Ads</Text>
+                                </View>
+                                <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
+                                    <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                    <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Verified</Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity onPress={() => refRBSheet.current.open()} style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
+                                <AntDesign name='filter' style={{ color: '#3184b6', marginRight: 5 }} />
+                                <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Budget</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    <FlatList
-                        data={data}
-                        horizontal={false}
-                        numColumns={2}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({ item, index }) => {
-                            let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                            console.log('item ---',item)
- 
-                            return (
-                                <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('VehicleCategoryDetails', { data: item })}>
-                                <View style={{   borderWidth:0.5,borderTopLeftRadius: 12, borderTopRightRadius: 12,borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-                                        <Image
-                                            source={{ uri: imageurl }}
-                                            style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                        />
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                            <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                                <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+
+                        <FlatList
+                            data={filtereddata ? filtereddata : data}
+                            horizontal={false}
+                            numColumns={2}
+                            showsVerticalScrollIndicator={false}
+                            renderItem={({ item, index }) => {
+                                let imageurl = `${Baseurl}/api/${item.images[0]}`;
+                                console.log('item ---', item)
+
+                                return (
+                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('VehicleCategoryDetails', { data: item })}>
+                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+                                            <Image
+                                                source={{ uri: imageurl }}
+                                                style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                                            />
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
+                                                <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                    <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                                    <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                                                </View>
+                                                <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                    {isWishlisted(index) ?
+                                                        <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                                        :
+                                                        <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                                </TouchableOpacity>
                                             </View>
-                                            <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                {isWishlisted(index) ?
-                                                    <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                                    :
-                                                    <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
-                                            </TouchableOpacity>
-                                        </View>
 
-                                        <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                            <Text style={style.subsubtitle}>$ {item.price}</Text>
-                                            <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
-                                        </View>
-
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <SvgXml
-                                                    xml={location}
-                                                    width="15px"
-                                                    height="15px"
-                                                    style={{ marginTop: 3, marginRight: 5 }}
-                                                />
-                                                <Text>{item.city}</Text>
+                                            <View style={{ marginTop: 10, marginLeft: 10 }}>
+                                                <Text style={style.subsubtitle}>$ {item.price}</Text>
+                                                <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
                                             </View>
-                                            <Text>Today</Text>
+
+                                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
+                                                <View style={{ flexDirection: "row" }}>
+                                                    <SvgXml
+                                                        xml={location}
+                                                        width="15px"
+                                                        height="15px"
+                                                        style={{ marginTop: 3, marginRight: 5 }}
+                                                    />
+                                                    <Text>{item.city}</Text>
+                                                </View>
+                                                <Text>Today</Text>
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }}
-                        keyExtractor={(item, index) => item.id}
-                    />
+                                    </TouchableOpacity>
+                                )
+                            }}
+                            keyExtractor={(item, index) => item.id}
+                        />
+                    </View>
                 </View>
-            </View>
-           </ScrollView>
+            </ScrollView>
 
-           <RBSheet
+            <RBSheet
                 ref={refRBSheet}
                 useNativeDriver={false}
                 draggable={true}
@@ -212,7 +236,7 @@ const VehicleCategory = ({ item }) => {
                     enabled: false,
                 }}
             >
-                <View style={{ flex: 1,  padding: 20 }}>
+                <View style={{ flex: 1, padding: 20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={[style.subtitle, { textAlign: "left", }]}>Budget</Text>
                         <Entypo name="cross" size={30} onPress={() => refRBSheet.current.close()} />
@@ -232,6 +256,9 @@ const VehicleCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={minbudget}
+                            onChangeText={(min) => setMinbudget(min)}
+
                         />
                     </View>
                     <View>
@@ -249,6 +276,9 @@ const VehicleCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={maxbudget}
+                            onChangeText={(max) => setMaxbudget(max)}
+
                         />
                     </View>
                 </View>
@@ -262,6 +292,7 @@ const VehicleCategory = ({ item }) => {
                             borderColor: "gray",
                             borderWidth: 0.5
                         }}
+                        onPress={handlebudget}
                     >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
                     </TouchableOpacity>

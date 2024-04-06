@@ -82,7 +82,7 @@ const AllAds = (props) => {
                     return (
                         <TouchableRipple style={{ flex: 1, margin: 5, width: '50%' }}
                             onPress={() =>
-                                item.category == "Education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
+                                item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
                                     item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
                                         item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
                                             item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) : 

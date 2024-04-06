@@ -14,7 +14,7 @@ import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import { Baseurl } from '../../../constant/globalparams';
-
+import {  useIsFocused } from '@react-navigation/native';
 
 const PropertyCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
@@ -26,6 +26,14 @@ const PropertyCategory = ({ item }) => {
     const [maxbudget, setMaxbudget] = useState('');
     console.log('data----->>>', data);
     console.log('filtereddata----->>>', filtereddata);
+
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+         if (isFocused && isSheetOpen) {
+            refRBSheet.current.open();
+        }
+    }, [isFocused, isSheetOpen]);
 
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];

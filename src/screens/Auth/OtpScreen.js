@@ -11,10 +11,8 @@ const OtpScreen = ({ route }) => {
     const [loading, setLoading] = useState(false);
     const [mobile, setMobile] = useState('');
     const [data, setData] = useState(null);
-    const [otp, setOtp] = useState(null);
-    console.log('data===>', data);
-    console.log('otp===>', otp);
     const [isLoading, setIsLoading] = useState(false);
+    console.log('data===>', data);
 
     const handleNavigation = () => {
         setIsLoading(true);
@@ -36,8 +34,7 @@ const OtpScreen = ({ route }) => {
 
             setData(response.data);
             if (response.data.success === true) {
-
-                navigation.navigate("VerifyOtpScreen", { mobile });
+                 navigation.navigate("VerifyOtpScreen", { mobile, otp: response.data.data.otp });
             }
         } catch (error) {
             console.error('Error:', error);

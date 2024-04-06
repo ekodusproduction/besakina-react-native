@@ -14,6 +14,7 @@ import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import { Baseurl } from '../../../constant/globalparams';
+import {  useIsFocused } from '@react-navigation/native';
 
 
 const HospitalityCategory = ({ item }) => {
@@ -21,8 +22,21 @@ const HospitalityCategory = ({ item }) => {
     const [data, setData] = useState(null);
     const screenWidth = Dimensions.get('window').width;
     const [refreshing, setRefreshing] = useState(false);
+    const [filtereddata, setFiltereddata] = useState(null);
+    const [minbudget, setMinbudget] = useState('');
+    const [maxbudget, setMaxbudget] = useState('');
+    console.log('data----->>>', data);
+    console.log('filtereddata----->>>', filtereddata);
+    console.log('data-----', data);
 
-    console.log('data-----', data)
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+         if (isFocused && isSheetOpen) {
+            refRBSheet.current.open();
+        }
+    }, [isFocused, isSheetOpen]);
+
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
         const index = updatedWishlist.indexOf(id);
@@ -87,7 +101,18 @@ const HospitalityCategory = ({ item }) => {
         }, 1000);
     };
 
-
+    const handlebudget = () => {
+        axios.get(`${Baseurl}/api/hospitality/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`)
+            .then(response => {
+                console.log('response --->>', response.data.data.advertisements);
+                setFiltereddata(response.data.data.advertisements);
+                refRBSheet.current.close();
+            })
+            .catch(error => {
+                console.error('Error: ', error?.response);
+                navigation.navigate('Error404');
+            });
+    }
     return (
         <View >
             <Appbar.Header>
@@ -255,6 +280,9 @@ const HospitalityCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={minbudget}
+                            onChangeText={(min) => setMinbudget(min)}
+
                         />
                     </View>
                     <View>
@@ -272,6 +300,9 @@ const HospitalityCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={maxbudget}
+                            onChangeText={(max) => setMaxbudget(max)}
+
                         />
                     </View>
                 </View>
@@ -285,6 +316,8 @@ const HospitalityCategory = ({ item }) => {
                             borderColor: "gray",
                             borderWidth: 0.5
                         }}
+                        onPress={handlebudget}
+
                     >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
                     </TouchableOpacity>

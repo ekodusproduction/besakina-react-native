@@ -1,5 +1,5 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import style from '../../style';
 import { useNavigation } from '@react-navigation/native';
@@ -8,24 +8,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const VerifyOtpScreen = ({ route }) => {
     const navigation = useNavigation();
-    const { mobile } = route.params;
-    console.log('verifyscreen mobile ===', mobile);
-    const [data, setData] = useState(null);
+    const { mobile, otp } = route.params;
+
+    const [verifyotpvalue, setVerifyOtpvalue] = useState(otp.toString());
     const [loading, setLoading] = useState(false);
-    const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
-    console.log('verifyotpvalue---', verifyotpvalue);
-    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        console.log('otp----', otp);
+        setVerifyOtpvalue(otp.toString());
+    }, [otp]);
 
     const handleNavigation = async (information) => {
-        console.log('information--->', information);
         try {
             await AsyncStorage.setItem("UserData", JSON.stringify(information));
-            setIsLoading(true);
-            setTimeout(() => {
-
-                navigation.navigate("RootNavigator");
-                setIsLoading(false);
-            }, 1000);
+            navigation.navigate("RootNavigator");
         } catch (error) {
             console.error('Error:', error);
         }
@@ -38,7 +34,6 @@ const VerifyOtpScreen = ({ route }) => {
                 mobile: parseInt(mobile),
                 otp: parseInt(verifyotpvalue),
             };
-            console.log('postData---', postData);
 
             const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
                 headers: {
@@ -46,10 +41,10 @@ const VerifyOtpScreen = ({ route }) => {
                 },
             });
 
-            console.log('response data--->', response.data);
-            setData(response.data);
-            if (response.data.success == true) {
+            if (response.data.success === true) {
                 handleNavigation(response.data.token);
+            } else {
+                console.log('Verification failed');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -73,7 +68,7 @@ const VerifyOtpScreen = ({ route }) => {
                     style={style.inputfield}
                     inputMode='numeric'
                     value={verifyotpvalue}
-                    onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
+                    onChangeText={setVerifyOtpvalue}
                 />
             </View>
 
@@ -82,8 +77,8 @@ const VerifyOtpScreen = ({ route }) => {
                     onPress={verifyOtp}
                     style={[style.button, { opacity: loading ? 0.5 : 1 }]}
                     disabled={loading}>
-                    {isLoading ? (
-                        <ActivityIndicator size="small" color="black" />
+                    {loading ? (
+                        <ActivityIndicator size="small" color="white" />
                     ) : (
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Verify Otp</Text>
                     )}

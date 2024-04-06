@@ -195,6 +195,8 @@ const Property = () => {
 
       setData(response.data);
       if (response.data.success === true) {
+        let newotp=response.data.data.otp
+        setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
     } catch (error) {
@@ -897,7 +899,7 @@ const Property = () => {
 
               <View style={{ marginTop: 50 }}>
                 <TextInput
-                  placeholder='Enter Code'
+                  // placeholder='Enter Code'
                   placeholderTextColor='black'
                   style={style.inputfield}
                   inputMode='numeric'

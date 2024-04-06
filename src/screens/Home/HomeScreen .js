@@ -1,5 +1,5 @@
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar, RefreshControl } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { SvgXml } from 'react-native-svg';
@@ -21,22 +21,28 @@ const HomeScreen = () => {
     require('../../../assets/banner2.png'),
     // require('../../../assets/banner.png'),
   ]
-  // useEffect(() => {
-  //   someAsyncFunction();
-  // }, []);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // const someAsyncFunction = async () => {
-  //   let data = await handleGetToken();
-  //   console.log('data--->', data);
-  // }
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
 
   return (
-    <ScrollView style={{ flex: 1, marginBottom: 70 }} alwaysBounceVertical showsVerticalScrollIndicator={false} >
-      <StatusBar
-        animated={true}
-        backgroundColor=""
-        translucent={false}
-      />
+    <ScrollView
+      style={{ flex: 1, marginBottom: 70 }}
+      alwaysBounceVertical
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+    >
+      <StatusBar animated={true} backgroundColor="" translucent={false} />
 
       <View style={{ flex: 1, padding: 10 }}>
         <View style={{ justifyContent: "center", alignItems: "center", height: 40 }}>
@@ -92,7 +98,7 @@ const HomeScreen = () => {
 
           <FlatList
             data={[
-              
+
               {
                 id: 1, filename: Education, name: "Education"
               },

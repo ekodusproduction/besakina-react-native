@@ -14,6 +14,7 @@ import { location } from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import { Baseurl } from '../../../constant/globalparams';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const EducationCategory = ({ item }) => {
@@ -21,6 +22,20 @@ const EducationCategory = ({ item }) => {
     const [data, setData] = useState(null);
     const screenWidth = Dimensions.get('window').width;
     const [refreshing, setRefreshing] = useState(false);
+    const [filtereddata, setFiltereddata] = useState(null);
+    const [minbudget, setMinbudget] = useState('');
+    const [maxbudget, setMaxbudget] = useState('');
+    console.log('data----->>>', data);
+    console.log('filtereddata----->>>', filtereddata);
+    console.log('data-----', data);
+
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused && isSheetOpen) {
+            refRBSheet.current.open();
+        }
+    }, [isFocused, isSheetOpen]);
 
     console.log('data0-----', data)
     const handleWishlist = (id) => {
@@ -60,7 +75,7 @@ const EducationCategory = ({ item }) => {
         fetchproductApi();
     }, [])
 
-    
+
     const onRefresh = () => {
         setRefreshing(true);
         fetchproductApi();
@@ -69,6 +84,37 @@ const EducationCategory = ({ item }) => {
         }, 1000);
     };
 
+    const getCreatedAtLabel = (created_at) => {
+        console.log('created_at-------', created_at)
+        const currentDate = new Date();
+        const createdDate = new Date(created_at);
+
+        const diffTime = Math.abs(currentDate - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        console.log('diffDays ----', diffDays)
+        if (diffDays === 1) {
+            return "Today";
+        } else if (diffDays === 2) {
+            return "Yesterday";
+        } else if (diffDays <= 7) {
+            return `${diffDays} days ago`;
+        } else {
+            return created_at;
+        }
+    };
+
+    const handlebudget = () => {
+        axios.get(`${Baseurl}/api/education/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`)
+            .then(response => {
+                console.log('response --->>', response.data.data.advertisements);
+                setFiltereddata(response.data.data.advertisements);
+                refRBSheet.current.close();
+            })
+            .catch(error => {
+                console.error('Error: ', error?.response);
+                navigation.navigate('Error404');
+            });
+    }
     return (
         <View >
             <Appbar.Header>
@@ -95,9 +141,9 @@ const EducationCategory = ({ item }) => {
             </Appbar.Header>
 
 
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}  refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                              }>
+            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }} refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
                 <View style={{ padding: 1 }}>
                     <View style={style.sliderContainer}>
                         <SliderBox
@@ -141,7 +187,7 @@ const EducationCategory = ({ item }) => {
 
                                 return (
                                     <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('EducationCategoryDetails', { data: item })}>
-                                        <View style={{   borderWidth:0.5,borderTopLeftRadius: 12, borderTopRightRadius: 12,borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
                                             <Image
                                                 source={{ uri: imageurl }}
                                                 style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
@@ -174,7 +220,7 @@ const EducationCategory = ({ item }) => {
                                                     />
                                                     <Text>{item.city}</Text>
                                                 </View>
-                                                <Text>Today</Text>
+                                                <Text>{getCreatedAtLabel(item.created_at)}</Text>
                                             </View>
                                         </View>
                                     </TouchableOpacity>
@@ -214,7 +260,7 @@ const EducationCategory = ({ item }) => {
                     enabled: false,
                 }}
             >
-                <View style={{ flex: 1,  padding: 20 }}>
+                <View style={{ flex: 1, padding: 20 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={[style.subtitle, { textAlign: "left", }]}>Budget</Text>
                         <Entypo name="cross" size={30} onPress={() => refRBSheet.current.close()} />
@@ -234,6 +280,9 @@ const EducationCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={minbudget}
+                            onChangeText={(min) => setMinbudget(min)}
+
                         />
                     </View>
                     <View>
@@ -251,6 +300,9 @@ const EducationCategory = ({ item }) => {
                                 borderWidth: 0.5
                             }}
                             inputMode="numeric"
+                            value={maxbudget}
+                            onChangeText={(max) => setMaxbudget(max)}
+
                         />
                     </View>
                 </View>
@@ -264,6 +316,8 @@ const EducationCategory = ({ item }) => {
                             borderColor: "gray",
                             borderWidth: 0.5
                         }}
+                        onPress={handlebudget}
+
                     >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
                     </TouchableOpacity>
