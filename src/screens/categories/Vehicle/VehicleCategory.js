@@ -15,6 +15,7 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import { Baseurl } from '../../../constant/globalparams';
 import { useIsFocused } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 
 const VehicleCategory = ({ item }) => {
     const [wishlist, setWishlist] = useState([]);
@@ -52,6 +53,10 @@ const VehicleCategory = ({ item }) => {
     const image = [
         require('../../../../assets/banner1.png'),
         require('../../../../assets/banner2.png'),
+        require('../../../../assets/banner2.png'),
+        require('../../../../assets/banner2.png'),
+        require('../../../../assets/banner2.png'),
+        require('../../../../assets/banner2.png'),
     ];
     const navigation = useNavigation();
     const refRBSheet = useRef();
@@ -88,8 +93,11 @@ const VehicleCategory = ({ item }) => {
                 refRBSheet.current.close();
             })
             .catch(error => {
+                //  navigation.navigate('Error404');
                 console.error('Error: ', error?.response);
-                navigation.navigate('Error404');
+                setFiltereddata(null);
+                setData(null);
+                refRBSheet.current.close()
             });
     }
     return (
@@ -122,24 +130,39 @@ const VehicleCategory = ({ item }) => {
             }>
                 <View style={{ padding: 1 }}>
                     <View style={style.sliderContainer}>
-                        <SliderBox
-                            images={image}
-                            dotColor="#3184b6"
-                            inactiveDotColor="white"
-                            imageLoadingColor="white"
-                            autoplay={true}
-                            circleLoop={true}
-                            resizeMode="contain"
-                            autoplayInterval={3000}
-                        />
+                    <SliderBox
+            images={image}
+            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
+            dotColor="#3184b6"
+            inactiveDotColor="white"
+            imageLoadingColor="white"
+            autoplay={true}
+            circleLoop={true}
+            resizeMode="cover"
+            autoplayInterval={5000}
+            sliderBoxHeight={200}
+            onCurrentImagePressed={index =>
+              console.log(`image ${index} pressed`)
+            }
+            paginationBoxVerticalPadding={20}
+            paginationBoxStyle={{
+              position: "absolute",
+              bottom: 0,
+              padding: 0,
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "center",
+              paddingVertical: 10
+            }}
+          />
                     </View>
 
                     <View style={{ marginTop: 15, }}>
                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
                             <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                                <View style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
+                                <TouchableOpacity onPress={fetchproductApi} style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
                                     <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Featured Ads</Text>
-                                </View>
+                                </TouchableOpacity>
                                 <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
                                     <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
                                     <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Verified</Text>
@@ -152,58 +175,74 @@ const VehicleCategory = ({ item }) => {
                         </View>
 
 
-                        <FlatList
-                            data={filtereddata ? filtereddata : data}
-                            horizontal={false}
-                            numColumns={2}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={({ item, index }) => {
-                                let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                console.log('item ---', item)
 
-                                return (
-                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('VehicleCategoryDetails', { data: item })}>
-                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-                                            <Image
-                                                source={{ uri: imageurl }}
-                                                style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                            />
-                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                                <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                    <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                                    <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                                </View>
-                                                <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                    {isWishlisted(index) ?
-                                                        <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                                        :
-                                                        <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
-                                                </TouchableOpacity>
-                                            </View>
+                        {
+                            filtereddata == null && data == null
+                                ?
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <LottieView
+                                        source={require('../../../../assets/404.json')}
+                                        autoPlay
+                                        loop
+                                        style={{ height: 200, width: 200 }}
+                                        onAnimationFinish={() => console.log('Animation Finished')}
+                                        onError={(error) => console.log('Lottie Error:', error)}
+                                    />
+                                </View>
+                                :
+                                <FlatList
+                                    data={filtereddata ? filtereddata : data}
+                                    horizontal={false}
+                                    numColumns={2}
+                                    showsVerticalScrollIndicator={false}
+                                    renderItem={({ item, index }) => {
+                                        let imageurl = `${Baseurl}/api/${item.images[0]}`;
+                                        console.log('item ---', item)
 
-                                            <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                <Text style={style.subsubtitle}>$ {item.price}</Text>
-                                                <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
-                                            </View>
-
-                                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
-                                                <View style={{ flexDirection: "row" }}>
-                                                    <SvgXml
-                                                        xml={location}
-                                                        width="15px"
-                                                        height="15px"
-                                                        style={{ marginTop: 3, marginRight: 5 }}
+                                        return (
+                                            <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('VehicleCategoryDetails', { data: item })}>
+                                                <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
+                                                    <Image
+                                                        source={{ uri: imageurl }}
+                                                        style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
                                                     />
-                                                    <Text>{item.city}</Text>
+                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
+                                                        <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                            <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                                            <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                                                        </View>
+                                                        <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                            {isWishlisted(index) ?
+                                                                <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                                                :
+                                                                <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                                        </TouchableOpacity>
+                                                    </View>
+
+                                                    <View style={{ marginTop: 10, marginLeft: 10 }}>
+                                                        <Text style={style.subsubtitle}>$ {item.price}</Text>
+                                                        <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
+                                                    </View>
+
+                                                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
+                                                        <View style={{ flexDirection: "row" }}>
+                                                            <SvgXml
+                                                                xml={location}
+                                                                width="15px"
+                                                                height="15px"
+                                                                style={{ marginTop: 3, marginRight: 5 }}
+                                                            />
+                                                            <Text>{item.city}</Text>
+                                                        </View>
+                                                        <Text>Today</Text>
+                                                    </View>
                                                 </View>
-                                                <Text>Today</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            }}
-                            keyExtractor={(item, index) => item.id}
-                        />
+                                            </TouchableOpacity>
+                                        )
+                                    }}
+                                    keyExtractor={(item, index) => item.id}
+                                />
+                        }
                     </View>
                 </View>
             </ScrollView>

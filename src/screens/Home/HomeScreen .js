@@ -19,6 +19,9 @@ const HomeScreen = () => {
   const image = [
     require('../../../assets/banner1.png'),
     require('../../../assets/banner2.png'),
+    require('../../../assets/banner2.png'),
+    require('../../../assets/banner2.png'),
+    require('../../../assets/banner2.png'),
     // require('../../../assets/banner.png'),
   ]
   const [refreshing, setRefreshing] = useState(false);
@@ -160,9 +163,24 @@ const HomeScreen = () => {
             imageLoadingColor="white"
             autoplay={true}
             circleLoop={true}
-            resizeMode="contain"
-            autoplayInterval={3000}
+            resizeMode="cover"
+            autoplayInterval={5000}
+            sliderBoxHeight={200}
+            onCurrentImagePressed={index =>
+              console.log(`image ${index} pressed`)
+            }
+            paginationBoxVerticalPadding={20}
+            paginationBoxStyle={{
+              position: "absolute",
+              bottom: 0,
+              padding: 0,
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "center",
+              paddingVertical: 10
+            }}
           />
+
         </View>
 
         <View style={{ marginTop: 10 }}>

@@ -89,8 +89,7 @@ const Doctor = () => {
           formData.append("description", description);
           formData.append("name", name);
           formData.append("total_experience", experiance);
-          formData.append("price_registration", priceperregistration);
-          formData.append("price_per_visit", price);
+           formData.append("price_per_visit", price);
 
           selectedImages.forEach((image, index) => {
             formData.append(`images[${index}]`, {
@@ -329,22 +328,7 @@ const Doctor = () => {
                     onChangeText={(reg) => setPrice(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Price (per Registration)*</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                    inputMode="numeric"
-                    value={priceperregistration}
-                    onChangeText={(reg) => setPriceperregistration(reg)}
-                  />
-                </View>
+                
                 <View style={{ marginTop: 10 }}>
                   <Text>Title*</Text>
                   <TextInput

@@ -23,32 +23,26 @@ const CategoryDetails = ({ route }) => {
     const data = route.params;
     console.log('data----', data.item.name);
 
-    const navigation = useNavigation();
-    const image = [
-        require('../../../assets/banner1.png'),
-        require('../../../assets/banner2.png'),
-    ];
-    const refRBSheet = useRef();
 
     return (
         <View style={style.container}>
-            {data.item.name === 'Education' ? (
-                <EducationCategory item={data.item} />
-            ) : data.item.name === 'Health' ? (
-                <HealthCategory item={data.item} />
-            ) : data.item.name === 'Property' ? (
-                <PropertyCategory item={data.item} />
-            ) : data.item.name === 'Hospitality' ? (
-                <HospitalityCategory item={data.item} />
-            ) : data.item.name === 'Vehicle' ? (
-                <VehicleCategory item={data.item} />
-            ) : data.item.name === 'AnotherCategory' ? (
-                <Text>This is Another Category</Text>
-            ) : (
-                <Text>This is a Default Category</Text>
-            )}
-
-
+            {
+                data.item.name === 'Education' ? (
+                    <EducationCategory item={data.item} />
+                ) : data.item.name === 'Health' ? (
+                    <HealthCategory item={data.item} />
+                ) : data.item.name === 'Property' ? (
+                    <PropertyCategory item={data.item} />
+                ) : data.item.name === 'Hospitality' ? (
+                    <HospitalityCategory item={data.item} />
+                ) : data.item.name === 'Vehicle' ? (
+                    <VehicleCategory item={data.item} />
+                ) : data.item.name === 'AnotherCategory' ? (
+                    <Text>This is Another Category</Text>
+                ) : (
+                    <Text>This is a Default Category</Text>
+                )
+            }
         </View>
     );
 };

@@ -17,11 +17,11 @@ const EducationCategoryDetails = ({ route }) => {
     console.log('info----', info)
     const [createdAtLabel, setCreatedAtLabel] = useState("");
     let imageUrls = info && info?.images && info?.images.length > 0
-    ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
-    : [];
-  
-   let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
-  
+        ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+        : [];
+
+    let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+
     const headers = ['Property Type', '', '', `${info?.type}`];
     const rows = [
         ['Institute Name', '', '', `${info?.institution_name}`],
@@ -30,7 +30,7 @@ const EducationCategoryDetails = ({ route }) => {
         ['Course Duration', '', '', `${info?.course_duration}years`],
         ['Price', '', '', `${info?.price}`],
     ];
-    
+
 
     const fetchproductApibyid = (id) => {
         axios.get(`${Baseurl}/api/education/id/${id}`)
@@ -86,13 +86,28 @@ const EducationCategoryDetails = ({ route }) => {
                     <View style={style.sliderContainer}>
                         <SliderBox
                             images={image}
+                            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
                             dotColor="#3184b6"
                             inactiveDotColor="white"
                             imageLoadingColor="white"
                             autoplay={true}
                             circleLoop={true}
-                            resizeMode="contain"
-                            autoplayInterval={3000}
+                            resizeMode="cover"
+                            autoplayInterval={5000}
+                            sliderBoxHeight={200}
+                            onCurrentImagePressed={index =>
+                                console.log(`image ${index} pressed`)
+                            }
+                            paginationBoxVerticalPadding={20}
+                            paginationBoxStyle={{
+                                position: "absolute",
+                                bottom: 0,
+                                padding: 0,
+                                alignItems: "center",
+                                alignSelf: "center",
+                                justifyContent: "center",
+                                paddingVertical: 10
+                            }}
                         />
                     </View>
                     <View>

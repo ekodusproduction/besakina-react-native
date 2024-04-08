@@ -81,16 +81,31 @@ const HospitalityCategoryDetails = ({ route }) => {
             <ScrollView style={{ marginBottom: 10 }}>
                 <View style={{ padding: 10 }}>
                     <View style={style.sliderContainer}>
-                        <SliderBox
-                            images={image}
-                            dotColor="#3184b6"
-                            inactiveDotColor="white"
-                            imageLoadingColor="white"
-                            autoplay={true}
-                            circleLoop={true}
-                            resizeMode="contain"
-                            autoplayInterval={3000}
-                        />
+                    <SliderBox
+            images={image}
+            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
+            dotColor="#3184b6"
+            inactiveDotColor="white"
+            imageLoadingColor="white"
+            autoplay={true}
+            circleLoop={true}
+            resizeMode="cover"
+            autoplayInterval={5000}
+            sliderBoxHeight={200}
+            onCurrentImagePressed={index =>
+              console.log(`image ${index} pressed`)
+            }
+            paginationBoxVerticalPadding={20}
+            paginationBoxStyle={{
+              position: "absolute",
+              bottom: 0,
+              padding: 0,
+              alignItems: "center",
+              alignSelf: "center",
+              justifyContent: "center",
+              paddingVertical: 10
+            }}
+          />
                     </View>
                     <View>
                         <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
