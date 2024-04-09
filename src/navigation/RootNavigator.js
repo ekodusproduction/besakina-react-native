@@ -19,7 +19,7 @@ import Vehicle from '../screens/AddPostForms/Vehicle';
 import Doctor from '../screens/AddPostForms/Doctor';
 import HospitalorClinic from '../screens/AddPostForms/HospitalorClinic';
 import Hospitality from '../screens/AddPostForms/Hospitality';
-import Mywishlist from '../screens/wishlist/Mywishlist';
+import Mywishlist from '../screens/myadds/Myadds';
 import Profile from '../screens/Profile/Profile';
 import PropertyCategoryDetails from '../screens/categories/Property/PropertyCategoryDetails';
 import HospitalityCategoryDetails from '../screens/categories/Hospitalilty/HospitalityCategoryDetails';
@@ -28,6 +28,8 @@ import VehicleCategoryDetails from '../screens/categories/Vehicle/VehicleCategor
 import DoctorCategoryDetails from '../screens/categories/Health/DoctorCategoryDetails';
 import HospitalorClinicCategoryDetails from '../screens/categories/Health/HospitalorClinicCategoryDetails';
 import Error404 from '../Error404';
+import Settings from '../screens/settings/Settings';
+import MyPlans from '../screens/plans/MyPlans';
 
 const Stack = createNativeStackNavigator();
 
@@ -94,6 +96,36 @@ const RootNavigator = () => {
       <Stack.Screen
         name="PropertyCategoryDetails"
         component={PropertyCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="MyPlans"
+        component={MyPlans}
         options={{
           headerShown: false,
           headerStyle: {

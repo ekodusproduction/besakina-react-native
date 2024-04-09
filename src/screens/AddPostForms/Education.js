@@ -11,6 +11,7 @@ import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { handleGetToken } from '../../constant/tokenUtils';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const Education = () => {
@@ -19,19 +20,17 @@ const Education = () => {
   const [domainvalue, setDomainvalue] = useState(null);
   const [loading, setLoading] = useState(false);
   const Coursedata = [
-    { label: 'Select Course Type', value: '1' },
-    { label: 'Graduation', value: '2' },
-    { label: 'Diploma', value: '3' },
-    { label: 'Certification', value: '4' },
+     { label: 'Graduation', value: '1' },
+    { label: 'Diploma', value: '2' },
+    { label: 'Certification', value: '3' },
   ];
   const Domaindata = [
-    { label: 'Select Domain', value: '1' },
-    { label: 'Science', value: '2' },
-    { label: 'Arts', value: '3' },
-    { label: 'Commerce', value: '4' },
-    { label: 'Computer Science', value: '5' },
-    { label: 'Cooking', value: '6' },
-    { label: 'Electronics', value: '7' },
+     { label: 'Science', value: '1' },
+    { label: 'Arts', value: '2' },
+    { label: 'Commerce', value: '3' },
+    { label: 'Computer Science', value: '4' },
+    { label: 'Cooking', value: '5' },
+    { label: 'Electronics', value: '6' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -44,13 +43,15 @@ const Education = () => {
   const [price, setPrice] = useState(null);
   const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
-  const [showTokenModal, setShowTokenModal] = useState(false); 
+  const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
   const [street, setStreet] = useState("");
   const [locality, setLocality] = useState("");
   const [city, setCity] = useState("");
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -90,7 +91,7 @@ const Education = () => {
 
           const courseType = Coursedata.filter(item => item.value === coursevalue).map(i => i.label).toString();
           const domainType = Domaindata.filter(item => item.value === domainvalue).map(i => i.label).toString();
- 
+
           formData.append("type", courseType);
           formData.append("domain", domainType);
           formData.append("institution_name", instituname);
@@ -137,7 +138,7 @@ const Education = () => {
             })
             .finally(() => {
               setLoading(false);
-             });
+            });
         } else {
           console.log('Token not retrieved');
           setShowTokenModal(true);
@@ -162,6 +163,11 @@ const Education = () => {
 
   const sendOtp = async () => {
     try {
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -171,7 +177,7 @@ const Education = () => {
 
       setData(response.data);
       if (response.data.success === true) {
-        let newotp=response.data.data.otp
+        let newotp = response.data.data.otp
         setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
@@ -237,6 +243,15 @@ const Education = () => {
       console.error('Error:', error);
     }
   };
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -556,6 +571,11 @@ const Education = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

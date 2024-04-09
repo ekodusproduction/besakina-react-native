@@ -11,21 +11,23 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+
+
 
 const Doctor = () => {
   const navigation = useNavigation();
   const [expertisevalue, setExpertiseValue] = useState(null);
   const Expertisedata = [
-    { label: 'Select Expertise', value: '1' },
-    { label: 'Child', value: '2' },
-    { label: 'Gastro intestine', value: '3' },
-    { label: 'Cardiology', value: '4' },
-    { label: 'Ophthalmology', value: '5' },
-    { label: 'Orthopaedic', value: '6' },
-    { label: 'Gynecology', value: '7' },
-    { label: 'Emergency Medicine', value: '8' },
-    { label: 'Physician', value: '9' },
-    { label: 'Other', value: '10' },
+     { label: 'Child', value: '1' },
+    { label: 'Gastro intestine', value: '2' },
+    { label: 'Cardiology', value: '3' },
+    { label: 'Ophthalmology', value: '4' },
+    { label: 'Orthopaedic', value: '5' },
+    { label: 'Gynecology', value: '6' },
+    { label: 'Emergency Medicine', value: '7' },
+    { label: 'Physician', value: '8' },
+    { label: 'Other', value: '9' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -46,6 +48,8 @@ const Doctor = () => {
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
   const [priceperregistration, setPriceperregistration] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -163,6 +167,11 @@ const Doctor = () => {
 
   const sendOtp = async () => {
     try {
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -238,6 +247,15 @@ const Doctor = () => {
       console.error('Error:', error);
     }
   };
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -538,6 +556,11 @@ const Doctor = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                 <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

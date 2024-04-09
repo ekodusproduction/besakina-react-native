@@ -11,6 +11,7 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 const Hospitality = () => {
   const navigation = useNavigation();
@@ -33,14 +34,15 @@ const Hospitality = () => {
   const [city, setCity] = useState("");
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const Hospitalitydata = [
-    { label: 'Select Type', value: '1' },
-    { label: 'Hotel', value: '2' },
-    { label: 'Guest House', value: '3' },
-    { label: 'Homestay', value: '4' },
-    { label: 'Resort', value: '5' },
-    { label: 'Paying Guest', value: '6' },
+    { label: 'Hotel', value: '1' },
+    { label: 'Guest House', value: '2' },
+    { label: 'Homestay', value: '3' },
+    { label: 'Resort', value: '4' },
+    { label: 'Paying Guest', value: '5' },
   ];
   const openGallery = () => {
     const options = {
@@ -177,6 +179,13 @@ const Hospitality = () => {
 
   const sendOtp = async () => {
     try {
+
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
+
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -186,7 +195,7 @@ const Hospitality = () => {
 
       setData(response.data);
       if (response.data.success === true) {
-        let newotp=response.data.data.otp
+        let newotp = response.data.data.otp
         setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
@@ -252,6 +261,15 @@ const Hospitality = () => {
       console.error('Error:', error);
     }
   };
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -532,6 +550,11 @@ const Hospitality = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

@@ -5,6 +5,9 @@ import style from '../../style';
 import { useNavigation } from '@react-navigation/native';
 import { Baseurl } from '../../constant/globalparams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Button } from 'react-native-paper';
+import LottieView from 'lottie-react-native';
+
 
 const VerifyOtpScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -21,8 +24,11 @@ const VerifyOtpScreen = ({ route }) => {
     const handleNavigation = async (information) => {
         try {
             await AsyncStorage.setItem("UserData", JSON.stringify(information));
-            navigation.navigate("RootNavigator");
-        } catch (error) {
+            setLoading(true);
+            setTimeout(() => {
+                navigation.navigate("RootNavigator");
+            }, 1000);
+         } catch (error) {
             console.error('Error:', error);
         }
     };
@@ -72,19 +78,33 @@ const VerifyOtpScreen = ({ route }) => {
                 />
             </View>
 
+            
             <View style={{ marginTop: 20 }}>
-                <TouchableOpacity
-                    onPress={verifyOtp}
-                    style={[style.button, { opacity: loading ? 0.5 : 1 }]}
-                    disabled={loading}>
-                    {loading ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
+                {loading ? (
+                    <View style={{ justifyContent: "center", alignItems: "center" }}>
+                        <LottieView
+                            source={require('../../../assets/loading.json')}
+                            autoPlay
+                            loop
+                            style={{ height: 60, width: 300 }}
+                        />
+                    </View>
+                ) : (
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: '#3184b6',
+                            borderRadius: 12,
+                            height: 60,
+                            justifyContent: 'center',
+                            display: loading == true ? "none" : "flex"
+                        }}
+                        onPress={verifyOtp}
+                        disabled={loading}
+                    >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Verify Otp</Text>
-                    )}
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                )}
             </View>
-
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ marginTop: 20 }}>
                     <TouchableOpacity

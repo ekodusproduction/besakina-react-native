@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, Image, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Avatar, Button, Card } from 'react-native-paper';
 import style from '../../style';
@@ -17,6 +17,8 @@ const FeaturedAds = (props) => {
     const [data, setData] = useState([]);
     console.log('data----->', data);
     const [createdAtLabel, setCreatedAtLabel] = useState("");
+    const [loading, setLoading] = useState(true);
+
 
     const handleWishlist = (id) => {
         const updatedWishlist = [...wishlist];
@@ -38,9 +40,11 @@ const FeaturedAds = (props) => {
             .then(response => {
                 console.log('response ---', response.data);
                 setData(response.data.data.advertisements);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error);
+                setLoading(false);
             });
     };
 
@@ -75,65 +79,72 @@ const FeaturedAds = (props) => {
                 <View style={{ marginTop: 15 }}>
                     <Text style={[style.subtitle, { marginLeft: 10 }]}>Featured Ads</Text>
 
-                    <FlatList
-                        data={data}
-                        horizontal   
-                        showsHorizontalScrollIndicator={false}
-                        renderItem={({ item, index }) => {
-                            let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                            console.log('Featured Ads item ---', item)
-                            return (
-                                <View style={{ width: 300, padding: 10 }}>
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
-                                                item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
-                                                    item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) : 
-                                                    item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) : null
-                                        }
-                                        style={{
-                                            borderWidth: 0.5,
-                                            borderTopLeftRadius: 12,       
-                                            borderTopRightRadius: 12,
-                                            borderBottomLeftRadius: 12,
-                                            borderBottomRightRadius: 12
-                                        }}>
-                                        <Image source={{ uri: imageurl }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />
-                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                            <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                                <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                {isWishlisted(index) ?
-                                                    <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                                    :
-                                                    <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+
+
+                    {
+                        loading ?
+                            <ActivityIndicator size="large" color="#3184b6" style={{ marginTop: 20 }} />
+                            :
+                            <FlatList
+                                data={data}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                renderItem={({ item, index }) => {
+                                    let imageurl = `${Baseurl}/api/${item.images[0]}`;
+                                    console.log('Featured Ads item ---', item)
+                                    return (
+                                        <View style={{ width: 300, padding: 10 }}>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
+                                                        item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
+                                                            item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
+                                                                item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) : null
+                                                }
+                                                style={{
+                                                    borderWidth: 0.5,
+                                                    borderTopLeftRadius: 12,
+                                                    borderTopRightRadius: 12,
+                                                    borderBottomLeftRadius: 12,
+                                                    borderBottomRightRadius: 12
+                                                }}>
+                                                <Image source={{ uri: imageurl }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />
+                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
+                                                    <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                        <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                                        <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                                                    </View>
+                                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                        {isWishlisted(index) ?
+                                                            <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                                            :
+                                                            <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                                    </TouchableOpacity>
+                                                </View>
+
+                                                <View style={{ marginTop: 10, marginLeft: 10 }}>
+                                                    <Text variant="titleLarge" style={style.subsubtitle}>$ {item.price}</Text>
+                                                    <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">{item.title}</Text>
+                                                </View>
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>
+                                                    <View style={{ flexDirection: "row" }}>
+                                                        <SvgXml
+                                                            xml={location}
+                                                            width="15px"
+                                                            height="15px"
+                                                            style={{ marginTop: 3, marginRight: 0 }}
+                                                        />
+                                                        <Text variant="titleLarge">{item.city}</Text>
+                                                    </View>
+                                                    <Text variant="titleLarge">{getCreatedAtLabel(item.created_at)}</Text>
+                                                </View>
                                             </TouchableOpacity>
                                         </View>
-
-                                        <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                            <Text variant="titleLarge" style={style.subsubtitle}>$ {item.price}</Text>
-                                            <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">{item.title}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <SvgXml
-                                                    xml={location}
-                                                    width="15px"
-                                                    height="15px"
-                                                    style={{ marginTop: 3, marginRight: 0 }}
-                                                />
-                                                <Text variant="titleLarge">{item.city}</Text>
-                                            </View>
-                                            <Text variant="titleLarge">{getCreatedAtLabel(item.created_at)}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            )
-                        }}
-                        keyExtractor={(item, index) => index.toString()}
-                    />
+                                    )
+                                }}
+                                keyExtractor={(item, index) => index.toString()}
+                            />
+                    }
 
                 </View>
 

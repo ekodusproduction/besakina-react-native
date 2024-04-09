@@ -5,12 +5,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
-import Mywishlist from '../screens/wishlist/Mywishlist';
-import AllAds from '../screens/AllAds/AllAds';
-import CategoryList from '../screens/categories/SelectCategoryList';
+ import CategoryList from '../screens/categories/SelectCategoryList';
 import { SvgXml } from 'react-native-svg';
 import { categories, user } from '../svg/svg';
 import Profile from '../screens/Profile/Profile';
+import Myadds from '../screens/myadds/Myadds';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,8 +63,8 @@ const BottomTabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="Mywishlist"
-                component={Mywishlist}
+                name="Myadds"
+                component={Myadds}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />

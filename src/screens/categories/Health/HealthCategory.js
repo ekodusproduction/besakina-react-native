@@ -319,7 +319,7 @@ const HealthCategory = ({ item }) => {
                                                             </View>
 
                                                             <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                                <Text numberOfLines={1} style={{ width: 150, fontWeight: "600" }}>{item.name}</Text>
+                                                                {/* <Text numberOfLines={1} style={{ width: 150, fontWeight: "600" }}>{item.name}</Text> */}
                                                                 <Text style={{}}>{item.expertise}</Text>
                                                             </View>
 

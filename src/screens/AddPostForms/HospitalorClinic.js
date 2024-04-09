@@ -11,16 +11,18 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+
+
 
 const HospitalorClinic = () => {
   const navigation = useNavigation();
   const [hospitalorclinicvalue, setHospitalorclinicvalue] = useState(null);
   const HospitalData = [
-    { label: 'Select Type', value: '1' },
-    { label: 'Hospital', value: '2' },
-    { label: 'Clinic', value: '3' },
-    { label: 'Laboratoy', value: '4' },
-    { label: 'Nurshing Home', value: '5' },
+     { label: 'Hospital', value: '1' },
+    { label: 'Clinic', value: '2' },
+    { label: 'Laboratoy', value: '3' },
+    { label: 'Nurshing Home', value: '4' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -40,7 +42,8 @@ const HospitalorClinic = () => {
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
   const [priceperregistration, setPriceperregistration] = useState("");
-
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -158,6 +161,11 @@ const HospitalorClinic = () => {
 
   const sendOtp = async () => {
     try {
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -233,6 +241,16 @@ const HospitalorClinic = () => {
       console.error('Error:', error);
     }
   };
+
+  
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+  
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -529,6 +547,11 @@ const HospitalorClinic = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                  <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

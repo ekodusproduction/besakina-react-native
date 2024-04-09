@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import SplashScreen from 'react-native-splash-screen';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, Image } from 'react-native';
 import { LogBox } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
@@ -57,7 +57,17 @@ const App = () => {
           </NavigationContainer>
         ) : (
           <View style={{ flex: 1 }}>
-            {!isVideoLoaded && <ActivityIndicator size="small" color="red" />}
+            {!isVideoLoaded && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ alignItems: 'center', marginTop: 200 }}>
+                <Image source={require('./assets/mobileapp-03.png')} style={{ height: 200, width: 250 }} />
+
+                <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center', marginBottom: 50 }}>
+                  <Text>From</Text>
+                  <Image source={require('./assets/Logo-04.jpg')} style={{}} />
+                </View>
+
+              </View>
+            </View>}
             <Video
               source={require('./assets/Bksplashscreen.mp4')}
               style={{ width: '100%', height: '100%', display: isVideoLoaded ? 'flex' : 'none' }}

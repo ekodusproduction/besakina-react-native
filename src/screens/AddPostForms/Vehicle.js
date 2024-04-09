@@ -11,6 +11,8 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+
 
 const Vehicle = () => {
   const navigation = useNavigation();
@@ -27,22 +29,20 @@ const Vehicle = () => {
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
   const modelData = [
-    { label: 'Select Brand', value: '1' },
-    { label: 'BMW', value: '2' },
-    { label: 'Ford', value: '3' },
-    { label: 'Fiat', value: '4' },
-    { label: 'Honda', value: '5' },
-    { label: 'Hyundai', value: '6' },
-    { label: 'Jeep', value: '7' },
-    { label: 'Mercedes', value: '8' },
-    { label: 'Toyota', value: '9' },
+     { label: 'BMW', value: '1' },
+    { label: 'Ford', value: '2' },
+    { label: 'Fiat', value: '3' },
+    { label: 'Honda', value: '4' },
+    { label: 'Hyundai', value: '5' },
+    { label: 'Jeep', value: '6' },
+    { label: 'Mercedes', value: '7' },
+    { label: 'Toyota', value: '8' },
   ];
   const Vehicledata = [
-    { label: 'Select Vehicle Type', value: '1' },
-    { label: 'Car', value: '2' },
-    { label: 'MotorCycle', value: '3' },
-    { label: 'Scooty', value: '4' },
-    { label: 'Bike', value: '5' },
+     { label: 'Car', value: '1' },
+    { label: 'MotorCycle', value: '2' },
+    { label: 'Scooty', value: '3' },
+    { label: 'Bike', value: '4' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -58,6 +58,8 @@ const Vehicle = () => {
   const [city, setCity] = useState("");
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
 
   const handleCameraLaunch = () => {
@@ -179,6 +181,11 @@ const Vehicle = () => {
 
   const sendOtp = async () => {
     try {
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -254,6 +261,15 @@ const Vehicle = () => {
       console.error('Error:', error);
     }
   };
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+
   return (
     <View style={{ flex: 1 }}>
       <Appbar.Header>
@@ -589,6 +605,11 @@ const Vehicle = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

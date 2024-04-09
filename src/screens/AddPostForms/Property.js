@@ -11,6 +11,8 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
+
 
 const Property = () => {
   const navigation = useNavigation();
@@ -24,13 +26,12 @@ const Property = () => {
   const ConstructionData = ['New Launch', 'Ready to move', 'Under Construction'];
   const ListedData = ['Builder', 'Dealer', 'Owner'];
   const data = [
-    { label: 'All Properties', value: '1' },
-    { label: 'For Sale: Houses and Apartments', value: '2' },
-    { label: 'For Rent: Houses and Apartments', value: '3' },
-    { label: 'Lands and Plots', value: '4' },
-    { label: 'For Sale: Shops and Offices', value: '5' },
-    { label: 'For Rent: Shops and Offices', value: '6' },
-    { label: 'PG and Guest Houses', value: '7' },
+    { label: 'For Sale: Houses and Apartments', value: '1' },
+    { label: 'For Rent: Houses and Apartments', value: '2' },
+    { label: 'Lands and Plots', value: '3' },
+    { label: 'For Sale: Shops and Offices', value: '4' },
+    { label: 'For Rent: Shops and Offices', value: '5' },
+    { label: 'PG and Guest Houses', value: '6' },
   ];
   const [selectedType, setSelectedType] = useState(null);
   const [selectedbedrooms, setSelectedbedrooms] = useState(null);
@@ -57,6 +58,8 @@ const Property = () => {
   const itemWidth = (screenWidth - 20) / 4.7;
   const [houseno, setHouseno] = useState("");
   const [landmark, setLandmark] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -186,6 +189,11 @@ const Property = () => {
   const [showNestedModal, setShowNestedModal] = useState(false);
   const sendOtp = async () => {
     try {
+      if (!mobile || mobile.length !== 10) {
+        setErrorMessage('Please enter a valid 10-digit mobile number');
+        setIsValidNumber(false);
+        return;
+      }
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -195,7 +203,7 @@ const Property = () => {
 
       setData(response.data);
       if (response.data.success === true) {
-        let newotp=response.data.data.otp
+        let newotp = response.data.data.otp
         setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
@@ -260,6 +268,15 @@ const Property = () => {
       console.error('Error:', error);
     }
   };
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      setErrorMessage('');
+    }
+  }, [isfocused]);
+
   return (
     <View style={{ flex: 1, }}>
       <Appbar.Header>
@@ -849,6 +866,11 @@ const Property = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
+                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                  {!isValidNumber && (
+                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                  )}
+                </View>
               </View>
 
               <View style={{ marginTop: 20 }}>

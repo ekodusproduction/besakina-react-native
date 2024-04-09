@@ -4,6 +4,8 @@ import { Appbar } from 'react-native-paper'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
+
 
 const Health = () => {
   const [render, setRender] = useState('');

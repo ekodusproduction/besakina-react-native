@@ -1,13 +1,16 @@
 import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Appbar, Card } from 'react-native-paper';
 import style from '../../style';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 import { location } from '../../svg/svg';
+import { Baseurl } from '../../constant/globalparams';
+import axios from 'axios';
+import { handleGetToken } from '../../constant/tokenUtils';
 
-const Mywishlist = (props) => {
+const MyPlans = (props) => {
     const navigation = useNavigation();
     const [wishlist, setWishlist] = useState([]);
 
@@ -26,11 +29,36 @@ const Mywishlist = (props) => {
         return wishlist.includes(id);
     }
 
+    const fetchmyplansApi = () => {
+        handleGetToken()
+            .then((token) => {
+                axios.get(`${Baseurl}/api/plans`, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`,
+                    }
+                })
+                    .then(response => {
+                        console.log('response ---', response.data.data.plans);
+                        // setData(response.data.data.advertisements);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data: ', error);
+                    });
+            })
+    }
+
+
+    useEffect(() => {
+        fetchmyplansApi();
+    }, [])
+
+
     return (
         <View style={{ flex: 1, marginBottom: 60 }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-                <Appbar.Content title="Wishlist" />
+                <Appbar.Content title="My Plans" />
             </Appbar.Header>
 
             <FlatList
@@ -79,4 +107,4 @@ const Mywishlist = (props) => {
     )
 }
 
-export default Mywishlist;
+export default MyPlans;
