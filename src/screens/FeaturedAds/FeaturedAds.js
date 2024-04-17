@@ -91,8 +91,7 @@ const FeaturedAds = (props) => {
                                 showsHorizontalScrollIndicator={false}
                                 renderItem={({ item, index }) => {
                                     let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                    console.log('Featured Ads item ---', item)
-                                    return (
+                                     return (
                                         <View style={{ width: 300, padding: 10 }}>
                                             <TouchableOpacity
                                                 onPress={() =>

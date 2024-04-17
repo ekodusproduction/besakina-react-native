@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Appbar, Card } from 'react-native-paper';
 import style from '../../style';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { SvgXml } from 'react-native-svg';
 import { location } from '../../svg/svg';
 import { Baseurl } from '../../constant/globalparams';
@@ -12,6 +12,7 @@ import { handleGetToken } from '../../constant/tokenUtils';
 
 const Myadds = (props) => {
     const navigation = useNavigation();
+    const isfocused = useIsFocused();
     const [wishlist, setWishlist] = useState([]);
     const [data, setData] = useState([]);
 
@@ -61,7 +62,7 @@ const Myadds = (props) => {
                         }
                     })
                         .then(response => {
-                            // console.log('response ---', response.data.data);
+                            console.log('response ---', response.data.data);
                             setData(response.data.data);
                         })
                         .catch(error => {
@@ -74,9 +75,13 @@ const Myadds = (props) => {
             })
     }
 
+
+
     useEffect(() => {
-        fetchmyadsApi();
-    }, [])
+        if (isfocused == true) {
+            fetchmyadsApi();
+        }
+    }, [isfocused, data]);
 
     return (
         <View style={{ flex: 1, marginBottom: 60 }}>
@@ -89,8 +94,7 @@ const Myadds = (props) => {
                 data={data}
                 renderItem={({ item, index }) => {
                     let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                    console.log('My adds items ---', item)
-                    return (
+                     return (
                         <View style={{ padding: 10 }}>
                             <TouchableOpacity style={{ borderWidth: 0.8, borderRadius: 12 }} onPress={() =>
                                 item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
@@ -122,7 +126,7 @@ const Myadds = (props) => {
                                         <Text variant="titleLarge" style={style.subsubtitle}>$ {item.price}</Text>
                                         <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">{item.title}</Text>
                                     </View>
-                                    <View style={{flexDirection:"row"}}>
+                                    <View style={{ flexDirection: "row" }}>
                                         <AntDesign name='delete' size={20} style={{ color: 'red', marginTop: 10, marginBottom: 10, marginRight: 10, borderWidth: 0.8, padding: 3, borderRadius: 5, paddingLeft: 5, borderColor: "red" }} />
                                         <AntDesign name='edit' size={20} style={{ color: 'green', marginTop: 10, marginBottom: 10, marginRight: 10, borderWidth: 0.8, padding: 3, borderRadius: 5, borderColor: "green" }} />
                                     </View>

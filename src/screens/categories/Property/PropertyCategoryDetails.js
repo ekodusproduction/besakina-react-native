@@ -155,10 +155,10 @@ const PropertyCategoryDetails = ({ route }) => {
                                 <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Verified</Text>
                             </View>
                         </View>
-                        <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.fullname}</Text>
+                        <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.fullname == null ? "Not Available" : info?.fullname}</Text>
 
                         <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "flex-start", marginTop: 5 }}>
-                            <Text style={{ marginLeft: 10 }}>{info?.doc_type}:{info?.doc_number}</Text>
+                            <Text style={{ marginLeft: 10 }}>{info?.doc_type == null ? "Not Available" : info?.doc_type} : {info?.doc_number == null ? "Not Available" : info?.doc_number}</Text>
                             <View style={{ height: '100%', width: 1, backgroundColor: 'black', marginHorizontal: 10 }} />
                             <Text>{getCreatedAtLabel(info?.created_at)}</Text>
                         </View>

@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MyPlans = (props) => {
     const navigation = useNavigation();
-    const [wishlist, setWishlist] = useState([]);
     const [showTokenModal, setShowTokenModal] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isValidNumber, setIsValidNumber] = useState(true);
@@ -21,20 +20,6 @@ const MyPlans = (props) => {
     const [loadingverifyotp, setLoadingverifyotp] = useState(false);
     const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
-    const handleWishlist = (id) => {
-        const updatedWishlist = [...wishlist];
-        const index = updatedWishlist.indexOf(id);
-        if (index === -1) {
-            updatedWishlist.push(id);
-        } else {
-            updatedWishlist.splice(index, 1);
-        }
-        setWishlist(updatedWishlist);
-    }
-
-    const isWishlisted = (id) => {
-        return wishlist.includes(id);
-    }
 
     const fetchmyplansApi = () => {
         handleGetToken()
@@ -48,7 +33,7 @@ const MyPlans = (props) => {
                     })
                         .then(response => {
                             console.log('response ---', response.data.data.plans);
-                            // setData(response.data.data.advertisements);
+                            setData(response.data.data?.plans);
                         })
                         .catch(error => {
                             console.error('Error fetching data: ', error);
@@ -59,7 +44,6 @@ const MyPlans = (props) => {
                 }
             })
     }
-
 
     useEffect(() => {
         fetchmyplansApi();
@@ -75,7 +59,6 @@ const MyPlans = (props) => {
     const [mobile, setMobile] = useState('');
     const [data, setData] = useState(null);
     const [showNestedModal, setShowNestedModal] = useState(false);
-
 
     const sendOtp = async () => {
         try {
@@ -104,7 +87,6 @@ const MyPlans = (props) => {
         }
     };
 
-
     const closeNestedModal = () => {
         setShowTokenModal(false);
         setShowNestedModal(false);
@@ -115,7 +97,6 @@ const MyPlans = (props) => {
     const handleNestedModal = () => {
         setShowNestedModal(true);
     };
-
 
     const verifyOtp = async () => {
         try {
@@ -144,7 +125,6 @@ const MyPlans = (props) => {
         }
     };
 
-
     const handleNavigation = async (information) => {
         console.log('information--->', information);
         try {
@@ -159,6 +139,7 @@ const MyPlans = (props) => {
             console.error('Error:', error);
         }
     };
+
     return (
         <View style={{ flex: 1, }}>
             <Appbar.Header>
@@ -166,48 +147,34 @@ const MyPlans = (props) => {
                 <Appbar.Content title="My Price List" />
             </Appbar.Header>
 
+            <View style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignContent: "center", alignItems: "center" }}>
+                <Text style={[style.subsubtitle, { color: "red", marginTop: 20 }]}>Our Pricing</Text>
+                <Text style={[style.subtitle, { marginTop: 5 }]}>Choose Your Package</Text>
+            </View>
             <FlatList
-                data={[1, 2, 3]}
+                data={data}
                 renderItem={({ item, index }) => {
+                    console.log('item---',item)
                     return (
-                        <View style={{ padding: 10 }}>
-                            <Card onPress={() => navigation.navigate('FeaturedAdsDetails')}>
-                                <Image source={{ uri: 'https://picsum.photos/700' }} style={{ height: 130, objectFit: "cover", borderTopLeftRadius: 12, borderTopRightRadius: 12 }} />
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                    <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                        <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                        <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                        {isWishlisted(index) ?
-                                            <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                            :
-                                            <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
-                                    </TouchableOpacity>
+                        <View style={styles.planCard}>
+                            <View style={styles.planContent}>
+                                <Text style={styles.planPrice}>${item.price}</Text>
+                                <Text style={styles.planTitle}>{item.type}</Text>
+                                <View style={styles.featureList}>
+                                    <Text style={styles.feature}>Feature 1</Text>
+                                    <Text style={styles.feature}>Feature 2</Text>
+                                    <Text style={styles.feature}>Feature 3</Text>
                                 </View>
-
-                                <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                    <Text variant="titleLarge" style={style.subsubtitle}>$ 35,50,900</Text>
-                                    <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">Hyundai i20 black color car model</Text>
-                                </View>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>
-                                    <View style={{ flexDirection: "row" }}>
-                                        <SvgXml
-                                            xml={location}
-                                            width="15px"
-                                            height="15px"
-                                            style={{ marginTop: 3, marginRight: 0 }}
-                                        />
-                                        <Text variant="titleLarge">Ganeshguri</Text>
-                                    </View>
-                                    <Text variant="titleLarge">Today</Text>
-                                </View>
-                            </Card>
+                                <TouchableOpacity style={styles.selectButton}>
+                                    <Text style={styles.selectButtonText}>Select Plan</Text>
+                                </TouchableOpacity>
+                            </View>
                         </View>
-                    )
+                    );
                 }}
                 keyExtractor={(item, index) => index.toString()}
             />
+
 
             <Modal
                 animationType="slide"
@@ -360,27 +327,57 @@ const MyPlans = (props) => {
 
 export default MyPlans;
 const styles = StyleSheet.create({
-    header: {
-        fontSize: 36 * 1.33,
-        marginTop: 0,
-        fontWeight: "600",
-        color: "black"
+    container: {
+        flex: 1,
+        paddingHorizontal: 20,
+        paddingTop: 20,
     },
-    title: {
-        fontSize: 16 * 1.33,
-        fontWeight: "300",
-        color: "black"
+    planCard: {
+        backgroundColor: '#fff',
+        borderRadius: 15,
+        marginBottom: 5,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        marginHorizontal: 20,
+        marginTop: 10
     },
-    textinput: {
-        backgroundColor: 'lightgray',
-        borderRadius: 12,
-        height: 60,
-        paddingLeft: 20
+    planContent: {
+        padding: 20,
     },
-    button: {
-        backgroundColor: '#3184b6',
-        borderRadius: 12,
-        height: 60,
-        justifyContent: 'center'
-    }
+    planTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    planPrice: {
+        fontSize: 18,
+        color: '',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    featureList: {
+        marginBottom: 20,
+    },
+    feature: {
+        fontSize: 16,
+        marginBottom: 5,
+        textAlign: 'center',
+    },
+    selectButton: {
+        backgroundColor: '#007bff',
+        borderRadius: 8,
+        paddingVertical: 10,
+    },
+    selectButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        textAlign: 'center',
+    },
 });

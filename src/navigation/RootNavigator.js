@@ -31,6 +31,7 @@ import Error404 from '../Error404';
 import Settings from '../screens/settings/Settings';
 import MyPlans from '../screens/plans/MyPlans';
 import EditProfile from '../screens/Profile/EditProfile';
+import SearchScreen from '../screens/SearchScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -157,6 +158,21 @@ const RootNavigator = () => {
       <Stack.Screen
         name="HospitalityCategoryDetails"
         component={HospitalityCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
         options={{
           headerShown: false,
           headerStyle: {

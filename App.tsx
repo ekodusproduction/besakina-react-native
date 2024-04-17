@@ -25,7 +25,7 @@ const App = () => {
       setInterval(() => {
         SplashScreen.hide();
         setIsSplashScreenHidden(true);
-      }, 1000 / 2);
+      }, 1000);
     }
   }, [isVideoLoaded]);
 

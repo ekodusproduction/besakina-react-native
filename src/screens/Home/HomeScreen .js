@@ -14,7 +14,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { handleGetToken } from '../../constant/tokenUtils';
 import { useIsFocused } from '@react-navigation/native';
 
-
 const HomeScreen = () => {
   const navigation = useNavigation();
   const image = [
@@ -43,6 +42,7 @@ const HomeScreen = () => {
       </View>
     }
   }, [isfocused]);
+
   return (
     <ScrollView
       style={{ flex: 1, marginBottom: 70 }}
@@ -64,41 +64,41 @@ const HomeScreen = () => {
               source={require('../../../assets/logo2.png')}
               style={{ resizeMode: "contain", height: 40, width: 150 }}
             />
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: 20,
-              gap: 5,
-              // borderWidth: 1,
-              // height: 30,
-              // width: 115,
-              borderRadius: 5,
-              paddingHorizontal: 10,
-            }}>
-              <SvgXml
-                xml={location}
-                width="15px"
-                height="15px"
-              />
-              <Text style={{ fontSize: 14, fontWeight: "500" }}>Guwahati</Text>
-              <AntDesign name="caretdown" size={12} />
-            </View>
+            <TouchableOpacity >
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+                gap: 5,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+              }}>
+                <SvgXml
+                  xml={location}
+                  width="15px"
+                  height="15px"
+                />
+                <Text style={{ fontSize: 14, fontWeight: "500" }}>Guwahati</Text>
+                <AntDesign name="caretdown" size={12} />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View>
-          <View style={{ marginTop: 15 }}>
-            <View style={style.inputContainer}>
-              <MaterialIcons name="search" size={24} color="gray" style={style.icon} />
-              <TextInput
-                placeholder="Search product, business or Services"
-                placeholderTextColor="gray"
-                style={style.input}
-              />
-              <MaterialIcons name="mic" size={24} color="gray" style={[style.icon, { marginRight: 10 }]} />
-            </View>
+
+        <View style={{ marginTop: 15 }}>
+          <View style={style.inputContainer}>
+            <MaterialIcons name="search" size={24} color="gray" style={style.icon} />
+            <TextInput
+              placeholder="Search product, business or Services"
+              placeholderTextColor="gray"
+              style={style.input}
+              onPressIn={() => navigation.navigate('SearchScreen')}
+            />
+            <MaterialIcons name="mic" size={24} color="gray" style={[style.icon, { marginRight: 10 }]} />
           </View>
         </View>
+
 
         <View>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
@@ -107,11 +107,10 @@ const HomeScreen = () => {
           </View>
         </View>
 
+ 
         <View>
-
           <FlatList
             data={[
-
               {
                 id: 1, filename: Education, name: "Education"
               },
@@ -164,6 +163,7 @@ const HomeScreen = () => {
           />
         </View>
 
+ 
         <View style={style.sliderContainer}>
           <SliderBox
             images={image}
@@ -193,6 +193,7 @@ const HomeScreen = () => {
 
         </View>
 
+ 
         <View style={{ marginTop: 10 }}>
           <FlatList
             data={[
@@ -211,11 +212,9 @@ const HomeScreen = () => {
           />
         </View>
 
-
         <FeaturedAds />
 
         <AllAds />
-
 
       </View>
     </ScrollView>
@@ -223,4 +222,3 @@ const HomeScreen = () => {
 }
 
 export default HomeScreen;
-
