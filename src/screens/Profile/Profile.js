@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { Appbar } from 'react-native-paper';
@@ -59,12 +59,11 @@ const Profile = () => {
   ]
   return (
     <View>
-      <Appbar.Header>
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Profile" />
-      </Appbar.Header>
 
-      <View style={{ marginTop: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 10 }}>
+      <View style={{ marginTop: 5, marginHorizontal: 10, flexDirection: 'row', justifyContent: "space-between", paddingRight: 10 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <AntDesign name="arrowleft" style={{ marginRight: 5, marginTop: 5 }} size={30} color={'black'} />
+        </TouchableOpacity>
         <Image
           source={require('../../../assets/mobileapp-20.png')}
           style={{ height: 40, width: '40%' }}
@@ -80,8 +79,8 @@ const Profile = () => {
 
         </TouchableOpacity>
         <Text style={[style.subtitle, { textAlign: "center", marginTop: 10 }]}>Suraj Ali</Text>
-        <View style={styles.container}>
-          <Button icon="pencil" onPress={() => console.log('Pressed')} >
+        <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+          <Button onPress={() => navigation.navigate('EditProfile')} icon={'pencil'} style={{ backgroundColor: "#3184b6", borderRadius: 8 }} mode="outlined">
             <Text style={{ textAlign: 'center', fontSize: 14, color: 'white' }}>View & Edit Profile</Text>
           </Button>
         </View>
@@ -119,17 +118,3 @@ const Profile = () => {
 };
 
 export default Profile;
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-    backgroundColor: style.button.backgroundColor,
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 0.5,
-    width: 200,
-    marginLeft: 100,
-    marginTop: 10
-  },
-});

@@ -20,12 +20,12 @@ const Education = () => {
   const [domainvalue, setDomainvalue] = useState(null);
   const [loading, setLoading] = useState(false);
   const Coursedata = [
-     { label: 'Graduation', value: '1' },
+    { label: 'Graduation', value: '1' },
     { label: 'Diploma', value: '2' },
     { label: 'Certification', value: '3' },
   ];
   const Domaindata = [
-     { label: 'Science', value: '1' },
+    { label: 'Science', value: '1' },
     { label: 'Arts', value: '2' },
     { label: 'Commerce', value: '3' },
     { label: 'Computer Science', value: '4' },

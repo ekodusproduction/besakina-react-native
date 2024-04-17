@@ -30,6 +30,7 @@ import HospitalorClinicCategoryDetails from '../screens/categories/Health/Hospit
 import Error404 from '../Error404';
 import Settings from '../screens/settings/Settings';
 import MyPlans from '../screens/plans/MyPlans';
+import EditProfile from '../screens/Profile/EditProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -111,6 +112,21 @@ const RootNavigator = () => {
       <Stack.Screen
         name="Settings"
         component={Settings}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
         options={{
           headerShown: false,
           headerStyle: {

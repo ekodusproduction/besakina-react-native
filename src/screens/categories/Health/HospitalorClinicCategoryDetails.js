@@ -138,18 +138,15 @@ const HospitalorClinicCategoryDetails = ({ route }) => {
                                 <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Verified</Text>
                             </View>
                         </View>
-                        <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>Hydundai i20,2013 model,petrol,1.5L engine</Text>
+                        <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.fullname}</Text>
 
                         <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "flex-start", marginTop: 5 }}>
-                            <Text style={{ marginLeft: 10 }}>GST:1234567898765432</Text>
+                            <Text style={{ marginLeft: 10 }}>{info?.doc_type}:{info?.doc_number}</Text>
                             <View style={{ height: '100%', width: 1, backgroundColor: 'black', marginHorizontal: 10 }} />
-                            <Text style={{ marginLeft: 10 }}>Member since 2016</Text>
+                            <Text>{getCreatedAtLabel(info?.created_at)}</Text>
                         </View>
-
-
-
-
                     </View>
+                    
                 </View>
             </ScrollView>
             <View style={{ marginTop: 0 }} >

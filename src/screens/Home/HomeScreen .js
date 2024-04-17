@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { handleGetToken } from '../../constant/tokenUtils';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const HomeScreen = () => {
@@ -22,7 +23,6 @@ const HomeScreen = () => {
     require('../../../assets/banner2.png'),
     require('../../../assets/banner2.png'),
     require('../../../assets/banner2.png'),
-    // require('../../../assets/banner.png'),
   ]
   const [refreshing, setRefreshing] = useState(false);
 
@@ -33,6 +33,16 @@ const HomeScreen = () => {
     }, 2000);
   };
 
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      <View>
+        <FeaturedAds />
+        <AllAds />
+      </View>
+    }
+  }, [isfocused]);
   return (
     <ScrollView
       style={{ flex: 1, marginBottom: 70 }}

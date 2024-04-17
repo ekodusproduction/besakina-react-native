@@ -78,19 +78,21 @@ const AllAds = (props) => {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, index }) => {
                     let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                    console.log('All ads item -----',item)
+                    console.log('All ads item -----', item)
                     return (
-                        <TouchableRipple style={{ flex: 1, margin: 5, width: '50%' }}
-                            onPress={() =>
-                                item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
-                                    item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
-                                        item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
-                                            item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) : 
-                                            item.category == "doctors" ? navigation.navigate('DoctorCategoryDetails', { data: item }) : 
-                                            item.category == "hospitals" ? navigation.navigate('HospitalorClinicCategoryDetails', { data: item }) : null
-                            }
+                        <View style={{ flex: 1, margin: 5, width: '50%' }}
+
                         >
-                            <Card style={{ borderRadius: 12, }}>
+                            <TouchableOpacity style={{ borderRadius: 12, borderWidth: 0.8 }}
+                                onPress={() =>
+                                    item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
+                                        item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
+                                            item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
+                                                item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) :
+                                                    item.category == "doctors" ? navigation.navigate('DoctorCategoryDetails', { data: item }) :
+                                                        item.category == "hospitals" ? navigation.navigate('HospitalorClinicCategoryDetails', { data: item }) : null
+                                }
+                            >
                                 <Image
                                     source={{ uri: imageurl }}
                                     style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
@@ -100,11 +102,11 @@ const AllAds = (props) => {
                                         <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
                                         <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
                                     </View>
-                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: "white" }}>
                                         {isWishlisted(index) ?
-                                            <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                            <AntDesign name='heart' style={{ color: '#3184b6', }} size={20} />
                                             :
-                                            <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                            <AntDesign name='hearto' style={{ color: '#3184b6', }} size={20} />}
                                     </TouchableOpacity>
                                 </View>
 
@@ -121,12 +123,12 @@ const AllAds = (props) => {
                                             height="15px"
                                             style={{ marginTop: 3, marginRight: 5 }}
                                         />
-                                        <Text>Ganeshguri</Text>
+                                        <Text>{item.city}</Text>
                                     </View>
-                                    <Text>Today</Text>
+                                    <Text variant="titleLarge">{getCreatedAtLabel(item.created_at)}</Text>
                                 </View>
-                            </Card>
-                        </TouchableRipple>
+                            </TouchableOpacity>
+                        </View>
                     )
                 }}
                 keyExtractor={(item, index) => index.toString()}

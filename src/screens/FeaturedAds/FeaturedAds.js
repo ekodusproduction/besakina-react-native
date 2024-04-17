@@ -114,11 +114,11 @@ const FeaturedAds = (props) => {
                                                         <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
                                                         <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
                                                     </View>
-                                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ backgroundColor: "white", paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
                                                         {isWishlisted(index) ?
-                                                            <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
+                                                            <AntDesign name='heart' style={{ color: '#3184b6', }} size={20} />
                                                             :
-                                                            <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
+                                                            <AntDesign name='hearto' style={{ color: '#3184b6', }} size={20} />}
                                                     </TouchableOpacity>
                                                 </View>
 
