@@ -22,7 +22,7 @@ const DoctorCategoryDetails = ({ route }) => {
 
     let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
 
-    const headers = ['Price per Visit', '', '', `$${info?.price_per_visit}`];
+    const headers = ['Price per Visit', '', '', `₹${info?.price_per_visit}`];
     const rows = [
         ['Name', '', '', `${info?.name}`],
         ['Expertise', '', '', `${info?.expertise}`],

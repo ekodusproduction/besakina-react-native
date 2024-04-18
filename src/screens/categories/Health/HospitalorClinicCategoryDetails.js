@@ -25,7 +25,7 @@ const HospitalorClinicCategoryDetails = ({ route }) => {
     const headers = ['Property Type', '', '', `${info?.type}`];
     const rows = [
         ['Name', '', '', `${info?.name}`],
-        ['Price per registration', '', '', `$${info?.price_registration}`],
+        ['Price per registration', '', '', `₹${info?.price_registration}`],
         ['Location', '', '', `${info?.city}`],
     ];
     

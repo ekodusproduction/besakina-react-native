@@ -78,8 +78,7 @@ const AllAds = (props) => {
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, index }) => {
                     let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                    console.log('All ads item -----', item)
-                    return (
+                     return (
                         <View style={{ flex: 1, margin: 5, width: '50%' }}
 
                         >
