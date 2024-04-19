@@ -92,25 +92,21 @@ const FeaturedAdsDetails = () => {
           </View>
 
           <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
-            <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
-              <Text style={style.subsubtitle}>Seller Details</Text>
-              <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
-                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Verified</Text>
-              </View>
-            </View>
-            <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>Hydundai i20,2013 model,petrol,1.5L engine</Text>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
+                            <Text style={style.subsubtitle}>Seller Details</Text>
+                            <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center' }}>
+                                <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                                <Text style={{ color: 'white', fontWeight: 'bold', color: "#3184b6", fontSize: 12 }}>Verified</Text>
+                            </View>
+                        </View>
+                        <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.user?.fullname == null ? "Not Available" : info?.user?.fullname}</Text>
 
-            <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "flex-start", marginTop: 5 }}>
-              <Text style={{ marginLeft: 10 }}>GST:1234567898765432</Text>
-              <View style={{ height: '100%', width: 1, backgroundColor: 'black', marginHorizontal: 10 }} />
-              <Text style={{ marginLeft: 10 }}>Member since 2016</Text>
-            </View>
-
-
-
-
-          </View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "flex-start", marginTop: 5 }}>
+                            <Text style={{ marginLeft: 10 }}>{info?.user?.doc_type == null ? "Not Available" : info?.user?.doc_type} : {info?.user?.doc_number == null ? "Not Available" : info?.user?.doc_number}</Text>
+                            <View style={{ height: '100%', width: 1, backgroundColor: 'black', marginHorizontal: 10 }} />
+                            <Text>{getCreatedAtLabel(info?.created_at)}</Text>
+                        </View>
+                    </View>
         </View>
       </ScrollView>
       <View style={{ marginTop: 0 }} >
@@ -121,8 +117,7 @@ const FeaturedAdsDetails = () => {
             height: 60,
             justifyContent: 'center'
           }}
-          onPress={() => navigation.navigate('OtpScreen')}
-        >
+         >
           <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Contact Seller</Text>
         </TouchableOpacity>
       </View>

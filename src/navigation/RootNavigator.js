@@ -32,6 +32,8 @@ import Settings from '../screens/settings/Settings';
 import MyPlans from '../screens/plans/MyPlans';
 import EditProfile from '../screens/Profile/EditProfile';
 import SearchScreen from '../screens/SearchScreen';
+import Chat from '../chat/Chat';
+import Myadds from '../screens/myadds/Myadds';
 
 const Stack = createNativeStackNavigator();
 
@@ -73,12 +75,12 @@ const RootNavigator = () => {
       <Stack.Screen
         name="OtpScreen"
         component={OtpScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false,animation: 'slide_from_right' }}
       />
       <Stack.Screen
         name="VerifyOtpScreen"
         component={VerifyOtpScreen}
-        options={{ headerShown: false }}
+        options={{ headerShown: false,animation: 'slide_from_right' }}
       />
       <Stack.Screen
         name="CategoryList"
@@ -88,7 +90,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -103,7 +105,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -118,7 +120,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -133,7 +135,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -148,7 +150,22 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Myadds"
+        component={Myadds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -163,7 +180,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -178,7 +195,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -193,7 +210,22 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Chat"
+        component={Chat}
+        options={{
+          headerShown: false, animation: 'slide_from_right',
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -208,7 +240,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -223,7 +255,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -238,7 +270,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -253,7 +285,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -268,7 +300,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -283,7 +315,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -298,7 +330,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -313,7 +345,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -328,7 +360,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -343,7 +375,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -358,7 +390,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -373,7 +405,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -388,7 +420,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -403,7 +435,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -418,7 +450,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -433,7 +465,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -448,7 +480,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"
@@ -463,7 +495,7 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',
+          headerTintColor: 'black',animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
             textAlign: "center"

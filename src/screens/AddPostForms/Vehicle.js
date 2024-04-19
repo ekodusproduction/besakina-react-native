@@ -1625,8 +1625,7 @@ const SecondRoute = () => {
 const initialLayout = { width: Dimensions.get('window').width };
 
 const Vehicle = () => {
-
-
+  const navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'first', title: 'Used Vehicle' },

@@ -33,13 +33,11 @@ const Myadds = (props) => {
 
 
     const getCreatedAtLabel = (created_at) => {
-        console.log('created_at-------', created_at)
         const currentDate = new Date();
         const createdDate = new Date(created_at);
 
         const diffTime = Math.abs(currentDate - createdDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        console.log('diffDays ----', diffDays)
         if (diffDays === 1) {
             return "Today";
         } else if (diffDays === 2) {
@@ -81,7 +79,7 @@ const Myadds = (props) => {
         if (isfocused == true) {
             fetchmyadsApi();
         }
-    }, [isfocused, data]);
+    }, [isfocused]);
 
     return (
         <View style={{ flex: 1, marginBottom: 60 }}>
@@ -94,7 +92,7 @@ const Myadds = (props) => {
                 data={data}
                 renderItem={({ item, index }) => {
                     let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                     return (
+                    return (
                         <View style={{ padding: 10 }}>
                             <TouchableOpacity style={{ borderWidth: 0.8, borderRadius: 12 }} onPress={() =>
                                 item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :

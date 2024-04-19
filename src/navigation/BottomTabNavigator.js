@@ -2,6 +2,7 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Entypo from 'react-native-vector-icons/Entypo';
 import { StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
@@ -10,6 +11,7 @@ import { SvgXml } from 'react-native-svg';
 import { categories, user } from '../svg/svg';
 import Profile from '../screens/Profile/Profile';
 import Myadds from '../screens/myadds/Myadds';
+import Chat from '../chat/Chat';
 
 const Tab = createBottomTabNavigator();
 
@@ -63,11 +65,11 @@ const BottomTabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="Myadds"
-                component={Myadds}
+                name="Chat"
+                component={Chat}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <FontAwesome name="heart-o" color={focused ? '#3184b6' : ''} size={30} />
+                        <Entypo name="message" color={focused ? '#3184b6' : ''} size={30} />
                     ),
                     tabBarShowLabel: false,
                     headerShown: false
