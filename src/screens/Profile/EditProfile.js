@@ -815,7 +815,7 @@ const styles = StyleSheet.create({
         color: "black"
     },
     textinput: {
-        backgroundColor: 'lightgray',
+        backgroundColor: 'white',
         borderRadius: 12,
         height: 60,
         paddingLeft: 20

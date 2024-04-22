@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
 import axios from 'axios';
 import style from '../../style';
 import { useNavigation } from '@react-navigation/native';
@@ -90,7 +90,7 @@ const VerifyOtpScreen = ({ route }) => {
                         />
                     </View>
                 ) : (
-                    <TouchableOpacity
+                    <Pressable
                         style={{
                             backgroundColor: '#3184b6',
                             borderRadius: 12,
@@ -102,7 +102,7 @@ const VerifyOtpScreen = ({ route }) => {
                         disabled={loading}
                     >
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Verify Otp</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 )}
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>

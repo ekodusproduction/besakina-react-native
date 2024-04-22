@@ -20,10 +20,12 @@ export default StyleSheet.create({
         color: "black"
     },
     inputfield: {
-        backgroundColor: 'lightgray',
+        backgroundColor: 'white',
         borderRadius: 12,
         height: 60,
-        paddingLeft: 20
+        paddingLeft: 20,
+        borderWidth:0.8,
+        
     },
     button: {
         backgroundColor: '#3184b6',
@@ -44,8 +46,7 @@ export default StyleSheet.create({
         overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
-        objectFit: "contain"
-    },
+     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',

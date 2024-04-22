@@ -19,7 +19,7 @@ const Doctor = () => {
   const navigation = useNavigation();
   const [expertisevalue, setExpertiseValue] = useState(null);
   const Expertisedata = [
-     { label: 'Child', value: '1' },
+    { label: 'Child', value: '1' },
     { label: 'Gastro intestine', value: '2' },
     { label: 'Cardiology', value: '3' },
     { label: 'Ophthalmology', value: '4' },
@@ -93,7 +93,7 @@ const Doctor = () => {
           formData.append("description", description);
           formData.append("name", name);
           formData.append("total_experience", experiance);
-           formData.append("price_per_visit", price);
+          formData.append("price_per_visit", price);
 
           selectedImages.forEach((image, index) => {
             formData.append(`images[${index}]`, {
@@ -181,7 +181,7 @@ const Doctor = () => {
 
       setData(response.data);
       if (response.data.success === true) {
-        let newotp=response.data.data.otp
+        let newotp = response.data.data.otp
         setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
@@ -346,7 +346,7 @@ const Doctor = () => {
                     onChangeText={(reg) => setPrice(reg)}
                   />
                 </View>
-                
+
                 <View style={{ marginTop: 10 }}>
                   <Text>Title*</Text>
                   <TextInput
@@ -556,7 +556,7 @@ const Doctor = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                 />
-                 <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
                   {!isValidNumber && (
                     <Text style={{ color: 'red' }}>{errorMessage}</Text>
                   )}
@@ -704,10 +704,12 @@ const styles = StyleSheet.create({
     color: "black"
   },
   textinput: {
-    backgroundColor: 'lightgray',
+    backgroundColor: 'white',
     borderRadius: 12,
     height: 60,
-    paddingLeft: 20
+    paddingLeft: 20,
+     borderWidth: 0.8
+
   },
   button: {
     backgroundColor: '#3184b6',

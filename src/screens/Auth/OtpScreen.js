@@ -57,70 +57,72 @@ const OtpScreen = ({ route }) => {
     }, [isfocused]);
 
     return (
-        <View style={{ padding: 20 }}>
-            <View style={{ marginTop: 100 }}>
-                <Text style={styles.header}>Welcome</Text>
-                <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
-            </View>
-            <View style={{ marginTop: 25 }}>
-                <Text style={style.title}>Enter Mobile Number</Text>
-            </View>
-            <View style={{ marginTop: 20 }}>
-                <TextInput
-                    placeholder='Enter here'
-                    placeholderTextColor='black'
-                    style={styles.textinput}
-                    inputMode="numeric"
-                    value={mobile}
-                    onChangeText={phone => setMobile(phone)}
-                />
-                <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
-                    {!isValidNumber && (
-                        <Text style={{ color: 'red' }}>{errorMessage}</Text>
+        <View style={{ flex: 1, padding: 20, justifyContent: "space-between" }}>
+            <View>
+                <View style={{ marginTop: 100 }}>
+                    <Text style={styles.header}>Welcome</Text>
+                    <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
+                </View>
+                <View style={{ marginTop: 25 }}>
+                    <Text style={style.title}>Enter Mobile Number</Text>
+                </View>
+                <View style={{ marginTop: 20 }}>
+                    <TextInput
+                        placeholder='Enter here'
+                        placeholderTextColor='black'
+                        style={styles.textinput}
+                        inputMode="numeric"
+                        value={mobile}
+                        onChangeText={phone => setMobile(phone)}
+                    />
+                    <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                        {!isValidNumber && (
+                            <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                        )}
+                    </View>
+                </View>
+
+                <View style={{ marginTop: 20 }}>
+                    <Button
+                        onPress={sendOtp}
+                        style={[styles.button, { opacity: loading ? 0.5 : 1 }]}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="small" color="white" />
+                        ) : (
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
+                        )}
+                    </Button>
+                </View>
+
+                <View style={{ marginTop: 20 }}>
+                    {animatedloading ? (
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <LottieView
+                                source={require('../../../assets/loading.json')}
+                                autoPlay
+                                loop
+                                style={{ height: 60, width: 300 }}
+                            />
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            style={{
+                                borderRadius: 12,
+                                height: 60,
+                                justifyContent: 'center',
+                                backgroundColor: '',
+                                display: animatedloading == true ? "none" : "flex"
+                            }}
+                            onPress={handleNavigation}
+                            disabled={animatedloading}
+                        >
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: "black" }}>Skip</Text>
+                        </TouchableOpacity>
                     )}
                 </View>
             </View>
-
-            <View style={{ marginTop: 20 }}>
-                <Button
-                    onPress={sendOtp}
-                    style={[styles.button, { opacity: loading ? 0.5 : 1 }]}
-                >
-                    {loading ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
-                        <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
-                    )}
-                </Button>
-            </View>
-
-            <View style={{ marginTop: 20 }}>
-                {animatedloading ? (
-                    <View style={{ justifyContent: "center", alignItems: "center" }}>
-                        <LottieView
-                            source={require('../../../assets/loading.json')}
-                            autoPlay
-                            loop
-                            style={{ height: 60, width: 300 }}
-                        />
-                    </View>
-                ) : (
-                    <TouchableOpacity
-                        style={{
-                            borderRadius: 12,
-                            height: 60,
-                            justifyContent: 'center',
-                            backgroundColor: '',
-                            display: animatedloading == true ? "none" : "flex"
-                        }}
-                        onPress={handleNavigation}
-                        disabled={animatedloading}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 18, color: "black" }}>Skip</Text>
-                    </TouchableOpacity>
-                )}
-            </View>
-
+            {/* <Text style={{ textAlign: "center", justifyContent: "flex-end", fontSize: 16 }}>From <Text style={{ color: "#3184b6" }}>Zycell</Text></Text> */}
         </View>
     )
 }
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
         color: "black"
     },
     textinput: {
-        backgroundColor: 'lightgray',
+        backgroundColor: 'white',
         borderRadius: 12,
         height: 60,
         paddingLeft: 20,

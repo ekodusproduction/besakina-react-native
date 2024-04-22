@@ -1,17 +1,15 @@
-// BottomTabNavigator.js
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
- import CategoryList from '../screens/categories/SelectCategoryList';
+import CategoryList from '../screens/categories/SelectCategoryList';
 import { SvgXml } from 'react-native-svg';
-import { categories, user } from '../svg/svg';
+import { categories, chaticon, homeicon, usericon } from '../svg/svg';
 import Profile from '../screens/Profile/Profile';
-import Myadds from '../screens/myadds/Myadds';
-import Chat from '../chat/Chat';
+import Chat from '../chat/Chat'
+import { createMaterialBottomTabNavigator } from 'react-native-paper';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +27,12 @@ const BottomTabNavigator = () => {
                 component={HomeScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <FontAwesome name="home" size={30} color={focused ? "#3184b6" : ""} />
+                        <SvgXml
+                            xml={homeicon}
+                            width="25px"
+                            height="25px"
+                            style={{ fill: focused ? "#3184b6" : "" }}
+                        />
                     ),
                     tabBarShowLabel: false,
                     headerShown: false
@@ -42,8 +45,8 @@ const BottomTabNavigator = () => {
                     tabBarIcon: ({ focused }) => (
                         <SvgXml
                             xml={categories}
-                            width="30px"
-                            height="30px"
+                            width="25px"
+                            height="25px"
                             style={{ fill: focused ? "#3184b6" : "" }}
                         />
                     ),
@@ -69,7 +72,12 @@ const BottomTabNavigator = () => {
                 component={Chat}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Entypo name="message" color={focused ? '#3184b6' : ''} size={30} />
+                        <SvgXml
+                            xml={chaticon}
+                            width="25px"
+                            height="25px"
+                            style={{ fill: focused ? "#3184b6" : "" }}
+                        />
                     ),
                     tabBarShowLabel: false,
                     headerShown: false
@@ -81,9 +89,9 @@ const BottomTabNavigator = () => {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <SvgXml
-                            xml={user}
-                            width="30px"
-                            height="30px"
+                            xml={usericon}
+                            width="25px"
+                            height="25px"
                             style={{ fill: focused ? "#3184b6" : "" }}
                         />
                     ),

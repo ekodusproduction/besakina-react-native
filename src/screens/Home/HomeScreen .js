@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar, RefreshControl } from 'react-native';
+import { View, Text, Image, TextInput, FlatList, TouchableOpacity, ScrollView, StatusBar, RefreshControl, Dimensions } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { SvgXml } from 'react-native-svg';
@@ -12,13 +12,15 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { Baseurl } from '../../constant/globalparams';
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   console.log('data----->', data);
- 
+
 
   const handleWishlist = (id) => {
     const updatedWishlist = [...wishlist];
@@ -40,9 +42,11 @@ const HomeScreen = () => {
       .then(response => {
         console.log('response ---', response.data);
         setData(response.data.data.advertisements);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setLoading(false);
       });
   };
 
@@ -73,8 +77,7 @@ const HomeScreen = () => {
   const image = [
     require('../../../assets/banner1.png'),
     require('../../../assets/banner2.png'),
-    require('../../../assets/banner2.png'),
-    require('../../../assets/banner2.png'),
+    require('../../../assets/banner1.png'),
     require('../../../assets/banner2.png'),
   ]
   const [refreshing, setRefreshing] = useState(false);
@@ -95,6 +98,59 @@ const HomeScreen = () => {
     }
   }, [isfocused]);
 
+  if (loading) {
+    return (
+      <ScrollView
+        style={{ flex: 1, marginBottom: 70 }}
+        alwaysBounceVertical
+        showsVerticalScrollIndicator={false}
+      >
+        <StatusBar animated={true} backgroundColor="" translucent={false} />
+
+        <SkeletonPlaceholder>
+          <View style={{ padding: 10 }}>
+            {/* Skeleton for header */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <View style={{ width: 150, height: 40, borderRadius: 10 }} />
+              <View style={{ width: 100, height: 40, borderRadius: 10 }} />
+            </View>
+
+            {/* Skeleton for search */}
+            <View style={{ marginBottom: 20 }}>
+              <View style={{ width: '100%', height: 40, borderRadius: 10 }} />
+            </View>
+
+            {/* Skeleton for categories */}
+            <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+              <View style={{ width: 85, height: 85, borderRadius: 15, marginRight: 10 }} />
+              <View style={{ width: 85, height: 85, borderRadius: 15, marginRight: 10 }} />
+              <View style={{ width: 85, height: 85, borderRadius: 15, marginRight: 10 }} />
+              <View style={{ width: 85, height: 85, borderRadius: 15, marginRight: 10 }} />
+              <View style={{ width: 85, height: 85, borderRadius: 15 }} />
+            </View>
+
+            {/* Skeleton for slider */}
+            <View style={{ height: 150, marginBottom: 20, borderRadius: 15 }} />
+
+            {/* Skeleton for sub_slider */}
+            <View style={{ height: 100, marginBottom: 20, borderRadius: 15 }} />
+
+            {/* Skeleton for featured ads */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+              <View style={{ width: '45%', height: 150, borderRadius: 15 }} />
+              <View style={{ width: '45%', height: 150, borderRadius: 15 }} />
+            </View>
+
+            {/* Skeleton for all ads */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 }}>
+              <View style={{ width: '45%', height: 200, borderRadius: 15 }} />
+              <View style={{ width: '45%', height: 200, borderRadius: 15 }} />
+            </View>
+          </View>
+        </SkeletonPlaceholder>
+      </ScrollView>
+    );
+  }
   return (
     <ScrollView
       style={{ flex: 1, marginBottom: 70 }}
@@ -137,7 +193,6 @@ const HomeScreen = () => {
           </View>
         </View>
 
-
         <View style={{ marginTop: 15 }}>
           <View style={style.inputContainer}>
             <MaterialIcons name="search" size={24} color="gray" style={style.icon} />
@@ -151,14 +206,12 @@ const HomeScreen = () => {
           </View>
         </View>
 
-
         <View>
           <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginTop: 20 }}>
             <Text style={style.subtitle}>Categories</Text>
             <Text style={[style.subtitle, { color: "#3184b6" }]} onPress={() => navigation.navigate('ViewCategories')}>See all</Text>
           </View>
         </View>
-
 
         <View>
           <FlatList
@@ -215,19 +268,17 @@ const HomeScreen = () => {
           />
         </View>
 
-
         <View style={style.sliderContainer}>
           <SliderBox
             images={image}
             dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
             dotColor="#3184b6"
             inactiveDotColor="white"
-            imageLoadingColor="white"
+            // imageLoadingColor="white"
             autoplay={true}
             circleLoop={true}
-            resizeMode="cover"
+            resizeMode="contain"
             autoplayInterval={5000}
-            sliderBoxHeight={200}
             onCurrentImagePressed={index =>
               console.log(`image ${index} pressed`)
             }
@@ -244,7 +295,6 @@ const HomeScreen = () => {
           />
 
         </View>
-
 
         <View style={{ marginTop: 10 }}>
           <FlatList
@@ -267,69 +317,69 @@ const HomeScreen = () => {
         <FeaturedAds />
 
         <View style={{ marginTop: 10 }}>
-            <Text style={[style.subtitle, { marginLeft: 10 }]}>All Ads</Text>
+          <Text style={[style.subtitle, { marginLeft: 10 }]}>All Ads</Text>
 
-            <FlatList
-                data={data}
-                horizontal={false}
-                numColumns={2}
-                showsVerticalScrollIndicator={false}
-                renderItem={({ item, index }) => {
-                    let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                     return (
-                        <View style={{ flex: 1, margin: 5, width: '50%' }}
+          <FlatList
+            data={data}
+            horizontal={false}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => {
+              let imageurl = `${Baseurl}/api/${item.images[0]}`;
+              return (
+                <View style={{ flex: 1, margin: 5, width: '50%' }}
 
-                        >
-                            <TouchableOpacity style={{ borderRadius: 12, borderWidth: 0.8 }}
-                                onPress={() =>
-                                    item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
-                                        item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
-                                            item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
-                                                item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) :
-                                                    item.category == "doctors" ? navigation.navigate('DoctorCategoryDetails', { data: item }) :
-                                                        item.category == "hospitals" ? navigation.navigate('HospitalorClinicCategoryDetails', { data: item }) : null
-                                }
-                            >
-                                <Image
-                                    source={{ uri: imageurl }}
-                                    style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                />
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                    <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                        <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                        <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                    </View>
-                                    <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: "white" }}>
-                                        {isWishlisted(index) ?
-                                            <AntDesign name='heart' style={{ color: '#3184b6', }} size={20} />
-                                            :
-                                            <AntDesign name='hearto' style={{ color: '#3184b6', }} size={20} />}
-                                    </TouchableOpacity>
-                                </View>
+                >
+                  <TouchableOpacity style={{ borderRadius: 12, borderWidth: 0.8 }}
+                    onPress={() =>
+                      item.category == "education" ? navigation.navigate('EducationCategoryDetails', { data: item }) :
+                        item.category == "property" ? navigation.navigate('PropertyCategoryDetails', { data: item }) :
+                          item.category == "vehicles" ? navigation.navigate('VehicleCategoryDetails', { data: item }) :
+                            item.category == "hospitality" ? navigation.navigate('HospitalityCategoryDetails', { data: item }) :
+                              item.category == "doctors" ? navigation.navigate('DoctorCategoryDetails', { data: item }) :
+                                item.category == "hospitals" ? navigation.navigate('HospitalorClinicCategoryDetails', { data: item }) : null
+                    }
+                  >
+                    <Image
+                      source={{ uri: imageurl }}
+                      style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                    />
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
+                      <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
+                        <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
+                        <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
+                      </View>
+                      <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center', backgroundColor: "white" }}>
+                        {isWishlisted(index) ?
+                          <AntDesign name='heart' style={{ color: '#3184b6', }} size={20} />
+                          :
+                          <AntDesign name='hearto' style={{ color: '#3184b6', }} size={20} />}
+                      </TouchableOpacity>
+                    </View>
 
-                                <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                    <Text style={style.subsubtitle}>$ {item.price}</Text>
-                                    <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
-                                </View>
+                    <View style={{ marginTop: 10, marginLeft: 10 }}>
+                      <Text style={style.subsubtitle}>$ {item.price}</Text>
+                      <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
+                    </View>
 
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
-                                    <View style={{ flexDirection: "row" }}>
-                                        <SvgXml
-                                            xml={location}
-                                            width="15px"
-                                            height="15px"
-                                            style={{ marginTop: 3, marginRight: 5 }}
-                                        />
-                                        <Text>{item.city}</Text>
-                                    </View>
-                                    <Text variant="titleLarge">{getCreatedAtLabel(item.created_at)}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    )
-                }}
-                keyExtractor={(item, index) => index.toString()}
-            />
+                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
+                      <View style={{ flexDirection: "row" }}>
+                        <SvgXml
+                          xml={location}
+                          width="15px"
+                          height="15px"
+                          style={{ marginTop: 3, marginRight: 5 }}
+                        />
+                        <Text>{item.city}</Text>
+                      </View>
+                      <Text variant="titleLarge">{getCreatedAtLabel(item.created_at)}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
         </View>
 
       </View>

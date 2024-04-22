@@ -54,7 +54,7 @@ const SelectCategoryList = () => {
 
       <Appbar.Header>
         <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-        <Appbar.Content title="Select Categories" />
+        <Appbar.Content title="Post Your Ads" />
       </Appbar.Header>
 
       <View style={{ justifyContent: "center", alignItems: "center" }}>
