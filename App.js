@@ -3,7 +3,6 @@ import { View, Text, ActivityIndicator } from 'react-native';
 import { LogBox } from 'react-native';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import RootNavigator from './src/navigation/RootNavigator';
@@ -30,8 +29,7 @@ const App = () => {
   };
 
   return (
-    <Provider store={store}>
-      <View style={{ flex: 1 }}>
+       <View style={{ flex: 1 }}>
         {isSplashScreenHidden ? (
           <NavigationContainer>
             {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
@@ -50,8 +48,7 @@ const App = () => {
           </View>
         )}
       </View>
-    </Provider>
-  );
+   );
 };
 
 export default App;

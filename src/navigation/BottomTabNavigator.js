@@ -19,7 +19,10 @@ const BottomTabNavigator = () => {
             initialRouteName="HomeScreen"
             screenOptions={{
                 tabBarStyle: styles.tabBar,
-                headerShown: false
+                headerShown: false,
+                labelStyle: {
+                    margin: 0
+                },
             }}
         >
             <Tab.Screen
@@ -35,7 +38,10 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
-                    headerShown: false
+                    headerShown: false,
+                    labelStyle: {
+                        margin: 0
+                    },
                 }}
             />
             <Tab.Screen
@@ -51,7 +57,10 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
-                    headerShown: false
+                    headerShown: false,
+                    labelStyle: {
+                        margin: 0
+                    },
                 }}
             />
             <Tab.Screen
@@ -64,7 +73,10 @@ const BottomTabNavigator = () => {
                         </View>
                     ),
                     tabBarShowLabel: false,
-                    headerShown: false
+                    headerShown: false,
+                    labelStyle: {
+                        margin: 0
+                    },
                 }}
             />
             <Tab.Screen
@@ -80,7 +92,10 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
-                    headerShown: false
+                    headerShown: false,
+                    labelStyle: {
+                        margin: 0
+                    },
                 }}
             />
             <Tab.Screen
@@ -96,7 +111,10 @@ const BottomTabNavigator = () => {
                         />
                     ),
                     tabBarShowLabel: false,
-                    headerShown: false
+                    headerShown: false,
+                    labelStyle: {
+                        margin: 0
+                    },
                 }}
             />
         </Tab.Navigator>
@@ -105,11 +123,7 @@ const BottomTabNavigator = () => {
 
 const styles = StyleSheet.create({
     tabBar: {
-        height: 65,
-        position: 'absolute',
-        bottom: 0,
-        marginHorizontal: 0,
-        borderRadius: 0,
+        position: "absolute",
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 0.5,

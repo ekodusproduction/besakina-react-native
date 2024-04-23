@@ -153,7 +153,7 @@ const HomeScreen = () => {
   }
   return (
     <ScrollView
-      style={{ flex: 1, marginBottom: 70 }}
+      style={{ flex: 1, }}
       alwaysBounceVertical
       showsVerticalScrollIndicator={false}
       refreshControl={
