@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 
 
-const Property = () => {
+const Editpropertyadds = () => {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -148,16 +148,7 @@ const Property = () => {
 
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error);
-              if (error.message == 'Network Error') {
-                ToastAndroid.showWithGravityAndOffset(
-                  `Something went wrong, Try again later`,
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50,
-                );
-              }
+              console.error('Catch Error :---->', error.response);
               console.log("error message--->", error.response.data.message)
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -1013,7 +1004,7 @@ const Property = () => {
   )
 }
 
-export default Property;
+export default Editpropertyadds;
 const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,

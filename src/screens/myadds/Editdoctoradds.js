@@ -7,49 +7,47 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Dimensions } from 'react-native';
+import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { handleGetToken } from '../../constant/tokenUtils';
 import { useIsFocused } from '@react-navigation/native';
 
 
-const Education = () => {
+
+const Editdoctoradds = () => {
   const navigation = useNavigation();
-  const [coursevalue, setCoursevalue] = useState(null);
-  const [domainvalue, setDomainvalue] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const Coursedata = [
-    { label: 'Graduation', value: '1' },
-    { label: 'Diploma', value: '2' },
-    { label: 'Certification', value: '3' },
-  ];
-  const Domaindata = [
-    { label: 'Science', value: '1' },
-    { label: 'Arts', value: '2' },
-    { label: 'Commerce', value: '3' },
-    { label: 'Computer Science', value: '4' },
-    { label: 'Cooking', value: '5' },
-    { label: 'Electronics', value: '6' },
+  const [expertisevalue, setExpertiseValue] = useState(null);
+  const Expertisedata = [
+    { label: 'Child', value: '1' },
+    { label: 'Gastro intestine', value: '2' },
+    { label: 'Cardiology', value: '3' },
+    { label: 'Ophthalmology', value: '4' },
+    { label: 'Orthopaedic', value: '5' },
+    { label: 'Gynecology', value: '6' },
+    { label: 'Emergency Medicine', value: '7' },
+    { label: 'Physician', value: '8' },
+    { label: 'Other', value: '9' },
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
-  const [duration, setDuration] = useState(null);
-  const [instituname, setInstituname] = useState(null);
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(false);
+  const [experiance, setExperiance] = useState("");
   const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
+  const [adtitle, setAdtitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [street, setStreet] = useState("");
   const [locality, setLocality] = useState("");
   const [city, setCity] = useState("");
   const [state, setstate] = useState("");
   const [pincode, setPincode] = useState("");
+  const [priceperregistration, setPriceperregistration] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
 
@@ -88,17 +86,14 @@ const Education = () => {
           const formData = new FormData();
 
           // formData.append("plan_id", "1");
+          formData.append("title", adtitle);
+          const expertisetype = Expertisedata.filter(item => item.value === expertisevalue).map(i => i.label).toString();
 
-          const courseType = Coursedata.filter(item => item.value === coursevalue).map(i => i.label).toString();
-          const domainType = Domaindata.filter(item => item.value === domainvalue).map(i => i.label).toString();
-
-          formData.append("type", courseType);
-          formData.append("domain", domainType);
-          formData.append("institution_name", instituname);
-          formData.append("course_duration", duration);
-          formData.append("title", title);
+          formData.append("expertise", expertisetype);
           formData.append("description", description);
-          formData.append("price", price);
+          formData.append("name", name);
+          formData.append("total_experience", experiance);
+          formData.append("price_per_visit", price);
 
           selectedImages.forEach((image, index) => {
             formData.append(`images[${index}]`, {
@@ -114,8 +109,9 @@ const Education = () => {
           formData.append("state", state);
           formData.append("pincode", pincode);
 
+
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/education/add`, formData, {
+          axios.post(`${Baseurl}/api/doctors/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -131,18 +127,18 @@ const Education = () => {
                 50,
               );
               setShowTokenModal(false);
+
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error);
-              if (error.message == 'Network Error') {
-                ToastAndroid.showWithGravityAndOffset(
-                  `Something went wrong, Try again later`,
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50,
-                );
-              }
+              console.error('Catch Error :---->', error.response);
+              console.log("error message--->", error.response.data.message);
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
             })
             .finally(() => {
               setLoading(false);
@@ -264,7 +260,7 @@ const Education = () => {
     <View style={{ flex: 1, }}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-        <Appbar.Content title="Education" />
+        <Appbar.Content title="Doctor" />
       </Appbar.Header>
 
       <ScrollView style={{ flex: 1, }}>
@@ -274,24 +270,23 @@ const Education = () => {
 
             <View style={{ borderWidth: 0.5, height: '1500px', marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
               <View style={{ padding: 5 }}>
-                <View style={{ marginTop: 15 }}>
-                  <Dropdown
-                    style={style.dropdown}
-                    placeholderStyle={style.placeholderStyle}
-                    selectedTextStyle={style.selectedTextStyle}
-                    inputSearchStyle={style.inputSearchStyle}
-                    iconStyle={style.iconStyle}
-                    data={Coursedata}
-                    // search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Course Type"
-                    // searchPlaceholder="Search..."
-                    value={coursevalue}
-                    onChange={item => {
-                      setCoursevalue(item.value);
+
+                <View style={{ marginTop: 10 }}>
+                  <Text>
+                    Full Name*
+                  </Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
                     }}
+                    // inputMode="numeric"
+                    value={name}
+                    onChangeText={(reg) => setName(reg)}
                   />
                 </View>
 
@@ -302,23 +297,23 @@ const Education = () => {
                     selectedTextStyle={style.selectedTextStyle}
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
-                    data={Domaindata}
+                    data={Expertisedata}
                     // search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
-                    placeholder="Select Domain"
+                    placeholder="Select Expertise"
                     // searchPlaceholder="Search..."
-                    value={domainvalue}
+                    value={expertisevalue}
                     onChange={item => {
-                      setDomainvalue(item.value);
+                      setExpertiseValue(item.value);
                     }}
                   />
                 </View>
 
                 <View style={{ marginTop: 10 }}>
                   <Text>
-                    Course Duration (in months)*
+                    Total Experiance (years)*
                   </Text>
                   <TextInput
                     placeholderTextColor='black'
@@ -330,15 +325,30 @@ const Education = () => {
                       borderWidth: 0.5
                     }}
                     inputMode="numeric"
-                    value={duration}
-                    onChangeText={(reg) => setDuration(reg)}
-
+                    value={experiance}
+                    onChangeText={(reg) => setExperiance(reg)}
                   />
                 </View>
 
+                <View style={{ marginTop: 10 }}>
+                  <Text>Fees (per visit)*</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      height: 60,
+                      paddingLeft: 20,
+                      borderWidth: 0.5
+                    }}
+                    inputMode="numeric"
+                    value={price}
+                    onChangeText={(reg) => setPrice(reg)}
+                  />
+                </View>
 
                 <View style={{ marginTop: 10 }}>
-                  <Text>Name of Institution*</Text>
+                  <Text>Title*</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -349,30 +359,12 @@ const Education = () => {
                       borderWidth: 0.5
                     }}
                     // inputMode="numeric"
-                    value={instituname}
-                    onChangeText={(reg) => setInstituname(reg)}
-
+                    value={adtitle}
+                    onChangeText={(reg) => setAdtitle(reg)}
                   />
                 </View>
                 <View style={{ marginTop: 10 }}>
-                  <Text>Ad Title*</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                    // inputMode="numeric"
-                    value={title}
-                    onChangeText={(reg) => setTitle(reg)}
-
-                  />
-                </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Describe about the course</Text>
+                  <Text>Describe about yourself</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -385,9 +377,9 @@ const Education = () => {
                     // inputMode="numeric"
                     value={description}
                     onChangeText={(reg) => setDescription(reg)}
-
                   />
                 </View>
+
                 <View style={{ marginTop: 10 }}>
                   <Text>Street</Text>
                   <TextInput
@@ -467,26 +459,9 @@ const Education = () => {
                     value={pincode}
                     onChangeText={built => setPincode(built)}
                     maxLength={6}
-
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Price*</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                    inputMode="numeric"
-                    value={price}
-                    onChangeText={(reg) => setPrice(reg)}
 
-                  />
-                </View>
 
               </View>
             </View>
@@ -539,6 +514,7 @@ const Education = () => {
                 />
               </View>
             </View>
+
 
           </View>
         </KeyboardAvoidingView>
@@ -688,8 +664,7 @@ const Education = () => {
           </View>
         </View>
       </Modal>
-
-      <View style={{ marginTop: 0 }} >
+      <View style={{ marginTop: 0 }}>
         <TouchableOpacity
           style={{
             backgroundColor: style.button.backgroundColor,
@@ -715,7 +690,8 @@ const Education = () => {
   )
 }
 
-export default Education;
+export default Editdoctoradds;
+
 const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,
@@ -733,7 +709,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 60,
     paddingLeft: 20,
-    borderWidth:0.8
+     borderWidth: 0.8
 
   },
   button: {

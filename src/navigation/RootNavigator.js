@@ -34,6 +34,12 @@ import EditProfile from '../screens/Profile/EditProfile';
 import SearchScreen from '../screens/SearchScreen';
 import Chat from '../chat/Chat';
 import Myadds from '../screens/myadds/Myadds';
+import Editeducationadds from '../screens/myadds/Editeducationadds';
+import Edithospitalityadds from '../screens/myadds/Edithospitalityadds';
+import Editpropertyadds from '../screens/myadds/Editpropertyadds';
+import Editdoctoradds from '../screens/myadds/Editdoctoradds';
+import Edithospitaladds from '../screens/myadds/Edithospitaladds';
+import Editvehicleads from '../screens/myadds/Editvehicleads';
 
 const Stack = createNativeStackNavigator();
 
@@ -100,6 +106,96 @@ const RootNavigator = () => {
       <Stack.Screen
         name="PropertyCategoryDetails"
         component={PropertyCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Editeducationadds"
+        component={Editeducationadds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Edithospitalityadds"
+        component={Edithospitalityadds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Editpropertyadds"
+        component={Editpropertyadds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Editdoctoradds"
+        component={Editdoctoradds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Edithospitaladds"
+        component={Edithospitaladds}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: "center"
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Editvehicleads"
+        component={Editvehicleads}
         options={{
           headerShown: false,
           headerStyle: {

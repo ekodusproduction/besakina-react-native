@@ -130,7 +130,17 @@ const Doctor = () => {
 
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error.response);
+              console.error('Catch Error :---->', error);
+              if (error.message == 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  `Something went wrong, Try again later`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+
               console.log("error message--->", error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -458,6 +468,7 @@ const Doctor = () => {
                     inputMode="numeric"
                     value={pincode}
                     onChangeText={built => setPincode(built)}
+                    maxLength={6}
                   />
                 </View>
 
@@ -708,7 +719,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 60,
     paddingLeft: 20,
-     borderWidth: 0.8
+    borderWidth: 0.8
 
   },
   button: {

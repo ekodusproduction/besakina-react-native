@@ -24,8 +24,8 @@ export default StyleSheet.create({
         borderRadius: 12,
         height: 60,
         paddingLeft: 20,
-        borderWidth:0.8,
-        
+        borderWidth: 0.8,
+
     },
     button: {
         backgroundColor: '#3184b6',
@@ -46,7 +46,7 @@ export default StyleSheet.create({
         overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
-     },
+    },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -68,7 +68,7 @@ export default StyleSheet.create({
         flex: 1,
         marginLeft: 5,
         fontSize: 16,
-        height: '100%', 
+        height: '100%',
     },
     icon: {
         marginLeft: 10,
@@ -89,6 +89,7 @@ export default StyleSheet.create({
     },
     selectedTextStyle: {
         fontSize: 16,
+        marginLeft: 10
     },
     iconStyle: {
         width: 20,

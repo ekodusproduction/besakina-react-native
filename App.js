@@ -39,7 +39,7 @@ const App = () => {
       ) : (
         <View style={{ flex: 1 }}>
           <Video
-            source={require('./assets/bk_res_2.mp4')}
+            source={require('./assets/bk_ress_4.mp4')}
             style={{ width: '100%', height: '100%' }}
             resizeMode="cover"
             repeat={false}

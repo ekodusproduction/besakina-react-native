@@ -84,7 +84,7 @@ const Myadds = (props) => {
     }, [isfocused]);
 
     return (
-        <View style={{ flex: 1, marginBottom: 60 }}>
+        <View style={{ flex: 1, }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
                 <Appbar.Content title="My Adds" />
@@ -110,13 +110,14 @@ const Myadds = (props) => {
                                 width: '80%',
                                 justifyContent: 'center',
                             }}
-                            onPress={()=>navigation.navigate('AddAds')}
+                            onPress={() => navigation.navigate('AddAds')}
                         >
                             <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>Press Here</Text>
                         </TouchableOpacity>
                     </View> :
                     <FlatList
                         data={data}
+                        showsVerticalScrollIndicator={false}
                         renderItem={({ item, index }) => {
                             let imageurl = `${Baseurl}/api/${item.images[0]}`;
                             return (
@@ -152,8 +153,43 @@ const Myadds = (props) => {
                                                 <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">{item.title}</Text>
                                             </View>
                                             <View style={{ flexDirection: "row" }}>
-                                                <AntDesign name='delete' size={20} style={{ color: 'red', marginTop: 10, marginBottom: 10, marginRight: 10, borderWidth: 0.8, padding: 3, borderRadius: 5, paddingLeft: 5, borderColor: "red" }} />
-                                                <AntDesign name='edit' size={20} style={{ color: 'green', marginTop: 10, marginBottom: 10, marginRight: 10, borderWidth: 0.8, padding: 3, borderRadius: 5, borderColor: "green" }} />
+                                                <AntDesign
+                                                    name='delete'
+                                                    size={20}
+                                                    style={{
+                                                        color: 'red',
+                                                        marginTop: 10,
+                                                        marginBottom: 10,
+                                                        marginRight: 10,
+                                                        borderWidth: 0.8,
+                                                        padding: 3,
+                                                        borderRadius: 5,
+                                                        paddingLeft: 5,
+                                                        borderColor: "red"
+                                                    }}
+                                                />
+                                                <AntDesign
+                                                    name='edit'
+                                                    size={20}
+                                                    style={{
+                                                        color: 'green',
+                                                        marginTop: 10,
+                                                        marginBottom: 10,
+                                                        marginRight: 10,
+                                                        borderWidth: 0.8,
+                                                        padding: 3,
+                                                        borderRadius: 5,
+                                                        borderColor: "green"
+                                                    }}
+                                                    onPress={() =>
+                                                        item.category == "education" ? navigation.navigate('Editeducationadds', { item }) :
+                                                            item.category == "property" ? navigation.navigate('Editpropertyadds', { item }) :
+                                                                item.category == "vehicles" ? navigation.navigate('Editvehicleads', { item }) :
+                                                                    item.category == "hospitality" ? navigation.navigate('Edithospitalityadds', { item }) :
+                                                                        item.category == "doctors" ? navigation.navigate('Editdoctoradds', { item }) :
+                                                                            item.category == "hospitals" ? navigation.navigate('Edithospitaladds', { item }) : null
+                                                    }
+                                                />
                                             </View>
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>

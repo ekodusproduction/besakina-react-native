@@ -160,17 +160,7 @@ const FirstRoute = () => {
 
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error);
-              console.error('Catch Errorsdsdsdsds :---->', error.message);
-              if (error.message == 'Network Error') {
-                ToastAndroid.showWithGravityAndOffset(
-                  `Something went wrong, Try again later`,
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50,
-                );
-              }
+              console.error('Catch Error :---->', error.response);
               console.log("error message--->", error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -985,16 +975,7 @@ const SecondRoute = () => {
 
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error);
-              if (error.message == 'Network Error') {
-                ToastAndroid.showWithGravityAndOffset(
-                  `Something went wrong, Try again later`,
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50,
-                );
-              }
+              console.error('Catch Error :---->', error.response);
               console.log("error message--->", error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -1647,7 +1628,7 @@ const SecondRoute = () => {
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-const Vehicle = () => {
+const Editvehicleads = () => {
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -1683,7 +1664,7 @@ const Vehicle = () => {
   )
 }
 
-export default Vehicle;
+export default Editvehicleads;
 const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,

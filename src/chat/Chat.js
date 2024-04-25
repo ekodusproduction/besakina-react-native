@@ -61,7 +61,7 @@ const Chat = () => {
 
 
       <ScrollView
-        style={{ flex: 1, marginBottom: 70 }}
+        style={{ flex: 1,   }}
         alwaysBounceVertical
         showsVerticalScrollIndicator={false}
       >
@@ -73,20 +73,9 @@ const Chat = () => {
             <SkeletonPlaceholder>
               <View style={{ padding: 10 }}>
 
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((_, index) => (
-                  <View key={index} style={[styles.card, { marginBottom: 5, flexDirection: "row", justifyContent:"space-between", flex:1 }]}>
-                    <View style={{ display: "flex", flexDirection: "row", marginHorizontal: 0, }}>
-                      <View style={{ width: 50, height: 50, borderRadius: 25 }} />
-                      <View style={{ marginLeft: 10 }}>
-                        <View style={{ width: 150, height: 20, borderRadius: 4 }} />
-                        <View style={{ width: 100, height: 15, borderRadius: 4, marginTop: 6 }} />
-                      </View>
-                    </View>
-                    <View>
-                      <View style={{ width: 50, height: 15, borderRadius: 4, marginBottom: 8 }} />
-                      <View style={{ width: 100, height: 15, borderRadius: 4 }} />
-                    </View>
-                  </View>
+                {[1, 2, 3, 4, 5, 6].map((_, index) => (
+                  <View style={{ height: 100, marginBottom: 20, borderRadius: 15 }} />
+
                 ))}
               </View>
             </SkeletonPlaceholder>

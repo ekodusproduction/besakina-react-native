@@ -4,7 +4,6 @@ import { Appbar } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import style from '../../style';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Dimensions } from 'react-native';
@@ -15,36 +14,48 @@ import { handleGetToken } from '../../constant/tokenUtils';
 import { useIsFocused } from '@react-navigation/native';
 
 
-const EditProfile = () => {
+const Editeducationadds = (item) => {
+    const newdata = item.route.params;
+    console.log('newdata Editeducationadds- -->', newdata);
     const navigation = useNavigation();
-    const [documentvalue, setDocumentvalue] = useState(null);
+    const [coursevalue, setCoursevalue] = useState(null);
+    const [domainvalue, setDomainvalue] = useState(null);
     const [loading, setLoading] = useState(false);
-    const DocumentData = [
-        { label: 'Aadhar Card', value: '1' },
-        { label: 'Pan Card', value: '2' },
-        { label: 'GSt Number', value: '3' },
+    const Coursedata = [
+        { label: 'Graduation', value: '1' },
+        { label: 'Diploma', value: '2' },
+        { label: 'Certification', value: '3' },
     ];
-    const [selectedImagesfront, setSelectedImagesfront] = useState([]);
-    const [selectedImagesback, setSelectedImagesback] = useState([]);
-    const [selectedImagesprofile, setSelectedImagesprofile] = useState([]); console.log('selectedImagesprofile---', selectedImagesprofile)
+    const Domaindata = [
+        { label: 'Science', value: '1' },
+        { label: 'Arts', value: '2' },
+        { label: 'Commerce', value: '3' },
+        { label: 'Computer Science', value: '4' },
+        { label: 'Cooking', value: '5' },
+        { label: 'Electronics', value: '6' },
+    ];
+    const [selectedImages, setSelectedImages] = useState([]);
     const screenWidth = Dimensions.get('window').width;
-    const screenHeight = Dimensions.get('window').height;
+    const itemWidth = (screenWidth - 20) / 4.7;
+    const [duration, setDuration] = useState(null);
+    const [instituname, setInstituname] = useState(null);
+    const [title, setTitle] = useState(null);
+    const [description, setDescription] = useState(null);
+    const [address, setAddress] = useState(null);
+    const [price, setPrice] = useState(null);
     const [loadingotp, setLoadingotp] = useState(false);
     const [loadingverifyotp, setLoadingverifyotp] = useState(false);
     const [showTokenModal, setShowTokenModal] = useState(false);
     const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
+    const [street, setStreet] = useState("");
+    const [locality, setLocality] = useState("");
     const [city, setCity] = useState("");
     const [state, setstate] = useState("");
     const [pincode, setPincode] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
     const [isValidNumber, setIsValidNumber] = useState(true);
-    const [fullname, setFullname] = useState("");
-    const [emailid, setEmailid] = useState("");
-    const [phone, setPhone] = useState("");
-    const [doc_number, serDoc_number] = useState("");
-    const [locality, setLocality] = useState("");
 
-    const handleCameraLaunchfront = () => {
+    const handleCameraLaunch = () => {
         const options = {
             mediaType: 'photo',
             includeBase64: false,
@@ -64,60 +75,12 @@ const EditProfile = () => {
                     type: response.assets?.[0]?.type,
                     fileName: response.assets?.[0]?.fileName,
                 };
-                setSelectedImagesfront([...selectedImagesfront, imageInfo]);
-            }
-        });
-    }
-    const handleCameraLaunchback = () => {
-        const options = {
-            mediaType: 'photo',
-            includeBase64: false,
-            maxWidth: 1024,
-            maxHeight: 1024,
-            quality: 0.5,
-        };
-
-        launchCamera(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled camera');
-            } else if (response.error) {
-                console.log('Camera Error: ', response.error);
-            } else {
-                const imageInfo = {
-                    uri: response.assets?.[0]?.uri,
-                    type: response.assets?.[0]?.type,
-                    fileName: response.assets?.[0]?.fileName,
-                };
-                setSelectedImagesback([...selectedImagesback, imageInfo]);
-            }
-        });
-    }
-    const handleprofilepicCameraLaunch = () => {
-        const options = {
-            mediaType: 'photo',
-            includeBase64: false,
-            maxWidth: 1024,
-            maxHeight: 1024,
-            quality: 0.5,
-        };
-
-        launchCamera(options, response => {
-            if (response.didCancel) {
-                console.log('User cancelled camera');
-            } else if (response.error) {
-                console.log('Camera Error: ', response.error);
-            } else {
-                const imageInfo = {
-                    uri: response.assets?.[0]?.uri,
-                    type: response.assets?.[0]?.type,
-                    fileName: response.assets?.[0]?.fileName,
-                };
-                setSelectedImagesprofile([...selectedImagesprofile, imageInfo]);
+                setSelectedImages([...selectedImages, imageInfo]);
             }
         });
     }
 
-    const handleprofile = () => {
+    const handlePostAd = () => {
         handleGetToken()
             .then((token) => {
                 if (token) {
@@ -125,43 +88,36 @@ const EditProfile = () => {
                     setLoading(true);
 
                     const formData = new FormData();
-                    const documentvalueType = DocumentData.filter(item => item.value === documentvalue).map(i => i.label).toString();
-                    formData.append("fullname", fullname);
-                    formData.append("alternate_mobile", phone);
-                    formData.append("email", emailid);
-                    formData.append("doc_number", doc_number);
-                    formData.append("doc_type", documentvalueType);
 
-                    selectedImagesfront.forEach((image, index) => {
-                        formData.append(`doc_file`, {
-                            uri: image.uri,
-                            type: image.type,
-                            name: image.fileName,
-                        });
-                    });
-                    selectedImagesback.forEach((image, index) => {
-                        formData.append(`doc_file_back`, {
-                            uri: image.uri,
-                            type: image.type,
-                            name: image.fileName,
-                        });
-                    });
-                    selectedImagesprofile.forEach((image, index) => {
-                        formData.append(`profile_pic`, {
+                    // formData.append("plan_id", "1");
+
+                    const courseType = Coursedata.filter(item => item.value === coursevalue).map(i => i.label).toString();
+                    const domainType = Domaindata.filter(item => item.value === domainvalue).map(i => i.label).toString();
+
+                    formData.append("type", courseType);
+                    formData.append("domain", domainType);
+                    formData.append("institution_name", instituname);
+                    formData.append("course_duration", duration);
+                    formData.append("title", title);
+                    formData.append("description", description);
+                    formData.append("price", price);
+
+                    selectedImages.forEach((image, index) => {
+                        formData.append(`images[${index}]`, {
                             uri: image.uri,
                             type: image.type,
                             name: image.fileName,
                         });
                     });
 
+                    formData.append("street", street);
                     formData.append("locality", locality);
                     formData.append("city", city);
                     formData.append("state", state);
                     formData.append("pincode", pincode);
-                    formData.append("about", pincode);
 
                     console.log('formData===', formData);
-                    axios.post(`${Baseurl}/api/users/details`, formData, {
+                    axios.post(`${Baseurl}/api/education/add`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
                             Authorization: `Bearer ${token}`,
@@ -302,7 +258,7 @@ const EditProfile = () => {
         <View style={{ flex: 1, }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-                <Appbar.Content title="" />
+                <Appbar.Content title="Education" />
             </Appbar.Header>
 
             <ScrollView style={{ flex: 1, }}>
@@ -310,32 +266,53 @@ const EditProfile = () => {
                     <View style={{ padding: 10 }}>
 
 
-                        <View style={{ borderWidth: 0.5, marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
+                        <View style={{ borderWidth: 0.5, height: '1500px', marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
                             <View style={{ padding: 5 }}>
+                                <View style={{ marginTop: 15 }}>
+                                    <Dropdown
+                                        style={style.dropdown}
+                                        placeholderStyle={style.placeholderStyle}
+                                        selectedTextStyle={style.selectedTextStyle}
+                                        inputSearchStyle={style.inputSearchStyle}
+                                        iconStyle={style.iconStyle}
+                                        data={Coursedata}
+                                        // search
+                                        maxHeight={300}
+                                        labelField="label"
+                                        valueField="value"
+                                        placeholder="Select Course Type"
+                                        // searchPlaceholder="Search..."
+                                        value={coursevalue}
+                                        onChange={item => {
+                                            setCoursevalue(item.value);
+                                        }}
+                                    />
+                                </View>
 
-                                <TouchableOpacity onPress={handleprofilepicCameraLaunch} style={{ justifyContent: "center", alignItems: "center", borderRadius: 5 }}>
+                                <View style={{ marginTop: 15 }}>
+                                    <Dropdown
+                                        style={style.dropdown}
+                                        placeholderStyle={style.placeholderStyle}
+                                        selectedTextStyle={style.selectedTextStyle}
+                                        inputSearchStyle={style.inputSearchStyle}
+                                        iconStyle={style.iconStyle}
+                                        data={Domaindata}
+                                        // search
+                                        maxHeight={300}
+                                        labelField="label"
+                                        valueField="value"
+                                        placeholder="Select Domain"
+                                        // searchPlaceholder="Search..."
+                                        value={domainvalue}
+                                        onChange={item => {
+                                            setDomainvalue(item.value);
+                                        }}
+                                    />
+                                </View>
 
-                                    {selectedImagesprofile.length > 0 ? (
-                                        <Image
-                                            source={{ uri: selectedImagesprofile[0].uri }}
-                                            style={{ height: 100, width: 100, borderRadius: 50, borderColor: "gray", borderWidth: 0.5 }}
-                                            resizeMode="cover"
-                                        />
-                                    ) : (
-                                        <Image
-                                            source={{ uri: 'https://fastly.picsum.photos/id/64/4326/2884.jpg?hmac=9_SzX666YRpR_fOyYStXpfSiJ_edO3ghlSRnH2w09Kg' }}
-                                            style={{ height: 100, width: 100, borderRadius: 50, borderColor: "gray", borderWidth: 0.5 }}
-                                        />
-                                    )}
-
-
-                                    <View style={{ position: 'absolute', bottom: 5, right: 150, }}>
-                                        <FontAwesome name="camera" size={24} color="black" />
-                                    </View>
-                                </TouchableOpacity>
                                 <View style={{ marginTop: 10 }}>
                                     <Text>
-                                        Full Name
+                                        Course Duration (in months)*
                                     </Text>
                                     <TextInput
                                         placeholderTextColor='black'
@@ -346,16 +323,15 @@ const EditProfile = () => {
                                             paddingLeft: 20,
                                             borderWidth: 0.5
                                         }}
-                                        // inputMode="numeric"
-                                        value={fullname}
-                                        onChangeText={(name) => setFullname(name)}
-
+                                        inputMode="numeric"
+                                        value={duration}
+                                        onChangeText={(reg) => setDuration(reg)}
                                     />
                                 </View>
 
 
                                 <View style={{ marginTop: 10 }}>
-                                    <Text>Email ID</Text>
+                                    <Text>Name of Institution*</Text>
                                     <TextInput
                                         placeholderTextColor='black'
                                         style={{
@@ -365,14 +341,31 @@ const EditProfile = () => {
                                             paddingLeft: 20,
                                             borderWidth: 0.5
                                         }}
-                                        inputMode="email"
-                                        value={emailid}
-                                        onChangeText={(name) => setEmailid(name)}
+                                        // inputMode="numeric"
+                                        value={instituname}
+                                        onChangeText={(reg) => setInstituname(reg)}
 
                                     />
                                 </View>
                                 <View style={{ marginTop: 10 }}>
-                                    <Text>Alternate Mobile</Text>
+                                    <Text>Ad Title*</Text>
+                                    <TextInput
+                                        placeholderTextColor='black'
+                                        style={{
+                                            backgroundColor: 'white',
+                                            borderRadius: 5,
+                                            height: 60,
+                                            paddingLeft: 20,
+                                            borderWidth: 0.5
+                                        }}
+                                        // inputMode="numeric"
+                                        value={title}
+                                        onChangeText={(reg) => setTitle(reg)}
+
+                                    />
+                                </View>
+                                <View style={{ marginTop: 10 }}>
+                                    <Text>Describe about the course</Text>
                                     <TextInput
                                         placeholderTextColor='black'
                                         style={{
@@ -382,14 +375,14 @@ const EditProfile = () => {
                                             borderWidth: 0.5,
                                             height: 60,
                                         }}
-                                        inputMode="numeric"
-                                        value={phone}
-                                        onChangeText={(name) => setPhone(name)}
-                                        maxLength={10}
+                                        // inputMode="numeric"
+                                        value={description}
+                                        onChangeText={(reg) => setDescription(reg)}
+
                                     />
                                 </View>
                                 <View style={{ marginTop: 10 }}>
-                                    <Text>State</Text>
+                                    <Text>Street</Text>
                                     <TextInput
                                         placeholderTextColor='black'
                                         style={{
@@ -400,24 +393,8 @@ const EditProfile = () => {
                                             borderWidth: 0.5
                                         }}
                                         // inputMode="numeric"
-                                        value={state}
-                                        onChangeText={built => setstate(built)}
-                                    />
-                                </View>
-                                <View style={{ marginTop: 10 }}>
-                                    <Text>City</Text>
-                                    <TextInput
-                                        placeholderTextColor='black'
-                                        style={{
-                                            backgroundColor: 'white',
-                                            borderRadius: 5,
-                                            height: 60,
-                                            paddingLeft: 20,
-                                            borderWidth: 0.5
-                                        }}
-                                        // inputMode="numeric"
-                                        value={city}
-                                        onChangeText={built => setCity(built)}
+                                        value={street}
+                                        onChangeText={built => setStreet(built)}
                                     />
                                 </View>
                                 <View style={{ marginTop: 10 }}>
@@ -437,7 +414,39 @@ const EditProfile = () => {
                                     />
                                 </View>
                                 <View style={{ marginTop: 10 }}>
-                                    <Text>Zip Code</Text>
+                                    <Text>City</Text>
+                                    <TextInput
+                                        placeholderTextColor='black'
+                                        style={{
+                                            backgroundColor: 'white',
+                                            borderRadius: 5,
+                                            height: 60,
+                                            paddingLeft: 20,
+                                            borderWidth: 0.5
+                                        }}
+                                        // inputMode="numeric"
+                                        value={city}
+                                        onChangeText={built => setCity(built)}
+                                    />
+                                </View>
+                                <View style={{ marginTop: 10 }}>
+                                    <Text>State</Text>
+                                    <TextInput
+                                        placeholderTextColor='black'
+                                        style={{
+                                            backgroundColor: 'white',
+                                            borderRadius: 5,
+                                            height: 60,
+                                            paddingLeft: 20,
+                                            borderWidth: 0.5
+                                        }}
+                                        // inputMode="numeric"
+                                        value={state}
+                                        onChangeText={built => setstate(built)}
+                                    />
+                                </View>
+                                <View style={{ marginTop: 10 }}>
+                                    <Text>Pincode</Text>
                                     <TextInput
                                         placeholderTextColor='black'
                                         style={{
@@ -453,28 +462,8 @@ const EditProfile = () => {
                                         maxLength={6}
                                     />
                                 </View>
-                                <View style={{ marginTop: 15 }}>
-                                    <Dropdown
-                                        style={style.dropdown}
-                                        placeholderStyle={style.placeholderStyle}
-                                        selectedTextStyle={style.selectedTextStyle}
-                                        inputSearchStyle={style.inputSearchStyle}
-                                        iconStyle={style.iconStyle}
-                                        data={DocumentData}
-                                        // search
-                                        maxHeight={300}
-                                        labelField="label"
-                                        valueField="value"
-                                        placeholder="Select Documents"
-                                        // searchPlaceholder="Search..."
-                                        value={documentvalue}
-                                        onChange={item => {
-                                            setDocumentvalue(item.value);
-                                        }}
-                                    />
-                                </View>
                                 <View style={{ marginTop: 10 }}>
-                                    <Text>Adhar/Gst/Pan</Text>
+                                    <Text>Price*</Text>
                                     <TextInput
                                         placeholderTextColor='black'
                                         style={{
@@ -484,9 +473,9 @@ const EditProfile = () => {
                                             paddingLeft: 20,
                                             borderWidth: 0.5
                                         }}
-                                        // inputMode="numeric"
-                                        value={doc_number}
-                                        onChangeText={(reg) => serDoc_number(reg)}
+                                        inputMode="numeric"
+                                        value={price}
+                                        onChangeText={(reg) => setPrice(reg)}
 
                                     />
                                 </View>
@@ -498,132 +487,48 @@ const EditProfile = () => {
 
                         <View style={{ borderWidth: 0.5, borderColor: "gray", padding: 10, borderRadius: 5, marginTop: 10 }}>
                             <View style={{ padding: 0 }}>
-                                <Text style={style.subsubtitle}>Upload Documents</Text>
-                                {documentvalue == 1 ?
-                                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                        <FlatList
-                                            data={[...Array(1).keys()]}
-                                            vertical
-                                            showsHorizontalScrollIndicator={false}
-                                            renderItem={({ item }) => (
-                                                <TouchableOpacity
-                                                    onPress={handleCameraLaunchfront}
-                                                    style={{
-                                                        height: (screenHeight - 20) / 4.7,
-                                                        width: (screenWidth - 20) / 2.2,
-                                                        borderRadius: 5,
-                                                        backgroundColor: 'white',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        marginHorizontal: 5,
-                                                        marginTop: 10,
-                                                        marginBottom: 10,
-                                                        elevation: 5,
-                                                        shadowColor: '#000',
-                                                        shadowOpacity: 0.3,
-                                                        shadowRadius: 5,
-                                                        shadowOffset: {
-                                                            width: 0,
-                                                            height: 2,
-                                                        },
-                                                    }}
-                                                >
-                                                    {selectedImagesfront[item] ? (
-                                                        <Image
-                                                            source={{ uri: typeof selectedImagesfront[item] === 'string' ? selectedImagesfront[item] : selectedImagesfront[item].uri }}
-                                                            style={{ height: '100%', width: '100%' }}
-                                                            resizeMode="cover"
-                                                        />
-                                                    ) : (
-                                                        <AntDesign name="upload" size={50} />
-                                                    )}
-                                                </TouchableOpacity>
+                                <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
+                                <FlatList
+                                    data={[...Array(20).keys()]}
+                                    vertical
+                                    numColumns={4}
+                                    showsHorizontalScrollIndicator={false}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacity
+                                            onPress={handleCameraLaunch}
+                                            style={{
+                                                height: itemWidth,
+                                                width: itemWidth,
+                                                borderRadius: 5,
+                                                backgroundColor: 'white',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                marginHorizontal: 5,
+                                                marginTop: 10,
+                                                marginBottom: 10,
+                                                elevation: 5,
+                                                shadowColor: '#000',
+                                                shadowOpacity: 0.3,
+                                                shadowRadius: 5,
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 2,
+                                                },
+                                            }}
+                                        >
+                                            {selectedImages[item] ? (
+                                                <Image
+                                                    source={{ uri: typeof selectedImages[item] === 'string' ? selectedImages[item] : selectedImages[item].uri }}
+                                                    style={{ height: '100%', width: '100%' }}
+                                                    resizeMode="cover"
+                                                />
+                                            ) : (
+                                                <AntDesign name="camera" size={50} />
                                             )}
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-
-                                        <FlatList
-                                            data={[...Array(1).keys()]}
-                                            vertical
-                                            showsHorizontalScrollIndicator={false}
-                                            renderItem={({ item }) => (
-                                                <TouchableOpacity
-                                                    onPress={handleCameraLaunchback}
-                                                    style={{
-                                                        height: (screenHeight - 20) / 4.7,
-                                                        width: (screenWidth - 20) / 2.2,
-                                                        borderRadius: 5,
-                                                        backgroundColor: 'white',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        marginHorizontal: 5,
-                                                        marginTop: 10,
-                                                        marginBottom: 10,
-                                                        elevation: 5,
-                                                        shadowColor: '#000',
-                                                        shadowOpacity: 0.3,
-                                                        shadowRadius: 5,
-                                                        shadowOffset: {
-                                                            width: 0,
-                                                            height: 2,
-                                                        },
-                                                    }}
-                                                >
-                                                    {selectedImagesback[item] ? (
-                                                        <Image
-                                                            source={{ uri: typeof selectedImagesback[item] === 'string' ? selectedImagesback[item] : selectedImagesback[item].uri }}
-                                                            style={{ height: '100%', width: '100%' }}
-                                                            resizeMode="cover"
-                                                        />
-                                                    ) : (
-                                                        <AntDesign name="upload" size={50} />
-                                                    )}
-                                                </TouchableOpacity>
-                                            )}
-                                            keyExtractor={(item, index) => index.toString()}
-                                        />
-                                    </View>
-                                    : <FlatList
-                                        data={[...Array(1).keys()]}
-                                        vertical
-                                        showsHorizontalScrollIndicator={false}
-                                        renderItem={({ item }) => (
-                                            <TouchableOpacity
-                                                onPress={handleCameraLaunchfront}
-                                                style={{
-                                                    height: (screenHeight - 20) / 4.7,
-                                                    width: (screenWidth - 20) / 2.2,
-                                                    borderRadius: 5,
-                                                    backgroundColor: 'white',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    marginHorizontal: 5,
-                                                    marginTop: 10,
-                                                    marginBottom: 10,
-                                                    elevation: 5,
-                                                    shadowColor: '#000',
-                                                    shadowOpacity: 0.3,
-                                                    shadowRadius: 5,
-                                                    shadowOffset: {
-                                                        width: 0,
-                                                        height: 2,
-                                                    },
-                                                }}
-                                            >
-                                                {selectedImagesfront[item] ? (
-                                                    <Image
-                                                        source={{ uri: typeof selectedImagesfront[item] === 'string' ? selectedImagesfront[item] : selectedImagesfront[item].uri }}
-                                                        style={{ height: '100%', width: '100%' }}
-                                                        resizeMode="cover"
-                                                    />
-                                                ) : (
-                                                    <AntDesign name="upload" size={50} />
-                                                )}
-                                            </TouchableOpacity>
-                                        )}
-                                        keyExtractor={(item, index) => index.toString()}
-                                    />
-                                }
+                                        </TouchableOpacity>
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
                             </View>
                         </View>
 
@@ -786,14 +691,14 @@ const EditProfile = () => {
                         borderColor: "gray",
                         borderWidth: 0.5
                     }}
-                    onPress={handleprofile}
+                    onPress={handlePostAd}
                     disabled={loading ? true : false}
                 >
                     {loading ? (
                         <ActivityIndicator size="small" color="white" />
                     ) : (
                         <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>
-                            Save
+                            Post My Ad
                         </Text>
                     )}
                 </TouchableOpacity>
@@ -802,7 +707,7 @@ const EditProfile = () => {
     )
 }
 
-export default EditProfile;
+export default Editeducationadds;
 const styles = StyleSheet.create({
     header: {
         fontSize: 36 * 1.33,
@@ -819,7 +724,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 12,
         height: 60,
-        paddingLeft: 20
+        paddingLeft: 20,
+        borderWidth: 0.8
+
     },
     button: {
         backgroundColor: '#3184b6',

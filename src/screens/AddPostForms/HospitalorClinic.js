@@ -124,7 +124,16 @@ const HospitalorClinic = () => {
 
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error.response);
+              console.error('Catch Error :---->', error);
+              if (error.message == 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  `Something went wrong, Try again later`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
               console.log("error message--->", error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -451,6 +460,8 @@ const HospitalorClinic = () => {
                     inputMode="numeric"
                     value={pincode}
                     onChangeText={built => setPincode(built)}
+                    maxLength={6}
+
                   />
                 </View>
               </View>

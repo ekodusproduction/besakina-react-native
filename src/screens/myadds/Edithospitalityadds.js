@@ -7,44 +7,28 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Dimensions } from 'react-native';
+import { handleGetToken } from '../../constant/tokenUtils';
 import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { handleGetToken } from '../../constant/tokenUtils';
 import { useIsFocused } from '@react-navigation/native';
 
-
-const Education = () => {
+const Edithospitalityadds = () => {
   const navigation = useNavigation();
-  const [coursevalue, setCoursevalue] = useState(null);
-  const [domainvalue, setDomainvalue] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const Coursedata = [
-    { label: 'Graduation', value: '1' },
-    { label: 'Diploma', value: '2' },
-    { label: 'Certification', value: '3' },
-  ];
-  const Domaindata = [
-    { label: 'Science', value: '1' },
-    { label: 'Arts', value: '2' },
-    { label: 'Commerce', value: '3' },
-    { label: 'Computer Science', value: '4' },
-    { label: 'Cooking', value: '5' },
-    { label: 'Electronics', value: '6' },
-  ];
+  const [hospitalityvalue, setHospitalityvalue] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
-  const [duration, setDuration] = useState(null);
-  const [instituname, setInstituname] = useState(null);
-  const [title, setTitle] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState(false);
+
   const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
+  const [adtitle, setAdtitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [street, setStreet] = useState("");
   const [locality, setLocality] = useState("");
   const [city, setCity] = useState("");
@@ -52,6 +36,33 @@ const Education = () => {
   const [pincode, setPincode] = useState("");
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
+
+  const Hospitalitydata = [
+    { label: 'Hotel', value: '1' },
+    { label: 'Guest House', value: '2' },
+    { label: 'Homestay', value: '3' },
+    { label: 'Resort', value: '4' },
+    { label: 'Paying Guest', value: '5' },
+  ];
+  const openGallery = () => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 2000,
+      maxWidth: 2000,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('Image picker error: ', response.error);
+      } else {
+        let imageUri = response.uri || response.assets?.[0]?.uri;
+        setSelectedImages([...selectedImages, imageUri]);
+      }
+    });
+  };
 
   const handleCameraLaunch = () => {
     const options = {
@@ -88,16 +99,12 @@ const Education = () => {
           const formData = new FormData();
 
           // formData.append("plan_id", "1");
+          formData.append("title", adtitle);
+          const hospitalitytype = Hospitalitydata.filter(item => item.value === hospitalityvalue).map(i => i.label).toString();
 
-          const courseType = Coursedata.filter(item => item.value === coursevalue).map(i => i.label).toString();
-          const domainType = Domaindata.filter(item => item.value === domainvalue).map(i => i.label).toString();
-
-          formData.append("type", courseType);
-          formData.append("domain", domainType);
-          formData.append("institution_name", instituname);
-          formData.append("course_duration", duration);
-          formData.append("title", title);
+          formData.append("type", hospitalitytype);
           formData.append("description", description);
+          formData.append("name", name);
           formData.append("price", price);
 
           selectedImages.forEach((image, index) => {
@@ -114,8 +121,9 @@ const Education = () => {
           formData.append("state", state);
           formData.append("pincode", pincode);
 
+
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/education/add`, formData, {
+          axios.post(`${Baseurl}/api/hospitality/add`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
               Authorization: `Bearer ${token}`,
@@ -131,18 +139,18 @@ const Education = () => {
                 50,
               );
               setShowTokenModal(false);
+
             })
             .catch((error) => {
-              console.error('Catch Error :---->', error);
-              if (error.message == 'Network Error') {
-                ToastAndroid.showWithGravityAndOffset(
-                  `Something went wrong, Try again later`,
-                  ToastAndroid.LONG,
-                  ToastAndroid.BOTTOM,
-                  25,
-                  50,
-                );
-              }
+              console.error('Catch Error :---->', error.response);
+              console.log("error message--->", error.response.data.message);
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
             })
             .finally(() => {
               setLoading(false);
@@ -171,11 +179,13 @@ const Education = () => {
 
   const sendOtp = async () => {
     try {
+
       if (!mobile || mobile.length !== 10) {
         setErrorMessage('Please enter a valid 10-digit mobile number');
         setIsValidNumber(false);
         return;
       }
+
       setLoadingotp(true);
       const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
 
@@ -264,7 +274,7 @@ const Education = () => {
     <View style={{ flex: 1, }}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-        <Appbar.Content title="Education" />
+        <Appbar.Content title="Hospitality" />
       </Appbar.Header>
 
       <ScrollView style={{ flex: 1, }}>
@@ -274,51 +284,10 @@ const Education = () => {
 
             <View style={{ borderWidth: 0.5, height: '1500px', marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
               <View style={{ padding: 5 }}>
-                <View style={{ marginTop: 15 }}>
-                  <Dropdown
-                    style={style.dropdown}
-                    placeholderStyle={style.placeholderStyle}
-                    selectedTextStyle={style.selectedTextStyle}
-                    inputSearchStyle={style.inputSearchStyle}
-                    iconStyle={style.iconStyle}
-                    data={Coursedata}
-                    // search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Course Type"
-                    // searchPlaceholder="Search..."
-                    value={coursevalue}
-                    onChange={item => {
-                      setCoursevalue(item.value);
-                    }}
-                  />
-                </View>
-
-                <View style={{ marginTop: 15 }}>
-                  <Dropdown
-                    style={style.dropdown}
-                    placeholderStyle={style.placeholderStyle}
-                    selectedTextStyle={style.selectedTextStyle}
-                    inputSearchStyle={style.inputSearchStyle}
-                    iconStyle={style.iconStyle}
-                    data={Domaindata}
-                    // search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Select Domain"
-                    // searchPlaceholder="Search..."
-                    value={domainvalue}
-                    onChange={item => {
-                      setDomainvalue(item.value);
-                    }}
-                  />
-                </View>
 
                 <View style={{ marginTop: 10 }}>
                   <Text>
-                    Course Duration (in months)*
+                    Name*
                   </Text>
                   <TextInput
                     placeholderTextColor='black'
@@ -329,16 +298,35 @@ const Education = () => {
                       paddingLeft: 20,
                       borderWidth: 0.5
                     }}
-                    inputMode="numeric"
-                    value={duration}
-                    onChangeText={(reg) => setDuration(reg)}
+                    value={name}
+                    onChangeText={(reg) => setName(reg)}
 
                   />
                 </View>
 
+                <View style={{ marginTop: 15 }}>
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={Hospitalitydata}
+                    // search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select Type"
+                    // searchPlaceholder="Search..."
+                    value={hospitalityvalue}
+                    onChange={item => {
+                      setHospitalityvalue(item.value);
+                    }}
+                  />
+                </View>
 
                 <View style={{ marginTop: 10 }}>
-                  <Text>Name of Institution*</Text>
+                  <Text>Title*</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -349,45 +337,11 @@ const Education = () => {
                       borderWidth: 0.5
                     }}
                     // inputMode="numeric"
-                    value={instituname}
-                    onChangeText={(reg) => setInstituname(reg)}
-
+                    value={adtitle}
+                    onChangeText={(reg) => setAdtitle(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Ad Title*</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5
-                    }}
-                    // inputMode="numeric"
-                    value={title}
-                    onChangeText={(reg) => setTitle(reg)}
 
-                  />
-                </View>
-                <View style={{ marginTop: 10 }}>
-                  <Text>Describe about the course</Text>
-                  <TextInput
-                    placeholderTextColor='black'
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                      height: 60,
-                    }}
-                    // inputMode="numeric"
-                    value={description}
-                    onChangeText={(reg) => setDescription(reg)}
-
-                  />
-                </View>
                 <View style={{ marginTop: 10 }}>
                   <Text>Street</Text>
                   <TextInput
@@ -470,8 +424,26 @@ const Education = () => {
 
                   />
                 </View>
+
                 <View style={{ marginTop: 10 }}>
-                  <Text>Price*</Text>
+                  <Text>Write some description</Text>
+                  <TextInput
+                    placeholderTextColor='black'
+                    multiline={true}
+                    style={{
+                      backgroundColor: 'white',
+                      borderRadius: 5,
+                      paddingLeft: 20,
+                      borderWidth: 0.5,
+                      height: 60,
+                    }}
+                    // inputMode="numeric"
+                    value={description}
+                    onChangeText={(reg) => setDescription(reg)}
+                  />
+                </View>
+                <View style={{ marginTop: 10 }}>
+                  <Text>Price (per month)*</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{
@@ -484,7 +456,6 @@ const Education = () => {
                     inputMode="numeric"
                     value={price}
                     onChangeText={(reg) => setPrice(reg)}
-
                   />
                 </View>
 
@@ -689,7 +660,8 @@ const Education = () => {
         </View>
       </Modal>
 
-      <View style={{ marginTop: 0 }} >
+
+      <View style={{ marginTop: 0 }}>
         <TouchableOpacity
           style={{
             backgroundColor: style.button.backgroundColor,
@@ -711,11 +683,13 @@ const Education = () => {
           )}
         </TouchableOpacity>
       </View>
+
     </View>
   )
 }
 
-export default Education;
+export default Edithospitalityadds;
+
 const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,
@@ -734,7 +708,6 @@ const styles = StyleSheet.create({
     height: 60,
     paddingLeft: 20,
     borderWidth:0.8
-
   },
   button: {
     backgroundColor: '#3184b6',
