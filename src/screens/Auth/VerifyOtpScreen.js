@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Keyboard, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, StyleSheet, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Baseurl } from '../../constant/globalparams';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Appbar, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import LottieView from 'lottie-react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import style from '../../style';
-import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
@@ -23,7 +21,6 @@ const VerifyOtpScreen = ({ route }) => {
     const [otp, setOtp] = useState(Array(4).fill(''));
 
     useEffect(() => {
-        console.log('otp----', receivedOtp);
         setVerifyOtpvalue(receivedOtp ? receivedOtp.toString() : '');
         if (receivedOtp) {
             const otpArray = receivedOtp.toString().split('');
@@ -31,17 +28,6 @@ const VerifyOtpScreen = ({ route }) => {
         }
     }, [receivedOtp]);
 
-    useEffect(() => {
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            if (scrollViewRef.current) {
-                scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-            }
-        });
-
-        return () => {
-            keyboardDidHideListener.remove();
-        };
-    }, []);
 
     const handleNavigation = async (information) => {
         try {
@@ -89,28 +75,26 @@ const VerifyOtpScreen = ({ route }) => {
     };
 
     return (
-        <KeyboardAwareScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={{ flexGrow: 1 }}
-            enableOnAndroid={true}
-            enableAutomaticScroll={Platform.OS === 'ios'}
-            extraScrollHeight={Platform.OS === 'ios' ? 100 : 0}
-            scrollEnabled={false}
-        >
-            <TouchableOpacity onPress={() => navigation.goBack()}>
-                <AntDesign name="arrowleft" style={{ marginRight: 5, marginTop: 5 }} size={30} color={'black'} />
-            </TouchableOpacity>
-            <View style={{ flex: 1 }}>
+        <View>
+            <AntDesign onPress={() => navigation.goBack()} name="arrowleft" style={{ marginRight: 5, marginTop: 5, backgroundColor: "white" }} size={30} color={'black'} />
+            <View style={{ flex: 1, backgroundColor: "white" }}>
                 <Image source={require('../../../assets/login2.png')}
                     style={{
                         width: '100%',
                         justifyContent: "center",
                         alignItems: "center",
                         objectFit: "contain",
-                        height: 450
+                        height: Dimensions.get('screen').height / 3,
+                        backgroundColor: "white"
                     }} />
-                <SafeAreaView style={{ backgroundColor: "#3184B6", height: 600, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 }}>
-                    <Text style={[style.subtitle, { color: "white", textAlign: "center", justifyContent: "center" }]}>We have send verification code to +91 {mobile}</Text>
+                <SafeAreaView style={{
+                    backgroundColor: "#3184B6",
+                    height: Dimensions.get('screen').height,
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
+                    padding: 20,
+                }}>
+                    <Text style={[style.subtitle, { marginTop: 30, color: "white", textAlign: "center", justifyContent: "center" }]}>We have send verification code to +91 {mobile}</Text>
                     <View style={{ marginTop: 30 }}>
                         <View style={styles.container}>
                             {[0, 1, 2, 3].map(index => (
@@ -181,7 +165,7 @@ const VerifyOtpScreen = ({ route }) => {
                     </View>
                 </SafeAreaView>
             </View>
-        </KeyboardAwareScrollView>
+        </View>
     );
 };
 
@@ -226,7 +210,7 @@ const styles = StyleSheet.create({
         width: '20%',
         aspectRatio: 1,
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: 'white',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',

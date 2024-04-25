@@ -8,6 +8,7 @@ import AuthNavigator from './src/navigation/AuthNavigator';
 import RootNavigator from './src/navigation/RootNavigator';
 import Video from 'react-native-video';
 import { handleGetToken } from './src/constant/tokenUtils';
+import SplashScreen from 'react-native-splash-screen'
 
 const App = () => {
   const [isSplashScreenHidden, setIsSplashScreenHidden] = useState(false);
@@ -20,6 +21,7 @@ const App = () => {
         setIsLoggedIn(!!dataToken);
         setIsSplashScreenHidden(true);
       }, 3500));
+    SplashScreen.hide();
   }, []);
 
 
@@ -29,26 +31,26 @@ const App = () => {
   };
 
   return (
-       <View style={{ flex: 1 }}>
-        {isSplashScreenHidden ? (
-          <NavigationContainer>
-            {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
-          </NavigationContainer>
-        ) : (
-          <View style={{ flex: 1 }}>
-            <Video
-              source={require('./assets/bk_res_2.mp4')}
-              style={{ width: '100%', height: '100%' }}
-              resizeMode="cover"
-              repeat={false}
-              muted
-              controls={false}
-              onEnd={onVideoEnd}
-            />
-          </View>
-        )}
-      </View>
-   );
+    <View style={{ flex: 1 }}>
+      {isSplashScreenHidden ? (
+        <NavigationContainer>
+          {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
+        </NavigationContainer>
+      ) : (
+        <View style={{ flex: 1 }}>
+          <Video
+            source={require('./assets/bk_res_2.mp4')}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode="cover"
+            repeat={false}
+            muted
+            controls={false}
+            onEnd={onVideoEnd}
+          />
+        </View>
+      )}
+    </View>
+  );
 };
 
 export default App;

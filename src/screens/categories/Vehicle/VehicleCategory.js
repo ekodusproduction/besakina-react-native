@@ -220,7 +220,7 @@ const VehicleCategory = ({ item }) => {
                                                     </View>
 
                                                     <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                        <Text style={style.subsubtitle}>$ {item.price}</Text>
+                                                        <Text style={style.subsubtitle}>₹ {item.price}</Text>
                                                         <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
                                                     </View>
 

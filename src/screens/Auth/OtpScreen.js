@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ToastAndroid, Image, Keyboard } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, ToastAndroid, Image, Keyboard, Dimensions, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import style from '../../style';
 import { Baseurl } from '../../constant/globalparams';
@@ -8,7 +8,6 @@ import { Button } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 const OtpScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -18,7 +17,6 @@ const OtpScreen = ({ route }) => {
     const [errorMessage, setErrorMessage] = useState('');
     const [isValidNumber, setIsValidNumber] = useState(true);
     const isfocused = useIsFocused();
-    const scrollViewRef = useRef(null);
 
     useEffect(() => {
         if (isfocused) {
@@ -26,18 +24,6 @@ const OtpScreen = ({ route }) => {
             setAnimatedLoading(false);
         }
     }, [isfocused]);
-
-    useEffect(() => {
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-            if (scrollViewRef.current) {
-                scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-            }
-        });
-
-        return () => {
-            keyboardDidHideListener.remove();
-        };
-    }, []);
 
     const handleNavigation = async () => {
         setAnimatedLoading(true);
@@ -81,83 +67,82 @@ const OtpScreen = ({ route }) => {
             });
     };
     return (
-        <KeyboardAwareScrollView
-            ref={scrollViewRef}
-            contentContainerStyle={{ flexGrow: 1 }}
-            enableOnAndroid={true}
-            scrollEnabled={false}
-            enableAutomaticScroll={Platform.OS === 'ios' ? true : false}
-            extraScrollHeight={Platform.OS === 'ios' ? 100 : 0}
-            contentInsetAdjustmentBehavior="automatic"
-        >
-            <View style={{ flex: 1 }}>
-                <Image source={require('../../../assets/login1.png')}
-                    style={{
-                        width: '100%',
-                        justifyContent: "center",
-                        alignItems: "center",
-                        objectFit: "contain",
-                        height: 450
-                    }} />
-                <SafeAreaView style={{ backgroundColor: "#3184B6", height: 600, borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 }}>
-                    <Text style={[style.subtitle, { color: "white", textAlign: "center" }]}>Enter Your Mobile Number</Text>
-                    <Text style={[style.subsubtitle, { color: "white", textAlign: "center" }]}>We will send you the One Time Password (OTP)</Text>
-                    <View style={{ marginTop: 50 }}>
-                        <TextInput
-                            placeholder='Enter here'
-                            placeholderTextColor='gray'
-                            style={styles.textinput}
-                            inputMode="numeric"
-                            value={mobile}
-                            onChangeText={phone => setMobile(phone)}
-                        />
-                        <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
-                            {!isValidNumber && (
-                                <Text style={{ color: 'red' }}>{errorMessage}</Text>
-                            )}
-                        </View>
-                    </View>
-                    <View style={{ marginTop: 20 }}>
-                        <Button
-                            onPress={sendOtp}
-                            style={[styles.button, { opacity: loading ? 0.5 : 1 }]}
-                        >
-                            {loading ? (
-                                <ActivityIndicator size="small" color="white" />
-                            ) : (
-                                <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
-                            )}
-                        </Button>
-                    </View>
-                    <View style={{ marginTop: 10 }}>
-                        {animatedloading ? (
-                            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                <LottieView
-                                    source={require('../../../assets/loading.json')}
-                                    autoPlay
-                                    loop
-                                    style={{ height: 60, width: 300 }}
-                                />
-                            </View>
-                        ) : (
-                            <TouchableOpacity
-                                style={{
-                                    borderRadius: 12,
-                                    height: 60,
-                                    justifyContent: 'center',
-                                    backgroundColor: '',
-                                    display: animatedloading == true ? "none" : "flex"
-                                }}
-                                onPress={handleNavigation}
-                                disabled={animatedloading}
-                            >
-                                <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Skip</Text>
-                            </TouchableOpacity>
+
+        <View style={{ flex: 1, backgroundColor: "white" }}>
+             <Image source={require('../../../assets/login1.png')}
+                style={{
+                    width: '100%',
+                    justifyContent: "center",
+                    alignItems: "center",
+                    objectFit: "contain",
+                    height: Dimensions.get('screen').height / 3,
+                }} />
+            <SafeAreaView style={{
+                backgroundColor: "#3184B6",
+                height: Dimensions.get('screen').height,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                padding: 20,
+            }}>
+                <Text style={[style.subtitle, { color: "white", textAlign: "center", marginTop: 30 }]}>Enter Your Mobile Number</Text>
+                <Text style={[style.subsubtitle, { color: "white", textAlign: "center" }]}>We will send you the One Time Password (OTP)</Text>
+                <View style={{ marginTop: 50 }}>
+                    <TextInput
+                        placeholder='Enter here'
+                        placeholderTextColor='gray'
+                        style={styles.textinput}
+                        inputMode="numeric"
+                        value={mobile}
+                        onChangeText={phone => setMobile(phone)}
+                        maxLength={10}
+                    />
+                    <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                        {!isValidNumber && (
+                            <Text style={{ color: 'red' }}>{errorMessage}</Text>
                         )}
                     </View>
-                </SafeAreaView>
-            </View>
-        </KeyboardAwareScrollView>
+                </View>
+                <View style={{ marginTop: 20 }}>
+                    <Button
+                        onPress={sendOtp}
+                        style={[styles.button, { opacity: loading ? 0.5 : 1 }]}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="small" color="white" />
+                        ) : (
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
+                        )}
+                    </Button>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                    {animatedloading ? (
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <LottieView
+                                source={require('../../../assets/loading.json')}
+                                autoPlay
+                                loop
+                                style={{ height: 60, width: 300 }}
+                            />
+                        </View>
+                    ) : (
+                        <TouchableOpacity
+                            style={{
+                                borderRadius: 12,
+                                height: 60,
+                                justifyContent: 'center',
+                                backgroundColor: '',
+                                display: animatedloading == true ? "none" : "flex"
+                            }}
+                            onPress={handleNavigation}
+                            disabled={animatedloading}
+                        >
+                            <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Skip</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </SafeAreaView>
+        </View>
+
     )
 }
 

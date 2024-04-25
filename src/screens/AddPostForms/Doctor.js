@@ -331,7 +331,7 @@ const Doctor = () => {
                 </View>
 
                 <View style={{ marginTop: 10 }}>
-                  <Text>Price (per visit)*</Text>
+                  <Text>Fees (per visit)*</Text>
                   <TextInput
                     placeholderTextColor='black'
                     style={{

@@ -17,16 +17,16 @@ const VehicleCategoryDetails = ({ route }) => {
     console.log('info----', info)
     const [createdAtLabel, setCreatedAtLabel] = useState("");
     let imageUrls = info && info?.images && info?.images.length > 0
-    ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
-    : [];
-  
-   let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
-  
+        ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+        : [];
+
+    let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+
 
     const headers = ['Vehicle Type', '', '', `${info?.type}`];
     const rows = [
         ['Brand', '', '', `${info?.brand}`],
-        ['Price', '', '', `${info?.price}`],
+        ['Price', '', '', `₹ ${info?.price}`],
         ['Registration Years', '', '', `${info?.registration_year}`],
         ['Kilometer Driven', '', '', `${info?.kilometer_driven}`],
         ['Location', '', '', `${info?.city}`],
@@ -84,39 +84,38 @@ const VehicleCategoryDetails = ({ route }) => {
 
             <ScrollView style={{ marginBottom: 10 }}>
                 <View style={{ padding: 10 }}>
-                <SliderBox
-            images={image}
-            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
-            dotColor="#3184b6"
-            inactiveDotColor="white"
-            imageLoadingColor="white"
-            autoplay={true}
-            circleLoop={true}
-            resizeMode="cover"
-            autoplayInterval={5000}
-            sliderBoxHeight={200}
-            onCurrentImagePressed={index =>
-              console.log(`image ${index} pressed`)
-            }
-            paginationBoxVerticalPadding={20}
-            paginationBoxStyle={{
-              position: "absolute",
-              bottom: 0,
-              padding: 0,
-              alignItems: "center",
-              alignSelf: "center",
-              justifyContent: "center",
-              paddingVertical: 10
-            }}
-          />
+                    <SliderBox
+                        images={image}
+                        dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
+                        dotColor="#3184b6"
+                        inactiveDotColor="white"
+                        imageLoadingColor="white"
+                        autoplay={true}
+                        circleLoop={true}
+                        resizeMode="cover"
+                        autoplayInterval={5000}
+                        sliderBoxHeight={200}
+                        onCurrentImagePressed={index =>
+                            console.log(`image ${index} pressed`)
+                        }
+                        paginationBoxVerticalPadding={20}
+                        paginationBoxStyle={{
+                            position: "absolute",
+                            bottom: 0,
+                            padding: 0,
+                            alignItems: "center",
+                            alignSelf: "center",
+                            justifyContent: "center",
+                            paddingVertical: 10
+                        }}
+                    />
 
                     <View>
-                        <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
+                        <View style={{ height: 80, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
-                                <Text style={style.subsubtitle}>$ {info?.price}</Text>
+                                <Text style={{   width: 300 }} numberOfLines={1}>{info?.title}</Text>
                                 <AntDesign name="hearto" size={25} />
                             </View>
-                            <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.title}</Text>
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 5 }}>
                                 <View style={{ flexDirection: "row" }}>
@@ -173,7 +172,7 @@ const VehicleCategoryDetails = ({ route }) => {
                         height: 60,
                         justifyContent: 'center'
                     }}
-                 >
+                >
                     <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Contact Seller</Text>
                 </TouchableOpacity>
             </View>

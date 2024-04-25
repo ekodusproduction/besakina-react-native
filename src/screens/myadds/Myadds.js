@@ -10,7 +10,7 @@ import { Baseurl } from '../../constant/globalparams';
 import axios from 'axios';
 import { handleGetToken } from '../../constant/tokenUtils';
 import LottieView from 'lottie-react-native';
-import { styles } from '@pembajak/react-native-image-slider-banner/src/style';
+
 
 const Myadds = (props) => {
     const navigation = useNavigation();

@@ -101,7 +101,7 @@ const HomeScreen = () => {
   if (loading) {
     return (
       <ScrollView
-        style={{ flex: 1, marginBottom: 70 }}
+        style={{ flex: 1 }}
         alwaysBounceVertical
         showsVerticalScrollIndicator={false}
       >
@@ -220,13 +220,13 @@ const HomeScreen = () => {
                 id: 1, filename: Education, name: "Education"
               },
               {
-                id: 2, filename: health, name: "Health"
+                id: 2, filename: health, name: "Health Care"
               },
               {
-                id: 3, filename: property, name: "Property"
+                id: 3, filename: property, name: "Properties"
               },
               {
-                id: 4, filename: vehicle, name: "Vehicle"
+                id: 4, filename: vehicle, name: "Vehicles"
               },
               {
                 id: 5, filename: Hospitality, name: "Hospitality"
@@ -358,7 +358,7 @@ const HomeScreen = () => {
                     </View>
 
                     <View style={{ marginTop: 10, marginLeft: 10 }}>
-                      <Text style={style.subsubtitle}>$ {item.price}</Text>
+                      <Text style={style.subsubtitle}>₹ {item.price}</Text>
                       <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
                     </View>
 

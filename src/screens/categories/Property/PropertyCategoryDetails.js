@@ -113,7 +113,7 @@ const PropertyCategoryDetails = ({ route }) => {
                     <View>
                         <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
-                                <Text style={style.subsubtitle}>$ {info?.price}</Text>
+                                <Text style={style.subsubtitle}>₹ {info?.price}</Text>
                                 <AntDesign name="hearto" size={25} />
                             </View>
                             <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.title}</Text>

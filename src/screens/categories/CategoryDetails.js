@@ -29,13 +29,13 @@ const CategoryDetails = ({ route }) => {
             {
                 data.item.name === 'Education' ? (
                     <EducationCategory item={data.item} />
-                ) : data.item.name === 'Health' ? (
+                ) : data.item.name === 'Health Care' ? (
                     <HealthCategory item={data.item} />
-                ) : data.item.name === 'Property' ? (
+                ) : data.item.name === 'Properties' ? (
                     <PropertyCategory item={data.item} />
                 ) : data.item.name === 'Hospitality' ? (
                     <HospitalityCategory item={data.item} />
-                ) : data.item.name === 'Vehicle' ? (
+                ) : data.item.name === 'Vehicles' ? (
                     <VehicleCategory item={data.item} />
                 ) : data.item.name === 'AnotherCategory' ? (
                     <Text>This is Another Category</Text>

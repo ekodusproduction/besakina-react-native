@@ -122,7 +122,7 @@ const FeaturedAds = (props) => {
                                                 </View>
 
                                                 <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                    <Text variant="titleLarge" style={style.subsubtitle}>$ {item.price}</Text>
+                                                    <Text variant="titleLarge" style={style.subsubtitle}>₹ {item.price}</Text>
                                                     <Text numberOfLines={2} style={{ width: 250 }} variant="bodyMedium">{item.title}</Text>
                                                 </View>
                                                 <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 20, marginBottom: 10, marginHorizontal: 10 }}>

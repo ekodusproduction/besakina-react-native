@@ -14,13 +14,13 @@ const array = [
     id: 2, filename: Education, name: "Education"
   },
   {
-    id: 3, filename: health, name: "Health"
+    id: 3, filename: health, name: "Health Care"
   },
   {
-    id: 4, filename: property, name: "Property"
+    id: 4, filename: property, name: "Properties"
   },
   {
-    id: 5, filename: vehicle, name: "Vehicle"
+    id: 5, filename: vehicle, name: "Vehicles"
   }
 ];
 const ViewCategories = () => {

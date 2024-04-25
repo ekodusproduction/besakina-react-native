@@ -324,7 +324,7 @@ const HealthCategory = ({ item }) => {
                                                             </View>
 
                                                             <View style={{ marginLeft: 10, marginTop: 5, flexDirection: "row", justifyContent: "space-between" }}>
-                                                                <Text>${item.price_per_visit}/visit</Text>
+                                                                <Text>₹{item.price_per_visit}/visit</Text>
                                                                 <Text style={{ marginRight: 5 }}>Exp. {item.total_experience}years</Text>
                                                             </View>
                                                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>

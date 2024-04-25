@@ -22,7 +22,7 @@ const DoctorCategoryDetails = ({ route }) => {
 
     let image = imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
 
-    const headers = ['Price per Visit', '', '', `₹${info?.price_per_visit}`];
+    const headers = ['Fees per Visit', '', '', `₹${info?.price_per_visit == null ? 'N/A' : info?.price_per_visit}`];
     const rows = [
         ['Name', '', '', `${info?.name}`],
         ['Expertise', '', '', `${info?.expertise}`],
@@ -110,12 +110,11 @@ const DoctorCategoryDetails = ({ route }) => {
                         />
                     </View>
                     <View>
-                        <View style={{ height: 100, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
+                        <View style={{ height: 80, borderWidth: 1, borderColor: "gray", borderRadius: 12, marginTop: 10 }}>
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10, marginTop: 10 }}>
-                                <Text style={style.subsubtitle}>$ {info?.price_per_visit}</Text>
+                                <Text style={{}} numberOfLines={1}>{info?.name}</Text>
                                 <AntDesign name="hearto" size={25} />
                             </View>
-                            <Text style={{ marginLeft: 10, width: 300 }} numberOfLines={1}>{info?.name}</Text>
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 5 }}>
                                 <View style={{ flexDirection: "row" }}>
@@ -172,7 +171,7 @@ const DoctorCategoryDetails = ({ route }) => {
                         height: 60,
                         justifyContent: 'center'
                     }}
-                 >
+                >
                     <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Contact Seller</Text>
                 </TouchableOpacity>
             </View>
