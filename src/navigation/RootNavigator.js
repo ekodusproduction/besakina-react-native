@@ -1,7 +1,7 @@
 // RootNavigator.js
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import VerifyOtpScreen from '../screens/Auth/VerifyOtpScreen';
 import CategoryList from '../screens/categories/SelectCategoryList';
@@ -45,9 +45,11 @@ const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName='BottomTabNavigator' screenOptions={{
-      headerShown: false
-    }}>
+    <Stack.Navigator
+      initialRouteName="BottomTabNavigator"
+      screenOptions={{
+        headerShown: false,
+      }}>
       <Stack.Screen
         name="BottomTabNavigator"
         component={BottomTabNavigator}
@@ -59,7 +61,7 @@ const RootNavigator = () => {
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            align: "center"
+            align: 'center',
           },
         }}
       />
@@ -74,19 +76,19 @@ const RootNavigator = () => {
           headerTintColor: 'black',
           headerTitleStyle: {
             fontWeight: 'bold',
-            align: "center"
+            align: 'center',
           },
         }}
       />
       <Stack.Screen
         name="OtpScreen"
         component={OtpScreen}
-        options={{ headerShown: false,animation: 'slide_from_right' }}
+        options={{headerShown: false, animation: 'slide_from_right'}}
       />
       <Stack.Screen
         name="VerifyOtpScreen"
         component={VerifyOtpScreen}
-        options={{ headerShown: false,animation: 'slide_from_right' }}
+        options={{headerShown: false, animation: 'slide_from_right'}}
       />
       <Stack.Screen
         name="CategoryList"
@@ -96,10 +98,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -111,10 +114,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -126,10 +130,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -141,10 +146,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -156,10 +162,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -171,10 +178,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -186,10 +194,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -201,10 +210,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -216,10 +226,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -231,10 +242,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -246,10 +258,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -261,10 +274,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -276,10 +290,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -291,10 +306,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -306,10 +322,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -317,14 +334,16 @@ const RootNavigator = () => {
         name="Chat"
         component={Chat}
         options={{
-          headerShown: false, animation: 'slide_from_right',
+          headerShown: false,
+          animation: 'slide_from_right',
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -336,10 +355,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -351,10 +371,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -366,10 +387,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -381,10 +403,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -396,10 +419,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -411,10 +435,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -426,10 +451,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -441,10 +467,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -456,10 +483,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -471,10 +499,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -486,10 +515,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -501,10 +531,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -516,10 +547,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -531,10 +563,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -546,10 +579,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -561,10 +595,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -576,10 +611,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />
@@ -591,10 +627,11 @@ const RootNavigator = () => {
           headerStyle: {
             backgroundColor: 'white',
           },
-          headerTintColor: 'black',animation: 'slide_from_right',
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
           headerTitleStyle: {
             fontWeight: 'bold',
-            textAlign: "center"
+            textAlign: 'center',
           },
         }}
       />

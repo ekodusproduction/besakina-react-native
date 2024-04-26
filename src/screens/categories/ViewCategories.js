@@ -1,46 +1,65 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
-import { SvgXml } from 'react-native-svg';
-import { Education, Hospitality, ServicesSVG,  health, property, vehicle } from '../../svg/svg';
-import { useNavigation } from '@react-navigation/native';
-import { Appbar } from 'react-native-paper';
-
+import {SvgXml} from 'react-native-svg';
+import {
+  Education,
+  Hospitality,
+  ServicesSVG,
+  health,
+  property,
+  vehicle,
+} from '../../svg/svg';
+import {useNavigation} from '@react-navigation/native';
+import {Appbar} from 'react-native-paper';
 
 const array = [
   {
-    id: 1, filename: Hospitality, name: "Hospitality"
+    id: 1,
+    filename: Hospitality,
+    name: 'Hospitality',
   },
   {
-    id: 2, filename: Education, name: "Education"
+    id: 2,
+    filename: Education,
+    name: 'Education',
   },
   {
-    id: 3, filename: health, name: "Health Care"
+    id: 3,
+    filename: health,
+    name: 'Health Care',
   },
   {
-    id: 4, filename: property, name: "Properties"
+    id: 4,
+    filename: property,
+    name: 'Properties',
   },
   {
-    id: 5, filename: vehicle, name: "Vehicles"
-  }
+    id: 5,
+    filename: vehicle,
+    name: 'Vehicles',
+  },
 ];
 const ViewCategories = () => {
   const navigation = useNavigation();
 
   return (
     <View>
-
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => { navigation.goBack() }} />
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         <Appbar.Content title="Categories" />
       </Appbar.Header>
 
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <FlatList
           data={array}
           vertical
           numColumns={3}
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity
               style={{
                 height: 120,
@@ -61,23 +80,16 @@ const ViewCategories = () => {
                   height: 2,
                 },
               }}
-              onPress={() => navigation.navigate('CategoryDetails', { item })}
-            >
-              <SvgXml
-                xml={item.filename}
-                width="50px"
-                height="50px"
-              />
+              onPress={() => navigation.navigate('CategoryDetails', {item})}>
+              <SvgXml xml={item.filename} width="50px" height="50px" />
               <Text>{item.name}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-
-
     </View>
-  )
-}
+  );
+};
 
-export default ViewCategories
+export default ViewCategories;

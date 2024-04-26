@@ -1,14 +1,12 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
-import { LogBox } from 'react-native';
-import { Provider } from 'react-redux';
-import store from './src/redux/store';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useLayoutEffect, useState} from 'react';
+import {View} from 'react-native';
+import {LogBox} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './src/navigation/AuthNavigator';
 import RootNavigator from './src/navigation/RootNavigator';
 import Video from 'react-native-video';
-import { handleGetToken } from './src/constant/tokenUtils';
-import SplashScreen from 'react-native-splash-screen'
+import {handleGetToken} from './src/constant/tokenUtils';
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
   const [isSplashScreenHidden, setIsSplashScreenHidden] = useState(false);
@@ -16,31 +14,30 @@ const App = () => {
 
   useLayoutEffect(() => {
     LogBox.ignoreAllLogs();
-    handleGetToken().then((dataToken) =>
+    handleGetToken().then(dataToken =>
       setTimeout(() => {
         setIsLoggedIn(!!dataToken);
         setIsSplashScreenHidden(true);
-      }, 3500));
+      }, 3500),
+    );
     SplashScreen.hide();
   }, []);
-
-
 
   const onVideoEnd = () => {
     setIsSplashScreenHidden(true);
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       {isSplashScreenHidden ? (
         <NavigationContainer>
           {isLoggedIn ? <RootNavigator /> : <AuthNavigator />}
         </NavigationContainer>
       ) : (
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1}}>
           <Video
             source={require('./assets/bk_ress_4.mp4')}
-            style={{ width: '100%', height: '100%' }}
+            style={{width: '100%', height: '100%'}}
             resizeMode="cover"
             repeat={false}
             muted

@@ -1,47 +1,58 @@
-import { Image, View, Text, ScrollView, FlatList, TextInput, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator, Modal, StyleSheet, ToastAndroid } from 'react-native';
-import React, { useEffect, useState } from 'react'
-import { Appbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { Dropdown } from 'react-native-element-dropdown';
+import {
+  Image,
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  TextInput,
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal,
+  StyleSheet,
+  ToastAndroid,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Appbar} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
-import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
-import { Dimensions } from 'react-native';
-import { handleGetToken } from '../../constant/tokenUtils';
-import { Baseurl } from '../../constant/globalparams';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {Dimensions} from 'react-native';
+import {handleGetToken} from '../../constant/tokenUtils';
+import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused } from '@react-navigation/native';
-
-
+import {useIsFocused} from '@react-navigation/native';
 
 const Edithospitaladds = () => {
   const navigation = useNavigation();
   const [hospitalorclinicvalue, setHospitalorclinicvalue] = useState(null);
   const HospitalData = [
-     { label: 'Hospital', value: '1' },
-    { label: 'Clinic', value: '2' },
-    { label: 'Laboratoy', value: '3' },
-    { label: 'Nurshing Home', value: '4' },
+    {label: 'Hospital', value: '1'},
+    {label: 'Clinic', value: '2'},
+    {label: 'Laboratoy', value: '3'},
+    {label: 'Nurshing Home', value: '4'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(false);
-   const [loadingotp, setLoadingotp] = useState(false);
+  const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
-  const [adtitle, setAdtitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [street, setStreet] = useState("");
-  const [locality, setLocality] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setstate] = useState("");
-  const [pincode, setPincode] = useState("");
-  const [priceperregistration, setPriceperregistration] = useState("");
+  const [adtitle, setAdtitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [street, setStreet] = useState('');
+  const [locality, setLocality] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setstate] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [priceperregistration, setPriceperregistration] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
 
@@ -68,11 +79,11 @@ const Edithospitaladds = () => {
         setSelectedImages([...selectedImages, imageInfo]);
       }
     });
-  }
+  };
 
   const handlePostAd = () => {
     handleGetToken()
-      .then((token) => {
+      .then(token => {
         if (token) {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
@@ -80,14 +91,18 @@ const Edithospitaladds = () => {
           const formData = new FormData();
 
           // formData.append("plan_id", "1");
-          formData.append("title", adtitle);
-          const hospitaltype = HospitalData.filter(item => item.value === hospitalorclinicvalue).map(i => i.label).toString();
+          formData.append('title', adtitle);
+          const hospitaltype = HospitalData.filter(
+            item => item.value === hospitalorclinicvalue,
+          )
+            .map(i => i.label)
+            .toString();
 
-          formData.append("type", hospitaltype);
-          formData.append("description", description);
-          formData.append("name", name);
-          formData.append("price_registration", priceperregistration);
-          formData.append("price_per_visit", price);
+          formData.append('type', hospitaltype);
+          formData.append('description', description);
+          formData.append('name', name);
+          formData.append('price_registration', priceperregistration);
+          formData.append('price_per_visit', price);
 
           selectedImages.forEach((image, index) => {
             formData.append(`images[${index}]`, {
@@ -97,22 +112,22 @@ const Edithospitaladds = () => {
             });
           });
 
-          formData.append("street", street);
-          formData.append("locality", locality);
-          formData.append("city", city);
-          formData.append("state", state);
-          formData.append("pincode", pincode);
-
+          formData.append('street', street);
+          formData.append('locality', locality);
+          formData.append('city', city);
+          formData.append('state', state);
+          formData.append('pincode', pincode);
 
           console.log('formData===', formData);
-          axios.post(`${Baseurl}/api/hospitals/add`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-              Authorization: `Bearer ${token}`,
-            }
-          })
-            .then((response) => {
-              console.log("response of the api--->", response);
+          axios
+            .post(`${Baseurl}/api/hospitals/add`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then(response => {
+              console.log('response of the api--->', response);
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,
@@ -121,11 +136,10 @@ const Edithospitaladds = () => {
                 50,
               );
               setShowTokenModal(false);
-
             })
-            .catch((error) => {
+            .catch(error => {
               console.error('Catch Error :---->', error.response);
-              console.log("error message--->", error.response.data.message);
+              console.log('error message--->', error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,
@@ -142,7 +156,7 @@ const Edithospitaladds = () => {
           setShowTokenModal(true);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error while handling post ad:', error);
       });
   };
@@ -150,14 +164,13 @@ const Edithospitaladds = () => {
   const closeModal = () => {
     setShowTokenModal(false);
     setShowNestedModal(false);
-    setLoadingotp(false)
-    setLoadingverifyotp(false)
+    setLoadingotp(false);
+    setLoadingverifyotp(false);
   };
 
   const [mobile, setMobile] = useState('');
   const [data, setData] = useState(null);
   const [showNestedModal, setShowNestedModal] = useState(false);
-
 
   const sendOtp = async () => {
     try {
@@ -167,15 +180,17 @@ const Edithospitaladds = () => {
         return;
       }
       setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}/api/users/sendotp`, { mobile });
+      const response = await axios.post(`${Baseurl}/api/users/sendotp`, {
+        mobile,
+      });
 
       if (response.status !== 200) {
-        console.log('response data--->', response.data)
+        console.log('response data--->', response.data);
       }
 
       setData(response.data);
       if (response.data.success === true) {
-        let newotp=response.data.data.otp
+        let newotp = response.data.data.otp;
         setVerifyOtpvalue(newotp.toString());
         handleNestedModal();
       }
@@ -186,18 +201,16 @@ const Edithospitaladds = () => {
     }
   };
 
-
   const closeNestedModal = () => {
     setShowTokenModal(false);
     setShowNestedModal(false);
-    setLoadingotp(false)
-    setLoadingverifyotp(false)
+    setLoadingotp(false);
+    setLoadingverifyotp(false);
   };
 
   const handleNestedModal = () => {
     setShowNestedModal(true);
   };
-
 
   const verifyOtp = async () => {
     try {
@@ -208,11 +221,15 @@ const Edithospitaladds = () => {
       };
       console.log('postData---', postData);
 
-      const response = await axios.post(`${Baseurl}/api/users/login`, postData, {
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await axios.post(
+        `${Baseurl}/api/users/login`,
+        postData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
 
       console.log('response data--->', response.data);
       setData(response.data);
@@ -226,11 +243,10 @@ const Edithospitaladds = () => {
     }
   };
 
-
-  const handleNavigation = async (information) => {
+  const handleNavigation = async information => {
     console.log('information--->', information);
     try {
-      await AsyncStorage.setItem("UserData", JSON.stringify(information));
+      await AsyncStorage.setItem('UserData', JSON.stringify(information));
       setLoadingverifyotp(true);
       setTimeout(() => {
         setLoadingverifyotp(false);
@@ -242,7 +258,6 @@ const Edithospitaladds = () => {
     }
   };
 
-  
   const isfocused = useIsFocused();
 
   useEffect(() => {
@@ -250,42 +265,50 @@ const Edithospitaladds = () => {
       setErrorMessage('');
     }
   }, [isfocused]);
-  
+
   return (
-    <View style={{ flex: 1, }}>
+    <View style={{flex: 1}}>
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => { navigation.goBack() }} />
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         <Appbar.Content title="Hospital or Clinic" />
       </Appbar.Header>
 
-      <ScrollView style={{ flex: 1, }}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : null}>
-          <View style={{ padding: 10 }}>
-
-
-            <View style={{ borderWidth: 0.5, height: '1500px', marginTop: 10, borderRadius: 5, borderColor: "gray" }}>
-              <View style={{ padding: 5 }}>
-
-                <View style={{ marginTop: 10 }}>
-                  <Text>
-                    Name*
-                  </Text>
+      <ScrollView style={{flex: 1}}>
+        <KeyboardAvoidingView
+          style={{flex: 1}}
+          behavior={Platform.OS === 'ios' ? 'padding' : null}>
+          <View style={{padding: 10}}>
+            <View
+              style={{
+                borderWidth: 0.5,
+                height: '1500px',
+                marginTop: 10,
+                borderRadius: 5,
+                borderColor: 'gray',
+              }}>
+              <View style={{padding: 5}}>
+                <View style={{marginTop: 10}}>
+                  <Text>Name*</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={name}
-                    onChangeText={(reg) => setName(reg)}
+                    onChangeText={reg => setName(reg)}
                   />
                 </View>
 
-                <View style={{ marginTop: 15 }}>
+                <View style={{marginTop: 15}}>
                   <Dropdown
                     style={style.dropdown}
                     placeholderStyle={style.placeholderStyle}
@@ -306,29 +329,26 @@ const Edithospitaladds = () => {
                   />
                 </View>
 
-
-
-
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Title*</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={adtitle}
-                    onChangeText={(reg) => setAdtitle(reg)}
+                    onChangeText={reg => setAdtitle(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Write some description</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
@@ -338,137 +358,141 @@ const Edithospitaladds = () => {
                     }}
                     // inputMode="numeric"
                     value={description}
-                    onChangeText={(reg) => setDescription(reg)}
+                    onChangeText={reg => setDescription(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Price (per visit)</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     inputMode="numeric"
                     value={price}
-                    onChangeText={(reg) => setPrice(reg)}
+                    onChangeText={reg => setPrice(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Price (per Registration)*</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     inputMode="numeric"
                     value={priceperregistration}
-                    onChangeText={(reg) => setPriceperregistration(reg)}
+                    onChangeText={reg => setPriceperregistration(reg)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Street</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={street}
                     onChangeText={built => setStreet(built)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Locality</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={locality}
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>City</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={city}
                     onChangeText={built => setCity(built)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>State</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     // inputMode="numeric"
                     value={state}
                     onChangeText={built => setstate(built)}
                   />
                 </View>
-                <View style={{ marginTop: 10 }}>
+                <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
-                    placeholderTextColor='black'
+                    placeholderTextColor="black"
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       height: 60,
                       paddingLeft: 20,
-                      borderWidth: 0.5
+                      borderWidth: 0.5,
                     }}
                     inputMode="numeric"
                     value={pincode}
                     onChangeText={built => setPincode(built)}
                     maxLength={6}
-
                   />
                 </View>
               </View>
             </View>
 
-
-
-            <View style={{ borderWidth: 0.5, borderColor: "gray", padding: 10, borderRadius: 5, marginTop: 10 }}>
-              <View style={{ padding: 0 }}>
+            <View
+              style={{
+                borderWidth: 0.5,
+                borderColor: 'gray',
+                padding: 10,
+                borderRadius: 5,
+                marginTop: 10,
+              }}>
+              <View style={{padding: 0}}>
                 <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
                 <FlatList
                   data={[...Array(20).keys()]}
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({ item }) => (
+                  renderItem={({item}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -489,12 +513,16 @@ const Edithospitaladds = () => {
                           width: 0,
                           height: 2,
                         },
-                      }}
-                    >
+                      }}>
                       {selectedImages[item] ? (
                         <Image
-                          source={{ uri: typeof selectedImages[item] === 'string' ? selectedImages[item] : selectedImages[item].uri }}
-                          style={{ height: '100%', width: '100%' }}
+                          source={{
+                            uri:
+                              typeof selectedImages[item] === 'string'
+                                ? selectedImages[item]
+                                : selectedImages[item].uri,
+                          }}
+                          style={{height: '100%', width: '100%'}}
                           resizeMode="cover"
                         />
                       ) : (
@@ -506,8 +534,6 @@ const Edithospitaladds = () => {
                 />
               </View>
             </View>
-
-
           </View>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -516,137 +542,180 @@ const Edithospitaladds = () => {
         animationType="slide"
         transparent={true}
         visible={showTokenModal}
-        onRequestClose={closeModal}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{ backgroundColor: 'white', padding: 10, width: '100%', height: '100%' }}>
-
+        onRequestClose={closeModal}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 10,
+              width: '100%',
+              height: '100%',
+            }}>
             <TouchableOpacity
               onPress={closeModal}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <AntDesign name="close" size={30} />
             </TouchableOpacity>
 
-            <View style={{ padding: 10 }}>
+            <View style={{padding: 10}}>
               {/* <View style={{ marginTop: 10 }}>
                 <Text style={styles.header}>Welcome</Text>
                 <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
               </View> */}
-              <View style={{ marginTop: 25 }}>
+              <View style={{marginTop: 25}}>
                 <Text style={style.title}>Enter Mobile Number</Text>
               </View>
-              <View style={{ marginTop: 20 }}>
+              <View style={{marginTop: 20}}>
                 <TextInput
-                  placeholder='Enter here'
-                  placeholderTextColor='black'
+                  placeholder="Enter here"
+                  placeholderTextColor="black"
                   style={styles.textinput}
                   inputMode="numeric"
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
+                  maxLength={10}
+
                 />
-                  <View style={{ display: errorMessage.length == 0 ? 'none' : "flex" }}>
+                <View
+                  style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
                   {!isValidNumber && (
-                    <Text style={{ color: 'red' }}>{errorMessage}</Text>
+                    <Text style={{color: 'red'}}>{errorMessage}</Text>
                   )}
                 </View>
               </View>
 
-              <View style={{ marginTop: 20 }}>
+              <View style={{marginTop: 20}}>
                 <TouchableOpacity
                   onPress={sendOtp}
-                  style={[styles.button, { opacity: loadingotp ? 0.5 : 1 }]}
+                  style={[styles.button, {opacity: loadingotp ? 0.5 : 1}]}
                   disabled={loadingotp}>
                   {loadingotp ? (
                     <ActivityIndicator size="small" color="white" />
                   ) : (
-                    <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Send OTP</Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 18,
+                        color: 'white',
+                      }}>
+                      Send OTP
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
-
-
             </View>
           </View>
         </View>
       </Modal>
 
-
       <Modal
         animationType="slide"
         transparent={true}
         visible={showNestedModal}
-        onRequestClose={closeNestedModal}
-      >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View style={{ backgroundColor: 'white', padding: 10, width: '100%', height: '100%' }}>
+        onRequestClose={closeNestedModal}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          }}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 10,
+              width: '100%',
+              height: '100%',
+            }}>
             <TouchableOpacity
               onPress={closeModal}
               style={{
                 flexDirection: 'row',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
-              }}
-            >
+              }}>
               <AntDesign name="close" size={30} />
             </TouchableOpacity>
 
-            <View style={{ padding: 20 }}>
+            <View style={{padding: 20}}>
               <View>
                 <Text style={style.title}>
                   We've sent your verification code to +91 {mobile}
                 </Text>
               </View>
 
-              <View style={{ marginTop: 50 }}>
+              <View style={{marginTop: 50}}>
                 <TextInput
                   // placeholder='Enter Code'
-                  placeholderTextColor='black'
+                  placeholderTextColor="black"
                   style={style.inputfield}
-                  inputMode='numeric'
+                  inputMode="numeric"
                   value={verifyotpvalue}
                   onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
                 />
               </View>
 
-              <View style={{ marginTop: 20 }}>
+              <View style={{marginTop: 20}}>
                 <TouchableOpacity
                   onPress={verifyOtp}
-                  style={[style.button, { opacity: loadingverifyotp ? 0.5 : 1 }]}
+                  style={[style.button, {opacity: loadingverifyotp ? 0.5 : 1}]}
                   disabled={loadingverifyotp}>
                   {loadingverifyotp ? (
                     <ActivityIndicator size="small" color="black" />
                   ) : (
-                    <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Verify Otp</Text>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 18,
+                        color: 'white',
+                      }}>
+                      Verify Otp
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
 
-              <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View style={{ marginTop: 20 }}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{marginTop: 20}}>
                   <TouchableOpacity
                     style={{
                       borderRadius: 12,
                       height: 60,
                       justifyContent: 'center',
                     }}>
-                    <Text style={{ textAlign: 'center', fontSize: 18, color: 'black' }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 18,
+                        color: 'black',
+                      }}>
                       Resend Code
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <View style={{ marginTop: 20 }}>
+                <View style={{marginTop: 20}}>
                   <TouchableOpacity
                     style={{
                       borderRadius: 12,
                       height: 60,
                       justifyContent: 'center',
                     }}>
-                    <Text style={{ textAlign: 'center', fontSize: 18 }}>
+                    <Text style={{textAlign: 'center', fontSize: 18}}>
                       1:20 min left
                     </Text>
                   </TouchableOpacity>
@@ -656,31 +725,30 @@ const Edithospitaladds = () => {
           </View>
         </View>
       </Modal>
-      <View style={{ marginTop: 0 }}>
+      <View style={{marginTop: 0}}>
         <TouchableOpacity
           style={{
             backgroundColor: style.button.backgroundColor,
             borderRadius: 0,
             height: 60,
             justifyContent: 'center',
-            borderColor: "gray",
-            borderWidth: 0.5
+            borderColor: 'gray',
+            borderWidth: 0.5,
           }}
           onPress={handlePostAd}
-          disabled={loading ? true : false}
-        >
+          disabled={loading ? true : false}>
           {loading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
-            <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>
+            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
               Post My Ad
             </Text>
           )}
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 export default Edithospitaladds;
 
@@ -688,25 +756,25 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,
     marginTop: 0,
-    fontWeight: "600",
-    color: "black"
+    fontWeight: '600',
+    color: 'black',
   },
   title: {
     fontSize: 16 * 1.33,
-    fontWeight: "300",
-    color: "black"
+    fontWeight: '300',
+    color: 'black',
   },
   textinput: {
     backgroundColor: 'white',
     borderRadius: 12,
     height: 60,
-    paddingLeft: 20,    borderWidth:0.8
-
+    paddingLeft: 20,
+    borderWidth: 0.8,
   },
   button: {
     backgroundColor: '#3184b6',
     borderRadius: 12,
     height: 60,
-    justifyContent: 'center'
-  }
+    justifyContent: 'center',
+  },
 });

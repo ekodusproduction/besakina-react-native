@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 const Snackbar = ({
   message,
   actionText,
   onActionPress,
   duration = 3000, // Default duration in milliseconds
-  position = "bottom", // Default position
+  position = 'bottom', // Default position
   containerStyle,
   messageStyle,
   actionTextStyle,
@@ -30,12 +30,11 @@ const Snackbar = ({
     <View
       style={[
         styles.container,
-        position === "top" ? styles.topContainer : styles.bottomContainer,
+        position === 'top' ? styles.topContainer : styles.bottomContainer,
         containerStyle,
-        { backgroundColor: backgroundColor },
-      ]}
-    >
-      <Text style={[styles.messageText, messageStyle, { color: textColor }]}>
+        {backgroundColor: backgroundColor},
+      ]}>
+      <Text style={[styles.messageText, messageStyle, {color: textColor}]}>
         {message}
       </Text>
       {actionText && (
@@ -44,9 +43,8 @@ const Snackbar = ({
             style={[
               styles.actionText,
               actionTextStyle,
-              { color: actionTextColor },
-            ]}
-          >
+              {color: actionTextColor},
+            ]}>
             {actionText}
           </Text>
         </TouchableOpacity>
@@ -59,10 +57,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     borderRadius: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    position: "absolute",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    position: 'absolute',
     left: 0,
     right: 0,
   },

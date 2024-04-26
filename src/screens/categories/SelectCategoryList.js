@@ -1,40 +1,49 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
-import { SvgXml } from 'react-native-svg';
-import { Hospitality, Education, health, property, vehicle } from '../../svg/svg';
-import { useNavigation } from '@react-navigation/native';
-import { Appbar } from 'react-native-paper';
-
+import {SvgXml} from 'react-native-svg';
+import {Hospitality, Education, health, property, vehicle} from '../../svg/svg';
+import {useNavigation} from '@react-navigation/native';
+import {Appbar} from 'react-native-paper';
 
 const array = [
   {
-    id: 1, filename: Hospitality, name: "Hospitality"
+    id: 1,
+    filename: vehicle,
+    name: 'Vehicles',
   },
   {
-    id: 2, filename: Education, name: "Education"
+    id: 2,
+    filename: Education,
+    name: 'Education',
   },
   {
-    id: 3, filename: health, name: "Health"
+    id: 3,
+    filename: property,
+    name: 'Properties',
   },
   {
-    id: 4, filename: property, name: "Property"
+    id: 4,
+    filename: health,
+    name: 'Health Care',
   },
   {
-    id: 5, filename: vehicle, name: "Vehicle"
-  }
+    id: 5,
+    filename: Hospitality,
+    name: 'Hospitality',
+  },
 ];
 const SelectCategoryList = () => {
   const navigation = useNavigation();
 
-  const handlePress = (itemName) => {
+  const handlePress = itemName => {
     switch (itemName) {
-      case 'Property':
+      case 'Properties':
         navigation.navigate('Property');
         break;
-      case 'Health':
+      case 'Health Care':
         navigation.navigate('Health');
         break;
-      case 'Vehicle':
+      case 'Vehicles':
         navigation.navigate('Vehicle');
         break;
       case 'Education':
@@ -51,19 +60,22 @@ const SelectCategoryList = () => {
   };
   return (
     <View>
-
       <Appbar.Header>
-        <Appbar.BackAction onPress={() => { navigation.goBack() }} />
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         <Appbar.Content title="Post Your Ads" />
       </Appbar.Header>
 
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <FlatList
           data={array}
           vertical
           numColumns={3}
           showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity
               style={{
                 height: 120,
@@ -84,23 +96,16 @@ const SelectCategoryList = () => {
                   height: 2,
                 },
               }}
-              onPress={() => handlePress(item.name)}
-            >
-              <SvgXml
-                xml={item.filename}
-                width="50px"
-                height="50px"
-              />
+              onPress={() => handlePress(item.name)}>
+              <SvgXml xml={item.filename} width="50px" height="50px" />
               <Text>{item.name}</Text>
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-
-
     </View>
-  )
-}
+  );
+};
 
-export default SelectCategoryList
+export default SelectCategoryList;

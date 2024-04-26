@@ -1,611 +1,943 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Image, TextInput, ScrollView, Dimensions, RefreshControl } from 'react-native';
-import { Appbar, Card } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  TextInput,
+  ScrollView,
+  Dimensions,
+  RefreshControl,
+} from 'react-native';
+import {Appbar, Card} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../../style';
 import FeaturedAds from '../../FeaturedAds/FeaturedAds';
 import AllAds from '../../AllAds/AllAds';
-import { SliderBox } from "react-native-image-slider-box";
-import { SvgXml } from 'react-native-svg';
-import { location } from '../../../svg/svg';
+import {SliderBox} from 'react-native-image-slider-box';
+import {SvgXml} from 'react-native-svg';
+import {location} from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
-import { Baseurl } from '../../../constant/globalparams';
-import { Dropdown } from 'react-native-element-dropdown';
-import { useIsFocused } from '@react-navigation/native';
+import {Baseurl} from '../../../constant/globalparams';
+import {Dropdown} from 'react-native-element-dropdown';
+import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 
+const HealthCategory = ({item}) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [wishlist, setWishlist] = useState([]);
+  const [data, setData] = useState([]);
+  const screenWidth = Dimensions.get('window').width;
+  const [refreshing, setRefreshing] = useState(false);
+  const isFocused = useIsFocused();
+  const [filtereddata, setFiltereddata] = useState(null);
+  const [minbudget, setMinbudget] = useState('');
+  const [maxbudget, setMaxbudget] = useState('');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [selectexpertise, setselectexpertise] = useState(false);
+  const [expertisedata, setExterptisedata] = useState(null);
 
-const HealthCategory = ({ item }) => {
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [wishlist, setWishlist] = useState([]);
-    const [data, setData] = useState([]);
-    const screenWidth = Dimensions.get('window').width;
-    const [refreshing, setRefreshing] = useState(false);
-    const isFocused = useIsFocused();
-    const [filtereddata, setFiltereddata] = useState(null);
-    const [minbudget, setMinbudget] = useState('');
-    const [maxbudget, setMaxbudget] = useState('');
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [selectexpertise, setselectexpertise] = useState(false);
-    const [expertisedata,setExterptisedata]=useState(null);
-
-    useEffect(() => {
-        if (isFocused && isSheetOpen) {
-            refRBSheetDoctors.current.open();
-            refRBSheetHospitals.current.open();
-        }
-    }, [isFocused, isSheetOpen]);
-    console.log('data-----', data);
-
-    const information = [
-        { label: 'Doctors', value: '1' },
-        { label: 'Clinic', value: '2' },
-    ];
-
-    const handleWishlist = (id) => {
-        const updatedWishlist = [...wishlist];
-        const index = updatedWishlist.indexOf(id);
-        if (index === -1) {
-            updatedWishlist.push(id);
-        } else {
-            updatedWishlist.splice(index, 1);
-        }
-        setWishlist(updatedWishlist);
+  useEffect(() => {
+    if (isFocused && isSheetOpen) {
+      refRBSheetDoctors.current.open();
+      refRBSheetHospitals.current.open();
     }
+  }, [isFocused, isSheetOpen]);
+  console.log('data-----', data);
 
-    const isWishlisted = (id) => {
-        return wishlist.includes(id);
+  const information = [
+    {label: 'Doctors', value: '1'},
+    {label: 'Clinic', value: '2'},
+  ];
+
+  const handleWishlist = id => {
+    const updatedWishlist = [...wishlist];
+    const index = updatedWishlist.indexOf(id);
+    if (index === -1) {
+      updatedWishlist.push(id);
+    } else {
+      updatedWishlist.splice(index, 1);
     }
+    setWishlist(updatedWishlist);
+  };
 
-    const image = [
-        require('../../../../assets/banner1.png'),
-        require('../../../../assets/banner2.png'),
-        require('../../../../assets/banner2.png'),
-        require('../../../../assets/banner2.png'),
-        require('../../../../assets/banner2.png'),
-        require('../../../../assets/banner2.png'),
-    ];
-    const navigation = useNavigation();
-    const refRBSheetHospitals = useRef();
-    const refRBSheetDoctors = useRef();
+  const isWishlisted = id => {
+    return wishlist.includes(id);
+  };
 
-    const fetchdoctorApi = () => {
-        axios.get(`${Baseurl}/api/doctors/list`)
-            .then(response => {
-                console.log('response ---', response.data);
-                setData(response.data.data.advertisements);
-                let titledata = response.data.data.advertisements?.map((i) => i.expertise);
- 
-                const formattedData = titledata.map((title, index) => ({
-                    label: title,
-                    value: (index + 1).toString()
-                }));
-                console.log('formattedData---',formattedData)
-                setExterptisedata(formattedData)
+  const image = [
+    require('../../../../assets/banner1.png'),
+    require('../../../../assets/banner2.png'),
+    require('../../../../assets/banner2.png'),
+    require('../../../../assets/banner2.png'),
+    require('../../../../assets/banner2.png'),
+    require('../../../../assets/banner2.png'),
+  ];
+  const navigation = useNavigation();
+  const refRBSheetHospitals = useRef();
+  const refRBSheetDoctors = useRef();
 
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-            });
-    };
+  const fetchdoctorApi = () => {
+    axios
+      .get(`${Baseurl}/api/doctors/list`)
+      .then(response => {
+        console.log('response ---', response.data);
+        setData(response.data.data.advertisements);
+        let titledata = response.data.data.advertisements?.map(
+          i => i.expertise,
+        );
 
-    const fetchhospitalApi = () => {
-        axios.get(`${Baseurl}/api/hospitals/list`)
-            .then(response => {
-                console.log('response ---', response.data);
-                setData(response.data.data.advertisements);
-            })
-            .catch(error => {
-                console.error('Error fetching data: ', error);
-            });
-    };
+        const formattedData = titledata.map((title, index) => ({
+          label: title,
+          value: (index + 1).toString(),
+        }));
+        console.log('formattedData---', formattedData);
+        setExterptisedata(formattedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
 
-    useEffect(() => {
-        if (selectedCategory == 1) {
-            fetchdoctorApi();
-        } else {
-            fetchhospitalApi();
-        }
-    }, [selectedCategory]);
+  const fetchhospitalApi = () => {
+    axios
+      .get(`${Baseurl}/api/hospitals/list`)
+      .then(response => {
+        console.log('response ---', response.data);
+        setData(response.data.data.advertisements);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
 
-    const onRefresh = () => {
-        setRefreshing(true);
-        fetchdoctorApi();
-        fetchhospitalApi();
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    };
-
-    const getCreatedAtLabel = (created_at) => {
-        console.log('created_at-------', created_at)
-        const currentDate = new Date();
-        const createdDate = new Date(created_at);
-
-        const diffTime = Math.abs(currentDate - createdDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        console.log('diffDays ----', diffDays)
-        if (diffDays === 1) {
-            return "Today";
-        } else if (diffDays === 2) {
-            return "Yesterday";
-        } else if (diffDays <= 7) {
-            return `${diffDays} days ago`;
-        } else {
-            return created_at;
-        }
-    };
-
-    const filterhospitalsbudget = () => {
-        axios.get(`${Baseurl}/api/hospitals/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`)
-            .then(response => {
-                console.log('response --->>', response.data.data.advertisements);
-                setFiltereddata(response.data.data.advertisements);
-                refRBSheetHospitals.current.close();
-            })
-            .catch(error => {
-                console.error('Error: ', error?.response);
-                setFiltereddata(null);
-                setData(null);
-                refRBSheetHospitals.current.close()
-            });
+  useEffect(() => {
+    if (selectedCategory == 1) {
+      fetchdoctorApi();
+    } else {
+      fetchhospitalApi();
     }
-     
-    const filterdoctorexpertise = () => {
-        const expertisetype = expertisedata.filter(item => item.value === selectexpertise).map(i => i.label).toString();
+  }, [selectedCategory]);
 
-        axios.get(`${Baseurl}/api/doctors/filter?expertise=${expertisetype}`)
-            .then(response => {
-                console.log('response --->>', response.data.data.advertisements);
-                setFiltereddata(response.data.data.advertisements);
-                refRBSheetDoctors.current.close();
-            })
-            .catch(error => {
-                console.error('Error: ', error?.response);
-                setFiltereddata(null);
-                setData(null);
-                refRBSheetDoctors.current.close()
-            });
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchdoctorApi();
+    fetchhospitalApi();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
+  const getCreatedAtLabel = created_at => {
+    console.log('created_at-------', created_at);
+    const currentDate = new Date();
+    const createdDate = new Date(created_at);
+
+    const diffTime = Math.abs(currentDate - createdDate);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    console.log('diffDays ----', diffDays);
+    if (diffDays === 1) {
+      return 'Today';
+    } else if (diffDays === 2) {
+      return 'Yesterday';
+    } else if (diffDays <= 7) {
+      return `${diffDays} days ago`;
+    } else {
+      return created_at;
     }
+  };
 
-    return (
-        <View >
-            <Appbar.Header>
-                <Appbar.BackAction onPress={() => { navigation.goBack() }} />
-                <Appbar.Content title='Health' />
-                <TouchableOpacity onPress={() => { }} style={{ bottom: 10, marginRight: 5 }} >
-                    <View style={{
+  const filterhospitalsbudget = () => {
+    axios
+      .get(
+        `${Baseurl}/api/hospitals/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
+      )
+      .then(response => {
+        console.log('response --->>', response.data.data.advertisements);
+        setFiltereddata(response.data.data.advertisements);
+        refRBSheetHospitals.current.close();
+      })
+      .catch(error => {
+        console.error('Error: ', error?.response);
+        setFiltereddata(null);
+        setData(null);
+        refRBSheetHospitals.current.close();
+      });
+  };
+
+  const filterdoctorexpertise = () => {
+    const expertisetype = expertisedata
+      .filter(item => item.value === selectexpertise)
+      .map(i => i.label)
+      .toString();
+
+    axios
+      .get(`${Baseurl}/api/doctors/filter?expertise=${expertisetype}`)
+      .then(response => {
+        console.log('response --->>', response.data.data.advertisements);
+        setFiltereddata(response.data.data.advertisements);
+        refRBSheetDoctors.current.close();
+      })
+      .catch(error => {
+        console.error('Error: ', error?.response);
+        setFiltereddata(null);
+        setData(null);
+        refRBSheetDoctors.current.close();
+      });
+  };
+
+  return (
+    <View>
+      <Appbar.Header>
+        <Appbar.BackAction
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
+        <Appbar.Content title="Health Care" />
+        <TouchableOpacity
+          onPress={() => {}}
+          style={{bottom: 10, marginRight: 5}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 20,
+              gap: 5,
+              borderRadius: 5,
+              paddingHorizontal: 10,
+            }}>
+            <SvgXml xml={location} width="15px" height="15px" />
+            <Text style={style.subsubtitle}>Guwahati</Text>
+            <AntDesign name="caretdown" size={12} />
+          </View>
+        </TouchableOpacity>
+      </Appbar.Header>
+
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View style={{position: '', bottom: 0, width: '100%'}}>
+          <View style={{marginHorizontal: 5}}>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={information}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Health Services"
+              value={selectedCategory}
+              onChange={item => {
+                setSelectedCategory(item.value);
+              }}
+            />
+          </View>
+        </View>
+        <View style={{padding: 1}}>
+          <View style={style.sliderContainer}>
+            <SliderBox
+              images={image}
+              dotStyle={{height: 10, width: 10, borderRadius: 5}}
+              dotColor="#3184b6"
+              inactiveDotColor="white"
+              imageLoadingColor="white"
+              autoplay={true}
+              circleLoop={true}
+              resizeMode="cover"
+              autoplayInterval={5000}
+              sliderBoxHeight={200}
+              onCurrentImagePressed={index =>
+                console.log(`image ${index} pressed`)
+              }
+              paginationBoxVerticalPadding={20}
+              paginationBoxStyle={{
+                position: 'absolute',
+                bottom: 0,
+                padding: 0,
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+              }}
+            />
+          </View>
+
+          <View style={{marginTop: 15}}>
+            {selectedCategory == 1 ? (
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginHorizontal: 10,
+                  }}>
+                  <View style={{flexDirection: 'row', marginHorizontal: 10}}>
+                    <TouchableOpacity
+                      onPress={fetchdoctorApi}
+                      style={{
+                        backgroundColor: '#ddd',
+                        paddingHorizontal: 5,
+                        paddingVertical: 5,
+                        borderRadius: 3,
                         flexDirection: 'row',
                         alignItems: 'center',
-                        marginTop: 20,
-                        gap: 5,
-                        borderRadius: 5,
-                        paddingHorizontal: 10,
+                        justifyContent: 'center',
+                        height: 40,
+                        width: 90,
+                      }}>
+                      <Text
+                        style={{
+                          color: '#3184b6',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          textAlign: 'center',
+                        }}>
+                        Featured Ads
+                      </Text>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        left: 5,
+                        backgroundColor: 'white',
+                        paddingHorizontal: 5,
+                        paddingVertical: 5,
+                        borderRadius: 3,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 40,
+                        width: 90,
+                      }}>
+                      <AntDesign
+                        name="checkcircle"
+                        style={{color: '#3184b6', marginRight: 5}}
+                      />
+                      <Text
+                        style={{
+                          color: '#3184b6',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          textAlign: 'center',
+                        }}>
+                        Verified
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => refRBSheetDoctors.current.open()}
+                    style={{
+                      right: 5,
+                      backgroundColor: '#ddd',
+                      paddingHorizontal: 5,
+                      paddingVertical: 5,
+                      borderRadius: 3,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 40,
+                      width: 90,
                     }}>
-                        <SvgXml
-                            xml={location}
-                            width="15px"
-                            height="15px"
-                        />
-                        <Text style={style.subsubtitle}>Guwahati</Text>
-                        <AntDesign name="caretdown" size={12} />
-                    </View>
-                </TouchableOpacity>
-            </Appbar.Header>
-
-
-            <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }} refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-                <View style={{ position: '', bottom: 0, width: '100%' }}>
-                    <View style={{ marginHorizontal: 5 }}>
-                        <Dropdown
-                            style={style.dropdown}
-                            placeholderStyle={style.placeholderStyle}
-                            selectedTextStyle={style.selectedTextStyle}
-                            inputSearchStyle={style.inputSearchStyle}
-                            iconStyle={style.iconStyle}
-                            data={information}
-                            maxHeight={300}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select Health Services"
-                            value={selectedCategory}
-                            onChange={item => {
-                                setSelectedCategory(item.value);
-                            }}
-                        />
-                    </View>
+                    <AntDesign
+                      name="filter"
+                      style={{color: '#3184b6', marginRight: 5}}
+                    />
+                    <Text
+                      style={{
+                        color: '#3184b6',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                        textAlign: 'center',
+                      }}>
+                      Filter
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-                <View style={{ padding: 1 }}>
-                    <View style={style.sliderContainer}>
-                    <SliderBox
-            images={image}
-            dotStyle={{ height: 10, width: 10, borderRadius: 5 }}
-            dotColor="#3184b6"
-            inactiveDotColor="white"
-            imageLoadingColor="white"
-            autoplay={true}
-            circleLoop={true}
-            resizeMode="cover"
-            autoplayInterval={5000}
-            sliderBoxHeight={200}
-            onCurrentImagePressed={index =>
-              console.log(`image ${index} pressed`)
-            }
-            paginationBoxVerticalPadding={20}
-            paginationBoxStyle={{
-              position: "absolute",
-              bottom: 0,
-              padding: 0,
-              alignItems: "center",
-              alignSelf: "center",
-              justifyContent: "center",
-              paddingVertical: 10
-            }}
-          />
-                    </View>
 
-                    <View style={{ marginTop: 15, }}>
+                {filtereddata == null && data == null ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <LottieView
+                      source={require('../../../../assets/404.json')}
+                      autoPlay
+                      loop
+                      style={{height: 200, width: 200}}
+                      onAnimationFinish={() =>
+                        console.log('Animation Finished')
+                      }
+                      onError={error => console.log('Lottie Error:', error)}
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    data={filtereddata ? filtereddata : data}
+                    horizontal={false}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item, index}) => {
+                      let imageurl = `${Baseurl}/api/${item.images[0]}`;
+                      console.log('item ---', item);
 
-
-
-
-
-                        {selectedCategory == 1 ?
-                            <View>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
-                                    <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                                        <TouchableOpacity onPress={fetchdoctorApi} style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                            <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Featured Ads</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                            <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                            <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Verified</Text>
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity onPress={() => refRBSheetDoctors.current.open()} style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                        <AntDesign name='filter' style={{ color: '#3184b6', marginRight: 5 }} />
-                                        <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Filter</Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                {
-                                    filtereddata == null && data == null
-                                        ?
-                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                            <LottieView
-                                                source={require('../../../../assets/404.json')}
-                                                autoPlay
-                                                loop
-                                                style={{ height: 200, width: 200 }}
-                                                onAnimationFinish={() => console.log('Animation Finished')}
-                                                onError={(error) => console.log('Lottie Error:', error)}
-                                            />
-                                        </View>
-                                        :
-                                        <FlatList
-                                            data={filtereddata ? filtereddata : data}
-                                            horizontal={false}
-                                            numColumns={2}
-                                            showsVerticalScrollIndicator={false}
-                                            renderItem={({ item, index }) => {
-                                                let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                                console.log('item ---', item);
-
-                                                return (
-                                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('DoctorCategoryDetails', { data: item })}>
-                                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-
-                                                            <Image
-                                                                source={{ uri: imageurl }}
-                                                                style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                                            />
-                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                                                <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                                    <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                                                    <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                                    {isWishlisted(index) ?
-                                                                        <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                                                        :
-                                                                        <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
-                                                                </TouchableOpacity>
-                                                            </View>
-
-                                                            <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                                {/* <Text numberOfLines={1} style={{ width: 150, fontWeight: "600" }}>{item.name}</Text> */}
-                                                                <Text style={{}}>{item.expertise}</Text>
-                                                            </View>
-
-                                                            <View style={{ marginLeft: 10, marginTop: 5, flexDirection: "row", justifyContent: "space-between" }}>
-                                                                <Text>₹{item.price_per_visit}/visit</Text>
-                                                                <Text style={{ marginRight: 5 }}>Exp. {item.total_experience}years</Text>
-                                                            </View>
-                                                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
-                                                                <View style={{ flexDirection: "row" }}>
-                                                                    <SvgXml
-                                                                        xml={location}
-                                                                        width="15px"
-                                                                        height="15px"
-                                                                        style={{ marginTop: 3, marginRight: 5 }}
-                                                                    />
-                                                                    <Text>{item.city}</Text>
-                                                                </View>
-                                                                <Text>{getCreatedAtLabel(item.created_at)}</Text>
-                                                            </View>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                )
-                                            }}
-                                            keyExtractor={(item, index) => item.id}
-                                        />
-                                }
-                            </View>
-                            :
-                            <View>
-                                <View style={{ flexDirection: "row", justifyContent: "space-between", marginHorizontal: 10 }}>
-                                    <View style={{ flexDirection: "row", marginHorizontal: 10 }}>
-                                        <TouchableOpacity onPress={fetchhospitalApi} style={{ backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                            <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Featured Ads</Text>
-                                        </TouchableOpacity>
-                                        <View style={{ left: 5, backgroundColor: 'white', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                            <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                            <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Verified</Text>
-                                        </View>
-                                    </View>
-                                    <TouchableOpacity onPress={() => refRBSheetHospitals.current.open()} style={{ right: 5, backgroundColor: '#ddd', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 3, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 40, width: 90 }}>
-                                        <AntDesign name='filter' style={{ color: '#3184b6', marginRight: 5 }} />
-                                        <Text style={{ color: '#3184b6', fontWeight: 'bold', fontSize: 12, textAlign: "center" }}>Filter</Text>
-                                    </TouchableOpacity>
-                                </View>
-
-                                {
-                                    filtereddata == null && data == null
-                                        ?
-                                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                            <LottieView
-                                                source={require('../../../../assets/404.json')}
-                                                autoPlay
-                                                loop
-                                                style={{ height: 200, width: 200 }}
-                                                onAnimationFinish={() => console.log('Animation Finished')}
-                                                onError={(error) => console.log('Lottie Error:', error)}
-                                            />
-                                        </View>
-                                        :
-                                        <FlatList
-                                            data={filtereddata ? filtereddata : data}
-                                            horizontal={false}
-                                            numColumns={2}
-                                            showsVerticalScrollIndicator={false}
-                                            renderItem={({ item, index }) => {
-                                                let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                                                console.log('item ---', item)
-
-                                                return (
-                                                    <TouchableOpacity style={{ width: screenWidth / 2, marginTop: 10, paddingHorizontal: 5, marginBottom: 5, }} onPress={() => navigation.navigate('HospitalorClinicCategoryDetails', { data: item })}>
-                                                        <View style={{ borderWidth: 0.5, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12 }}>
-
-                                                            <Image
-                                                                source={{ uri: imageurl }}
-                                                                style={{ height: 120, borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
-                                                            />
-                                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', position: 'absolute', top: 10, left: 10, right: 10 }}>
-                                                                <View style={{ backgroundColor: 'white', paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                                    <AntDesign name='checkcircle' style={{ color: '#3184b6', marginRight: 5 }} />
-                                                                    <Text style={{ color: 'white', fontWeight: 'bold', color: '#3184b6', fontSize: 12 }}>Verified</Text>
-                                                                </View>
-                                                                <TouchableOpacity onPress={() => handleWishlist(index)} style={{ paddingHorizontal: 2, paddingVertical: 2, borderRadius: 5, flexDirection: 'row', alignItems: 'center' }}>
-                                                                    {isWishlisted(index) ?
-                                                                        <AntDesign name='heart' style={{ color: '#3184b6', marginRight: 5 }} size={20} />
-                                                                        :
-                                                                        <AntDesign name='hearto' style={{ color: '#3184b6', marginRight: 5 }} size={20} />}
-                                                                </TouchableOpacity>
-                                                            </View>
-
-                                                            <View style={{ marginTop: 10, marginLeft: 10 }}>
-                                                                <Text numberOfLines={1} style={{ width: 150 }}>{item.title}</Text>
-                                                            </View>
-
-                                                            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10, marginBottom: 10, marginHorizontal: 10 }}>
-                                                                <View style={{ flexDirection: "row" }}>
-                                                                    <SvgXml
-                                                                        xml={location}
-                                                                        width="15px"
-                                                                        height="15px"
-                                                                        style={{ marginTop: 3, marginRight: 5 }}
-                                                                    />
-                                                                    <Text>{item.city}</Text>
-                                                                </View>
-                                                                <Text>{getCreatedAtLabel(item.created_at)}</Text>
-                                                            </View>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                )
-                                            }}
-                                            keyExtractor={(item, index) => item.id}
-                                        />
-                                }
+                      return (
+                        <TouchableOpacity
+                          style={{
+                            width: screenWidth / 2,
+                            marginTop: 10,
+                            paddingHorizontal: 5,
+                            marginBottom: 5,
+                          }}
+                          onPress={() =>
+                            navigation.navigate('DoctorCategoryDetails', {
+                              data: item,
+                            })
+                          }>
+                          <View
+                            style={{
+                              borderWidth: 0.5,
+                              borderTopLeftRadius: 12,
+                              borderTopRightRadius: 12,
+                              borderBottomLeftRadius: 12,
+                              borderBottomRightRadius: 12,
+                            }}>
+                            <Image
+                              source={{uri: imageurl}}
+                              style={{
+                                height: 120,
+                                borderTopLeftRadius: 12,
+                                borderTopRightRadius: 12,
+                              }}
+                            />
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                position: 'absolute',
+                                top: 10,
+                                left: 10,
+                                right: 10,
+                              }}>
+                              <View
+                                style={{
+                                  backgroundColor: 'white',
+                                  paddingHorizontal: 2,
+                                  paddingVertical: 2,
+                                  borderRadius: 5,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <AntDesign
+                                  name="checkcircle"
+                                  style={{color: '#3184b6', marginRight: 5}}
+                                />
+                                <Text
+                                  style={{
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    color: '#3184b6',
+                                    fontSize: 12,
+                                  }}>
+                                  Verified
+                                </Text>
+                              </View>
+                              <TouchableOpacity
+                                onPress={() => handleWishlist(index)}
+                                style={{
+                                  paddingHorizontal: 2,
+                                  paddingVertical: 2,
+                                  borderRadius: 5,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                {isWishlisted(index) ? (
+                                  <AntDesign
+                                    name="heart"
+                                    style={{color: '#3184b6', marginRight: 5}}
+                                    size={20}
+                                  />
+                                ) : (
+                                  <AntDesign
+                                    name="hearto"
+                                    style={{color: '#3184b6', marginRight: 5}}
+                                    size={20}
+                                  />
+                                )}
+                              </TouchableOpacity>
                             </View>
 
-                        }
-                    </View>
-                </View>
-            </ScrollView>
+                            <View style={{marginTop: 10, marginLeft: 10}}>
+                              {/* <Text numberOfLines={1} style={{ width: 150, fontWeight: "600" }}>{item.name}</Text> */}
+                              <Text style={{}}>{item.expertise}</Text>
+                            </View>
 
-
-            <RBSheet
-                ref={refRBSheetHospitals}
-                useNativeDriver={false}
-                draggable={true}
-                dragOnContent
-                height={600}
-                closeOnPressMask={true}
-                closeOnPressBack={true}
-                customStyles={{
-                    wrapper: {
-                        backgroundColor: 'transparent',
-                    },
-                    draggableIcon: {
-                        backgroundColor: '#000',
-                    },
-                    container: {
-                        borderTopLeftRadius: 20,
-                        borderTopRightRadius: 20,
-                    },
-                }}
-                customModalProps={{
-                    animationType: 'fade',
-                    statusBarTranslucent: true,
-                }}
-                customAvoidingViewProps={{
-                    enabled: false,
-                }}
-            >
-                <View style={{ flex: 1, padding: 20 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={[style.subtitle, { textAlign: "left", }]}>Budget</Text>
-                        <Entypo name="cross" size={30} onPress={() => refRBSheetHospitals.current.close()} />
-                    </View>
-                    <View>
-                        <Text style={{ textAlign: "left", marginTop: 10 }}>Choose a range below ( <FontAwesome5 name="rupee-sign" size={12} /> )</Text>
-                    </View>
-                    <View style={{ marginTop: 10 }}>
-                        <TextInput
-                            placeholder='Min.'
-                            placeholderTextColor='black'
-                            style={{
-                                backgroundColor: 'white',
-                                borderRadius: 5,
-                                height: 60,
-                                paddingLeft: 20,
-                                borderWidth: 0.5
-                            }}
-                            inputMode="numeric"
-                            value={minbudget}
-                            onChangeText={(min) => setMinbudget(min)}
-                        />
-                    </View>
-                    <View>
-                        <Text style={{ textAlign: "center", marginTop: 10 }}>To</Text>
-                    </View>
-                    <View style={{ marginTop: 10 }}>
-                        <TextInput
-                            placeholder='Max.'
-                            placeholderTextColor='black'
-                            style={{
-                                backgroundColor: 'white',
-                                borderRadius: 5,
-                                height: 60,
-                                paddingLeft: 20,
-                                borderWidth: 0.5
-                            }}
-                            inputMode="numeric"
-                            value={maxbudget}
-                            onChangeText={(max) => setMaxbudget(max)}
-                        />
-                    </View>
-                </View>
-                <View style={{ marginTop: 0 }} >
+                            <View
+                              style={{
+                                marginLeft: 10,
+                                marginTop: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                              }}>
+                              <Text>₹{item.price_per_visit}/visit</Text>
+                              <Text style={{marginRight: 5}}>
+                                Exp. {item.total_experience}years
+                              </Text>
+                            </View>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                marginTop: 10,
+                                marginBottom: 10,
+                                marginHorizontal: 10,
+                              }}>
+                              <View style={{flexDirection: 'row'}}>
+                                <SvgXml
+                                  xml={location}
+                                  width="15px"
+                                  height="15px"
+                                  style={{marginTop: 3, marginRight: 5}}
+                                />
+                                <Text>{item.city}</Text>
+                              </View>
+                              <Text>{getCreatedAtLabel(item.created_at)}</Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                  />
+                )}
+              </View>
+            ) : (
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    marginHorizontal: 10,
+                  }}>
+                  <View style={{flexDirection: 'row', marginHorizontal: 10}}>
                     <TouchableOpacity
+                      onPress={fetchhospitalApi}
+                      style={{
+                        backgroundColor: '#ddd',
+                        paddingHorizontal: 5,
+                        paddingVertical: 5,
+                        borderRadius: 3,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 40,
+                        width: 90,
+                      }}>
+                      <Text
                         style={{
-                            backgroundColor: style.button.backgroundColor,
-                            borderRadius: 0,
-                            height: 60,
-                            justifyContent: 'center',
-                            borderColor: "gray",
-                            borderWidth: 0.5
-                        }}
-                        onPress={filterhospitalsbudget}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
+                          color: '#3184b6',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          textAlign: 'center',
+                        }}>
+                        Featured Ads
+                      </Text>
                     </TouchableOpacity>
-                </View>
-            </RBSheet>
-
-            <RBSheet
-                ref={refRBSheetDoctors}
-                useNativeDriver={false}
-                draggable={true}
-                dragOnContent
-                height={600}
-                closeOnPressMask={true}
-                closeOnPressBack={true}
-                customStyles={{
-                    wrapper: {
-                        backgroundColor: 'transparent',
-                    },
-                    draggableIcon: {
-                        backgroundColor: '#000',
-                    },
-                    container: {
-                        borderTopLeftRadius: 20,
-                        borderTopRightRadius: 20,
-                    },
-                }}
-                customModalProps={{
-                    animationType: 'fade',
-                    statusBarTranslucent: true,
-                }}
-                customAvoidingViewProps={{
-                    enabled: false,
-                }}
-            >
-                <View style={{ flex: 1, padding: 20 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={[style.subtitle, { textAlign: "left", }]}>Select Expertise</Text>
-                        <Entypo name="cross" size={30} onPress={() => refRBSheetDoctors.current.close()} />
-                    </View>
-
-                    <View style={{ marginHorizontal: 0, marginTop: 20 }}>
-                        <Dropdown
-                            style={style.dropdown}
-                            placeholderStyle={style.placeholderStyle}
-                            selectedTextStyle={style.selectedTextStyle}
-                            inputSearchStyle={style.inputSearchStyle}
-                            iconStyle={style.iconStyle}
-                            data={expertisedata}
-                            maxHeight={300}
-                            labelField="label"
-                            valueField="value"
-                            placeholder="Select Health Services"
-                            value={selectexpertise}
-                            onChange={item => {
-                                setselectexpertise(item.value);
-                            }}
-                        />
-                    </View>
-
-                </View>
-                <View style={{ marginTop: 0 }} >
-                    <TouchableOpacity
+                    <View
+                      style={{
+                        left: 5,
+                        backgroundColor: 'white',
+                        paddingHorizontal: 5,
+                        paddingVertical: 5,
+                        borderRadius: 3,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 40,
+                        width: 90,
+                      }}>
+                      <AntDesign
+                        name="checkcircle"
+                        style={{color: '#3184b6', marginRight: 5}}
+                      />
+                      <Text
                         style={{
-                            backgroundColor: style.button.backgroundColor,
-                            borderRadius: 0,
-                            height: 60,
-                            justifyContent: 'center',
-                            borderColor: "gray",
-                            borderWidth: 0.5
-                        }}
-                        onPress={filterdoctorexpertise}
-                    >
-                        <Text style={{ textAlign: 'center', fontSize: 18, color: "white" }}>Apply</Text>
-                    </TouchableOpacity>
+                          color: '#3184b6',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          textAlign: 'center',
+                        }}>
+                        Verified
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => refRBSheetHospitals.current.open()}
+                    style={{
+                      right: 5,
+                      backgroundColor: '#ddd',
+                      paddingHorizontal: 5,
+                      paddingVertical: 5,
+                      borderRadius: 3,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 40,
+                      width: 90,
+                    }}>
+                    <AntDesign
+                      name="filter"
+                      style={{color: '#3184b6', marginRight: 5}}
+                    />
+                    <Text
+                      style={{
+                        color: '#3184b6',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                        textAlign: 'center',
+                      }}>
+                      Filter
+                    </Text>
+                  </TouchableOpacity>
                 </View>
-            </RBSheet>
 
+                {filtereddata == null && data == null ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <LottieView
+                      source={require('../../../../assets/404.json')}
+                      autoPlay
+                      loop
+                      style={{height: 200, width: 200}}
+                      onAnimationFinish={() =>
+                        console.log('Animation Finished')
+                      }
+                      onError={error => console.log('Lottie Error:', error)}
+                    />
+                  </View>
+                ) : (
+                  <FlatList
+                    data={filtereddata ? filtereddata : data}
+                    horizontal={false}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({item, index}) => {
+                      let imageurl = `${Baseurl}/api/${item.images[0]}`;
+                      console.log('item ---', item);
 
+                      return (
+                        <TouchableOpacity
+                          style={{
+                            width: screenWidth / 2,
+                            marginTop: 10,
+                            paddingHorizontal: 5,
+                            marginBottom: 5,
+                          }}
+                          onPress={() =>
+                            navigation.navigate(
+                              'HospitalorClinicCategoryDetails',
+                              {data: item},
+                            )
+                          }>
+                          <View
+                            style={{
+                              borderWidth: 0.5,
+                              borderTopLeftRadius: 12,
+                              borderTopRightRadius: 12,
+                              borderBottomLeftRadius: 12,
+                              borderBottomRightRadius: 12,
+                            }}>
+                            <Image
+                              source={{uri: imageurl}}
+                              style={{
+                                height: 120,
+                                borderTopLeftRadius: 12,
+                                borderTopRightRadius: 12,
+                              }}
+                            />
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                position: 'absolute',
+                                top: 10,
+                                left: 10,
+                                right: 10,
+                              }}>
+                              <View
+                                style={{
+                                  backgroundColor: 'white',
+                                  paddingHorizontal: 2,
+                                  paddingVertical: 2,
+                                  borderRadius: 5,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                <AntDesign
+                                  name="checkcircle"
+                                  style={{color: '#3184b6', marginRight: 5}}
+                                />
+                                <Text
+                                  style={{
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    color: '#3184b6',
+                                    fontSize: 12,
+                                  }}>
+                                  Verified
+                                </Text>
+                              </View>
+                              <TouchableOpacity
+                                onPress={() => handleWishlist(index)}
+                                style={{
+                                  paddingHorizontal: 2,
+                                  paddingVertical: 2,
+                                  borderRadius: 5,
+                                  flexDirection: 'row',
+                                  alignItems: 'center',
+                                }}>
+                                {isWishlisted(index) ? (
+                                  <AntDesign
+                                    name="heart"
+                                    style={{color: '#3184b6', marginRight: 5}}
+                                    size={20}
+                                  />
+                                ) : (
+                                  <AntDesign
+                                    name="hearto"
+                                    style={{color: '#3184b6', marginRight: 5}}
+                                    size={20}
+                                  />
+                                )}
+                              </TouchableOpacity>
+                            </View>
 
+                            <View style={{marginTop: 10, marginLeft: 10}}>
+                              <Text numberOfLines={1} style={{width: 150}}>
+                                {item.title}
+                              </Text>
+                            </View>
 
-
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                marginTop: 10,
+                                marginBottom: 10,
+                                marginHorizontal: 10,
+                              }}>
+                              <View style={{flexDirection: 'row'}}>
+                                <SvgXml
+                                  xml={location}
+                                  width="15px"
+                                  height="15px"
+                                  style={{marginTop: 3, marginRight: 5}}
+                                />
+                                <Text>{item.city}</Text>
+                              </View>
+                              <Text>{getCreatedAtLabel(item.created_at)}</Text>
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                  />
+                )}
+              </View>
+            )}
+          </View>
         </View>
-    )
-}
+      </ScrollView>
 
-export default HealthCategory
+      <RBSheet
+        ref={refRBSheetHospitals}
+        useNativeDriver={false}
+        draggable={true}
+        dragOnContent
+        height={600}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
+        }}
+        customModalProps={{
+          animationType: 'fade',
+          statusBarTranslucent: true,
+        }}
+        customAvoidingViewProps={{
+          enabled: false,
+        }}>
+        <View style={{flex: 1, padding: 20}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={[style.subtitle, {textAlign: 'left'}]}>Budget</Text>
+            <Entypo
+              name="cross"
+              size={30}
+              onPress={() => refRBSheetHospitals.current.close()}
+            />
+          </View>
+          <View>
+            <Text style={{textAlign: 'left', marginTop: 10}}>
+              Choose a range below ({' '}
+              <FontAwesome5 name="rupee-sign" size={12} /> )
+            </Text>
+          </View>
+          <View style={{marginTop: 10}}>
+            <TextInput
+              placeholder="Min."
+              placeholderTextColor="black"
+              style={{
+                backgroundColor: 'white',
+                borderRadius: 5,
+                height: 60,
+                paddingLeft: 20,
+                borderWidth: 0.5,
+              }}
+              inputMode="numeric"
+              value={minbudget}
+              onChangeText={min => setMinbudget(min)}
+            />
+          </View>
+          <View>
+            <Text style={{textAlign: 'center', marginTop: 10}}>To</Text>
+          </View>
+          <View style={{marginTop: 10}}>
+            <TextInput
+              placeholder="Max."
+              placeholderTextColor="black"
+              style={{
+                backgroundColor: 'white',
+                borderRadius: 5,
+                height: 60,
+                paddingLeft: 20,
+                borderWidth: 0.5,
+              }}
+              inputMode="numeric"
+              value={maxbudget}
+              onChangeText={max => setMaxbudget(max)}
+            />
+          </View>
+        </View>
+        <View style={{marginTop: 0}}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: style.button.backgroundColor,
+              borderRadius: 0,
+              height: 60,
+              justifyContent: 'center',
+              borderColor: 'gray',
+              borderWidth: 0.5,
+            }}
+            onPress={filterhospitalsbudget}>
+            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
+              Apply
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </RBSheet>
+
+      <RBSheet
+        ref={refRBSheetDoctors}
+        useNativeDriver={false}
+        draggable={true}
+        dragOnContent
+        height={600}
+        closeOnPressMask={true}
+        closeOnPressBack={true}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          draggableIcon: {
+            backgroundColor: '#000',
+          },
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+          },
+        }}
+        customModalProps={{
+          animationType: 'fade',
+          statusBarTranslucent: true,
+        }}
+        customAvoidingViewProps={{
+          enabled: false,
+        }}>
+        <View style={{flex: 1, padding: 20}}>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={[style.subtitle, {textAlign: 'left'}]}>
+              Select Expertise
+            </Text>
+            <Entypo
+              name="cross"
+              size={30}
+              onPress={() => refRBSheetDoctors.current.close()}
+            />
+          </View>
+
+          <View style={{marginHorizontal: 0, marginTop: 20}}>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={expertisedata}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Health Services"
+              value={selectexpertise}
+              onChange={item => {
+                setselectexpertise(item.value);
+              }}
+            />
+          </View>
+        </View>
+        <View style={{marginTop: 0}}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: style.button.backgroundColor,
+              borderRadius: 0,
+              height: 60,
+              justifyContent: 'center',
+              borderColor: 'gray',
+              borderWidth: 0.5,
+            }}
+            onPress={filterdoctorexpertise}>
+            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
+              Apply
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </RBSheet>
+    </View>
+  );
+};
+
+export default HealthCategory;
