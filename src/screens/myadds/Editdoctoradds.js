@@ -8,26 +8,64 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   ActivityIndicator,
-  Modal,
-  StyleSheet,
   ToastAndroid,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {Appbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
 import {Dimensions} from 'react-native';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused} from '@react-navigation/native';
 
-const Editdoctoradds = () => {
+const Editdoctoradds = (item) => {
   const navigation = useNavigation();
+  const newdata = item.route.params;
+  const fetchproductApibyid = id => {
+    axios
+      .get(`${Baseurl}/api/doctors/id/${id}`)
+      .then(response => {
+        setCoursevalue(
+          Coursedata.find(
+            item => item.label === response.data.data.advertisement?.type,
+          )?.value || null,
+        );
+
+        setDomainvalue(
+          Domaindata.find(
+            item => item.label === response.data.data.advertisement?.domain,
+          )?.value || null,
+        );
+
+        setInfo(response.data.data.advertisement);
+        setDuration(response.data.data.advertisement?.course_duration);
+        setInstituname(response.data.data.advertisement?.institution_name);
+        setAdtitle(response.data.data.advertisement?.title);
+        setDescription(response.data.data.advertisement?.description);
+        setPrice(response.data.data.advertisement?.price);
+        setStreet(response.data.data.advertisement?.street);
+        setLocality(response.data.data.advertisement?.locality);
+        setCity(response.data.data.advertisement?.city);
+        setstate(response.data.data.advertisement?.state);
+        setPincode(response.data.data.advertisement?.pincode);
+        setSelectedImages(
+          response.data.data.advertisement?.images.map(imagePath => ({
+            uri: `${Baseurl}/api/${imagePath}`,
+          })),
+        );
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
+  useEffect(() => {
+    fetchproductApibyid(newdata?.item.id);
+  }, []);
+
   const [expertisevalue, setExpertiseValue] = useState(null);
   const Expertisedata = [
     {label: 'Child', value: '1'},
@@ -46,10 +84,6 @@ const Editdoctoradds = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState(false);
   const [experiance, setExperiance] = useState('');
-  const [loadingotp, setLoadingotp] = useState(false);
-  const [loadingverifyotp, setLoadingverifyotp] = useState(false);
-  const [showTokenModal, setShowTokenModal] = useState(false);
-  const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
   const [adtitle, setAdtitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -58,9 +92,6 @@ const Editdoctoradds = () => {
   const [city, setCity] = useState('');
   const [state, setstate] = useState('');
   const [pincode, setPincode] = useState('');
-  const [priceperregistration, setPriceperregistration] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isValidNumber, setIsValidNumber] = useState(true);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -87,7 +118,7 @@ const Editdoctoradds = () => {
     });
   };
 
-  const handlePostAd = () => {
+  const editPostAd = () => {
     handleGetToken()
       .then(token => {
         if (token) {
@@ -141,10 +172,18 @@ const Editdoctoradds = () => {
                 25,
                 50,
               );
-              setShowTokenModal(false);
             })
             .catch(error => {
-              console.error('Catch Error :---->', error.response);
+              console.error('Catch Error :---->', error);
+              if (error.message == 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  `Something went wrong, Try again later`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
               console.log('error message--->', error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -159,118 +198,12 @@ const Editdoctoradds = () => {
             });
         } else {
           console.log('Token not retrieved');
-          setShowTokenModal(true);
         }
       })
       .catch(error => {
         console.error('Error while handling post ad:', error);
       });
   };
-
-  const closeModal = () => {
-    setShowTokenModal(false);
-    setShowNestedModal(false);
-    setLoadingotp(false);
-    setLoadingverifyotp(false);
-  };
-
-  const [mobile, setMobile] = useState('');
-  const [data, setData] = useState(null);
-  const [showNestedModal, setShowNestedModal] = useState(false);
-
-  const sendOtp = async () => {
-    try {
-      if (!mobile || mobile.length !== 10) {
-        setErrorMessage('Please enter a valid 10-digit mobile number');
-        setIsValidNumber(false);
-        return;
-      }
-      setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}/api/users/sendotp`, {
-        mobile,
-      });
-
-      if (response.status !== 200) {
-        console.log('response data--->', response.data);
-      }
-
-      setData(response.data);
-      if (response.data.success === true) {
-        let newotp = response.data.data.otp;
-        setVerifyOtpvalue(newotp.toString());
-        handleNestedModal();
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoadingotp(false);
-    }
-  };
-
-  const closeNestedModal = () => {
-    setShowTokenModal(false);
-    setShowNestedModal(false);
-    setLoadingotp(false);
-    setLoadingverifyotp(false);
-  };
-
-  const handleNestedModal = () => {
-    setShowNestedModal(true);
-  };
-
-  const verifyOtp = async () => {
-    try {
-      setLoadingverifyotp(true);
-      const postData = {
-        mobile: parseInt(mobile),
-        otp: parseInt(verifyotpvalue),
-      };
-      console.log('postData---', postData);
-
-      const response = await axios.post(
-        `${Baseurl}/api/users/login`,
-        postData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      console.log('response data--->', response.data);
-      setData(response.data);
-      if (response.data.success == true) {
-        handleNavigation(response.data.token);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoadingverifyotp(false);
-    }
-  };
-
-  const handleNavigation = async information => {
-    console.log('information--->', information);
-    try {
-      await AsyncStorage.setItem('UserData', JSON.stringify(information));
-      setLoadingverifyotp(true);
-      setTimeout(() => {
-        setLoadingverifyotp(false);
-        setShowTokenModal(false);
-        setShowNestedModal(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const isfocused = useIsFocused();
-
-  useEffect(() => {
-    if (isfocused == true) {
-      setErrorMessage('');
-    }
-  }, [isfocused]);
 
   return (
     <View style={{flex: 1}}>
@@ -547,193 +480,6 @@ const Editdoctoradds = () => {
         </KeyboardAvoidingView>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showTokenModal}
-        onRequestClose={closeModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 10}}>
-              {/* <View style={{ marginTop: 10 }}>
-                <Text style={styles.header}>Welcome</Text>
-                <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
-              </View> */}
-              <View style={{marginTop: 25}}>
-                <Text style={style.title}>Enter Mobile Number</Text>
-              </View>
-              <View style={{marginTop: 20}}>
-                <TextInput
-                  placeholder="Enter here"
-                  placeholderTextColor="black"
-                  style={styles.textinput}
-                  inputMode="numeric"
-                  value={mobile}
-                  onChangeText={phone => setMobile(phone)}
-                  maxLength={10}
-
-                />
-                <View
-                  style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
-                  {!isValidNumber && (
-                    <Text style={{color: 'red'}}>{errorMessage}</Text>
-                  )}
-                </View>
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={sendOtp}
-                  style={[styles.button, {opacity: loadingotp ? 0.5 : 1}]}
-                  disabled={loadingotp}>
-                  {loadingotp ? (
-                    <ActivityIndicator size="small" color="white" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Send OTP
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showNestedModal}
-        onRequestClose={closeNestedModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 20}}>
-              <View>
-                <Text style={style.title}>
-                  We've sent your verification code to +91 {mobile}
-                </Text>
-              </View>
-
-              <View style={{marginTop: 50}}>
-                <TextInput
-                  // placeholder='Enter Code'
-                  placeholderTextColor="black"
-                  style={style.inputfield}
-                  inputMode="numeric"
-                  value={verifyotpvalue}
-                  onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
-                />
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={verifyOtp}
-                  style={[style.button, {opacity: loadingverifyotp ? 0.5 : 1}]}
-                  disabled={loadingverifyotp}>
-                  {loadingverifyotp ? (
-                    <ActivityIndicator size="small" color="black" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Verify Otp
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'black',
-                      }}>
-                      Resend Code
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={{textAlign: 'center', fontSize: 18}}>
-                      1:20 min left
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
       <View style={{marginTop: 0}}>
         <TouchableOpacity
           style={{
@@ -744,13 +490,13 @@ const Editdoctoradds = () => {
             borderColor: 'gray',
             borderWidth: 0.5,
           }}
-          onPress={handlePostAd}
+          onPress={editPostAd}
           disabled={loading ? true : false}>
           {loading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
             <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Post My Ad
+              Update My Ad
             </Text>
           )}
         </TouchableOpacity>
@@ -760,30 +506,3 @@ const Editdoctoradds = () => {
 };
 
 export default Editdoctoradds;
-
-const styles = StyleSheet.create({
-  header: {
-    fontSize: 36 * 1.33,
-    marginTop: 0,
-    fontWeight: '600',
-    color: 'black',
-  },
-  title: {
-    fontSize: 16 * 1.33,
-    fontWeight: '300',
-    color: 'black',
-  },
-  textinput: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    height: 60,
-    paddingLeft: 20,
-    borderWidth: 0.8,
-  },
-  button: {
-    backgroundColor: '#3184b6',
-    borderRadius: 12,
-    height: 60,
-    justifyContent: 'center',
-  },
-});

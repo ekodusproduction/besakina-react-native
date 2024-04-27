@@ -30,8 +30,19 @@ const Editeducationadds = item => {
     axios
       .get(`${Baseurl}/api/education/id/${id}`)
       .then(response => {
-        setInfo(response.data.data.advertisement);
-        setDuration(response.data.data.advertisement?.course_duration);
+        setCoursevalue(
+          Coursedata.find(
+            item => item.label === response.data.data.advertisement?.type,
+          )?.value || null,
+        );
+
+        setDomainvalue(
+          Domaindata.find(
+            item => item.label === response.data.data.advertisement?.domain,
+          )?.value || null,
+        );
+
+         setDuration(response.data.data.advertisement?.course_duration);
         setInstituname(response.data.data.advertisement?.institution_name);
         setTitle(response.data.data.advertisement?.title);
         setDescription(response.data.data.advertisement?.description);
@@ -41,19 +52,22 @@ const Editeducationadds = item => {
         setCity(response.data.data.advertisement?.city);
         setstate(response.data.data.advertisement?.state);
         setPincode(response.data.data.advertisement?.pincode);
+        setSelectedImages(
+          response.data.data.advertisement?.images.map(imagePath => ({
+            uri: `${Baseurl}/api/${imagePath}`,
+          })),
+        );
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
       });
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     fetchproductApibyid(newdata?.item.id);
   }, []);
 
   const navigation = useNavigation();
-  const [info, setInfo] = useState(null);
-  console.log('info--->>', info);
   const [coursevalue, setCoursevalue] = useState(null);
   const [domainvalue, setDomainvalue] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -139,13 +153,13 @@ const Editeducationadds = item => {
           formData.append('description', description);
           formData.append('price', price);
 
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
+          // selectedImages.forEach((image, index) => {
+          //   formData.append(`images[${index}]`, {
+          //     uri: image.uri,
+          //     type: image.type,
+          //     name: image.fileName,
+          //   });
+          // });
 
           formData.append('street', street);
           formData.append('locality', locality);
@@ -173,6 +187,15 @@ const Editeducationadds = item => {
             })
             .catch(error => {
               console.error('Catch Error :---->', error);
+              if (error.message == 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  `Something went wrong, Try again later`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
               console.log('error message--->', error.response.data.message);
             })
             .finally(() => {

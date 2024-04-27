@@ -155,11 +155,47 @@ const Education = () => {
       .then(token => {
         if (token) {
           // Proceed with posting ad
+          console.log('Token retrieved successfully--->', token);
+
           setLoading(true);
 
           const formData = new FormData();
-          // Append form data...
+          // formData.append("plan_id", "1");
 
+          const courseType = Coursedata.filter(
+            item => item.value === coursevalue,
+          )
+            .map(i => i.label)
+            .toString();
+          const domainType = Domaindata.filter(
+            item => item.value === domainvalue,
+          )
+            .map(i => i.label)
+            .toString();
+
+          formData.append('type', courseType);
+          formData.append('domain', domainType);
+          formData.append('institution_name', instituname);
+          formData.append('course_duration', duration);
+          formData.append('title', title);
+          formData.append('description', description);
+          formData.append('price', price);
+
+          selectedImages.forEach((image, index) => {
+            formData.append(`images[${index}]`, {
+              uri: image.uri,
+              type: image.type,
+              name: image.fileName,
+            });
+          });
+
+          formData.append('street', street);
+          formData.append('locality', locality);
+          formData.append('city', city);
+          formData.append('state', state);
+          formData.append('pincode', pincode);
+
+          console.log('formData===', formData);
           axios
             .post(`${Baseurl}/api/education/add`, formData, {
               headers: {

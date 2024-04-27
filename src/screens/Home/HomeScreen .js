@@ -31,6 +31,7 @@ import {useIsFocused} from '@react-navigation/native';
 import axios from 'axios';
 import {Baseurl} from '../../constant/globalparams';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import NetworkStatus from '../../components/NetworkStatus';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -218,7 +219,7 @@ const HomeScreen = () => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       <StatusBar animated={true} backgroundColor="" translucent={false} />
-
+      {/* <NetworkStatus /> */}
       <View style={{flex: 1, padding: 10}}>
         <View
           style={{justifyContent: 'center', alignItems: 'center', height: 40}}>

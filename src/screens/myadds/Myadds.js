@@ -130,6 +130,26 @@ const Myadds = props => {
             let imageurl = `${Baseurl}/api/${item.images[0]}`;
             return (
               <View style={{padding: 10}}>
+                <View
+                  style={{
+                    paddingHorizontal: 2,
+                    paddingVertical: 5,
+                    borderRadius: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: 5,
+                  }}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      color: '#3184b6',
+                      fontSize: 12,
+                    }}>
+                    {item.category.charAt(0).toUpperCase() +
+                      item.category.substring(1)}
+                  </Text>
+                </View>
                 <TouchableOpacity
                   style={{
                     borderWidth: 0.8,
@@ -202,6 +222,7 @@ const Myadds = props => {
                         Verified
                       </Text>
                     </View>
+
                     <TouchableOpacity
                       onPress={() => handleWishlist(index)}
                       style={{
