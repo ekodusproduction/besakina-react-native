@@ -132,9 +132,6 @@ const Property = () => {
       case !adtitle:
         missingFields.push('adtitle');
         break;
-      case !locality:
-        missingFields.push('Locality');
-        break;
       case !city:
         missingFields.push('City');
         break;

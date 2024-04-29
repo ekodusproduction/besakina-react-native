@@ -27,18 +27,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
-const FirstRoute = () => {
-  const navigation = useNavigation();
+const FirstRoute = item => {
+  console.log('item --', item);
+
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
 
   const [loading, setLoading] = useState(false);
-
-  const [loadingotp, setLoadingotp] = useState(false);
-  const [loadingverifyotp, setLoadingverifyotp] = useState(false);
-  const [showTokenModal, setShowTokenModal] = useState(false);
-  const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
   const modelData = [
     {label: 'BMW', value: '1'},
@@ -67,22 +63,68 @@ const FirstRoute = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
-  const [registrationyear, seRegistrationyear] = useState('');
-  const [vehiclevariant, setVehiclevariant] = useState('');
-  const [vehiclemodel, setVehiclemodel] = useState('');
-  const [transmission, setTransmission] = useState('');
-  const [kilometerdriven, setKilometerdirven] = useState('');
-  const [adtitle, setAdtitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('');
-  const [price, setPrice] = useState('');
-  const [street, setStreet] = useState('');
-  const [locality, setLocality] = useState('');
-  const [city, setCity] = useState('');
-  const [state, setstate] = useState('');
-  const [pincode, setPincode] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isValidNumber, setIsValidNumber] = useState(true);
+  const [registrationyear, seRegistrationyear] = useState(null);
+  const [vehiclevariant, setVehiclevariant] = useState(null);
+  const [vehiclemodel, setVehiclemodel] = useState(null);
+  const [transmission, setTransmission] = useState(null);
+  const [kilometerdriven, setKilometerdirven] = useState(null);
+  const [adtitle, setAdtitle] = useState(null);
+  const [description, setDescription] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [street, setStreet] = useState(null);
+  const [locality, setLocality] = useState(null);
+  const [city, setCity] = useState(null);
+  const [state, setstate] = useState(null);
+  const [pincode, setPincode] = useState(null);
+
+  const fetchproductApibyid = id => {
+    axios
+      .get(`${Baseurl}/api/vehicles/id/${id}`)
+      .then(response => {
+        console.log('response----', response);
+        setVehiclevalue(
+          Vehicledata.find(
+            item => item.label === response.data.data.advertisement?.type,
+          )?.value || null,
+        );
+        setModelValue(
+          modelData.find(
+            item => item.label === response.data.data.advertisement?.brand,
+          )?.value || null,
+        );
+        setFuelvalue(
+          Fueldata.find(
+            item => item.label === response.data.data.advertisement?.fuel,
+          )?.value || null,
+        );
+
+        setVehiclemodel(response.data.data.advertisement?.model);
+        setVehiclevariant(response.data.data.advertisement?.variant);
+        seRegistrationyear(response.data.data.advertisement?.registration_year);
+        setAdtitle(response.data.data.advertisement?.title);
+        setKilometerdirven(response.data.data.advertisement?.kilometer_driven);
+        setTransmission(response.data.data.advertisement?.transmission);
+        setDescription(response.data.data.advertisement?.description);
+        setPrice(response.data.data.advertisement?.price);
+        setStreet(response.data.data.advertisement?.street);
+        setLocality(response.data.data.advertisement?.locality);
+        setCity(response.data.data.advertisement?.city);
+        setstate(response.data.data.advertisement?.state);
+        setPincode(response.data.data.advertisement?.pincode);
+        setSelectedImages(
+          response.data.data.advertisement?.images.map(imagePath => ({
+            uri: `${Baseurl}/api/${imagePath}`,
+          })),
+        );
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
+  useEffect(() => {
+    fetchproductApibyid(item.item.item.id);
+  }, []);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -105,69 +147,87 @@ const FirstRoute = () => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        // Hit the API to save the image
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/vehicles/images/id/${item.item.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
 
-  const handlePostAd = () => {
+  const handleEditAd = () => {
     handleGetToken()
       .then(token => {
         if (token) {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
 
-          const formData = new FormData();
+          const requestBody = {
+            title: adtitle,
+            brand: modelData.find(item => item.value === modelvalue)?.label,
+            type: Vehicledata.find(item => item.value === vehiclevalue)?.label,
+            fuel: Fueldata.find(item => item.value === fuelvalue)?.label,
+            description: description,
+            price: price,
+            street: street,
+            locality: locality,
+            city: city,
+            state: state,
+            pincode: pincode,
+            kilometer_driven: kilometerdriven,
+            registration_year: registrationyear,
+            transmission: transmission,
+            model: vehiclemodel,
+            second_hand: 1,
+            variant: vehiclevariant,
+          };
 
-          // formData.append("plan_id", "1");
-          formData.append('title', adtitle);
-
-          const vehicletype = Vehicledata.filter(
-            item => item.value === vehiclevalue,
-          )
-            .map(i => i.label)
-            .toString();
-          const modeltype = modelData
-            .filter(item => item.value === modelvalue)
-            .map(i => i.label)
-            .toString();
-          const fueldatatype = Fueldata.filter(item => item.value === fuelvalue)
-            .map(i => i.label)
-            .toString();
-
-          formData.append('brand', modeltype);
-          formData.append('type', vehicletype);
-          formData.append('fuel', fueldatatype);
-          formData.append('variant', vehiclevariant);
-          formData.append('model', vehiclemodel);
-          formData.append('second_hand', 1);
-          formData.append('transmission', transmission);
-          formData.append('registration_year', registrationyear);
-          formData.append('kilometer_driven', kilometerdriven);
-          formData.append('description', description);
-          formData.append('price', price);
-
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
-
-          formData.append('street', street);
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-
-          console.log('formData===', formData);
           axios
-            .post(`${Baseurl}/api/vehicles/add`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
+            .put(
+              `${Baseurl}/api/vehicles/id/${item.item.item.id}`,
+              requestBody,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
+            )
             .then(response => {
               console.log('response of the api--->', response);
               ToastAndroid.showWithGravityAndOffset(
@@ -177,10 +237,18 @@ const FirstRoute = () => {
                 25,
                 50,
               );
-              setShowTokenModal(false);
             })
             .catch(error => {
-              console.error('Catch Error :---->', error.response);
+              console.error('Catch Error :---->', error);
+              if (error.message == 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  `Something went wrong, Try again later`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
               console.log('error message--->', error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -195,7 +263,6 @@ const FirstRoute = () => {
             });
         } else {
           console.log('Token not retrieved');
-          setShowTokenModal(true);
         }
       })
       .catch(error => {
@@ -203,110 +270,71 @@ const FirstRoute = () => {
       });
   };
 
-  const closeModal = () => {
-    setShowTokenModal(false);
-    setShowNestedModal(false);
-    setLoadingotp(false);
-    setLoadingverifyotp(false);
-  };
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
 
-  const [mobile, setMobile] = useState('');
-  const [data, setData] = useState(null);
-  const [showNestedModal, setShowNestedModal] = useState(false);
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
 
-  const sendOtp = async () => {
-    try {
-      if (!mobile || mobile.length !== 10) {
-        setErrorMessage('Please enter a valid 10-digit mobile number');
-        setIsValidNumber(false);
-        return;
-      }
-      setLoadingotp(true);
-      const response = await axios.post(`${Baseurl}/api/users/sendotp`, {
-        mobile,
+    handleGetToken()
+      .then(token => {
+        if (token) {
+          setLoading(true);
+          axios
+            .delete(
+              `${Baseurl}/api/vehicles/image/delete/id/${item.item.item.id}`,
+              {
+                data: {images: extractedPart},
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .then(response => {
+              console.log('Response of the API:', response);
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false); // Reset loading state when the operation finishes
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch(error => {
+        console.error('Error while handling token:', error);
       });
-
-      if (response.status !== 200) {
-        console.log('response data--->', response.data);
-      }
-
-      setData(response.data);
-      if (response.data.success === true) {
-        let newotp = response.data.data.otp;
-        setVerifyOtpvalue(newotp.toString());
-        handleNestedModal();
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoadingotp(false);
-    }
   };
-
-  const closeNestedModal = () => {
-    setShowTokenModal(false);
-    setShowNestedModal(false);
-    setLoadingotp(false);
-    setLoadingverifyotp(false);
-  };
-
-  const handleNestedModal = () => {
-    setShowNestedModal(true);
-  };
-
-  const verifyOtp = async () => {
-    try {
-      setLoadingverifyotp(true);
-      const postData = {
-        mobile: parseInt(mobile),
-        otp: parseInt(verifyotpvalue),
-      };
-      console.log('postData---', postData);
-
-      const response = await axios.post(
-        `${Baseurl}/api/users/login`,
-        postData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      console.log('response data--->', response.data);
-      setData(response.data);
-      if (response.data.success == true) {
-        handleNavigation(response.data.token);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoadingverifyotp(false);
-    }
-  };
-
-  const handleNavigation = async information => {
-    console.log('information--->', information);
-    try {
-      await AsyncStorage.setItem('UserData', JSON.stringify(information));
-      setLoadingverifyotp(true);
-      setTimeout(() => {
-        setLoadingverifyotp(false);
-        setShowTokenModal(false);
-        setShowNestedModal(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
-  const isfocused = useIsFocused();
-
-  useEffect(() => {
-    if (isfocused == true) {
-      setErrorMessage('');
-    }
-  }, [isfocused]);
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -649,7 +677,7 @@ const FirstRoute = () => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -671,17 +699,35 @@ const FirstRoute = () => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}
@@ -695,192 +741,6 @@ const FirstRoute = () => {
         </KeyboardAvoidingView>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showTokenModal}
-        onRequestClose={closeModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 10}}>
-              {/* <View style={{ marginTop: 10 }}>
-              <Text style={styles.header}>Welcome</Text>
-              <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
-            </View> */}
-              <View style={{marginTop: 25}}>
-                <Text style={style.title}>Enter Mobile Number</Text>
-              </View>
-              <View style={{marginTop: 20}}>
-                <TextInput
-                  placeholder="Enter here"
-                  placeholderTextColor="black"
-                  style={styles.textinput}
-                  inputMode="numeric"
-                  value={mobile}
-                  onChangeText={phone => setMobile(phone)}
-                />
-                <View
-                  style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
-                  {!isValidNumber && (
-                    <Text style={{color: 'red'}}>{errorMessage}</Text>
-                  )}
-                </View>
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={sendOtp}
-                  style={[styles.button, {opacity: loadingotp ? 0.5 : 1}]}
-                  disabled={loadingotp}>
-                  {loadingotp ? (
-                    <ActivityIndicator size="small" color="white" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Send OTP
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showNestedModal}
-        onRequestClose={closeNestedModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 20}}>
-              <View>
-                <Text style={style.title}>
-                  We've sent your verification code to +91 {mobile}
-                </Text>
-              </View>
-
-              <View style={{marginTop: 50}}>
-                <TextInput
-                  // placeholder='Enter Code'
-                  placeholderTextColor="black"
-                  style={style.inputfield}
-                  inputMode="numeric"
-                  value={verifyotpvalue}
-                  onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
-                />
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={verifyOtp}
-                  style={[style.button, {opacity: loadingverifyotp ? 0.5 : 1}]}
-                  disabled={loadingverifyotp}>
-                  {loadingverifyotp ? (
-                    <ActivityIndicator size="small" color="black" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Verify Otp
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'black',
-                      }}>
-                      Resend Code
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={{textAlign: 'center', fontSize: 18}}>
-                      1:20 min left
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
       <View style={{marginTop: 0}}>
         <TouchableOpacity
           style={{
@@ -891,13 +751,13 @@ const FirstRoute = () => {
             borderColor: 'gray',
             borderWidth: 0.5,
           }}
-          onPress={handlePostAd}
+          onPress={handleEditAd}
           disabled={loading ? true : false}>
           {loading ? (
             <ActivityIndicator size="small" color="white" />
           ) : (
             <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Post My Ad
+              Update My Ad
             </Text>
           )}
         </TouchableOpacity>
@@ -1604,7 +1464,6 @@ const SecondRoute = () => {
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
                   maxLength={10}
-
                 />
                 <View
                   style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
@@ -1773,13 +1632,29 @@ const SecondRoute = () => {
 
 const initialLayout = {width: Dimensions.get('window').width};
 
-const Editvehicleads = () => {
+const Editvehicleads = item => {
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     {key: 'first', title: 'Used Vehicle'},
     {key: 'second', title: 'New Vehicle'},
   ]);
+
+  const newdata = item.route.params;
+  const fetchproductApibyid = id => {
+    axios
+      .get(`${Baseurl}/api/vehicles/id/${id}`)
+      .then(response => {
+        console.log('response----', response);
+        setIndex(response.data.data.advertisement.second_hand == 1 ? 0 : 1);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
+  useEffect(() => {
+    fetchproductApibyid(newdata?.item.id);
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -1795,8 +1670,8 @@ const Editvehicleads = () => {
       <TabView
         navigationState={{index, routes}}
         renderScene={SceneMap({
-          first: FirstRoute,
-          second: SecondRoute,
+          first: () => <FirstRoute item={newdata} />,
+          second: () => <SecondRoute item={newdata} />,
         })}
         onIndexChange={setIndex}
         initialLayout={initialLayout}

@@ -22,7 +22,7 @@ import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 
-const Editpropertyadds = (item) => {
+const Editpropertyadds = item => {
   const navigation = useNavigation();
   const newdata = item.route.params;
   const fetchproductApibyid = id => {
@@ -132,10 +132,48 @@ const Editpropertyadds = (item) => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        // Hit the API to save the image
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/property/images/id/${newdata.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
-
   const handlePostAd = () => {
     handleGetToken()
       .then(token => {
@@ -143,46 +181,36 @@ const Editpropertyadds = (item) => {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
 
-          const formData = new FormData();
-
-          // formData.append("plan_id", "1");
-          formData.append('title', adtitle);
-          formData.append('type', selectedType);
-          formData.append('bedrooms', selectedbedrooms);
-          formData.append('bathrooms', selectedbathrooms);
-          formData.append('furnishing', furnishing);
-          formData.append('construction_status', constructionstatus);
-          formData.append('listed_by', listedby);
-          formData.append('super_builtup_area', builtuparea);
-          formData.append('carpet_area', carpetarea);
-          formData.append('maintenance', maintenance);
-          formData.append('total_rooms', totalrooms);
-          formData.append('description', description);
-          formData.append('floor_no', floorno);
-          formData.append('car_parking', carparking);
-          formData.append('price', price);
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
-
-          const category = data
-            .filter(item => item.value === selectedCategory)
-            .map(i => i.label)
-            .toString();
-          formData.append('category', category);
-          formData.append('street', street);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-          formData.append('house_no', houseno);
-          formData.append('landmark', landmark);
+          const requestBody = {
+            type: selectedType,
+            bedrooms: selectedbedrooms,
+            bathrooms: selectedbathrooms,
+            carpet_area: furnishing,
+            furnishing: constructionstatus,
+            construction_status: listedby,
+            listed_by: builtuparea,
+            super_builtup_area: carpetarea,
+            maintenance: maintenance,
+            maintenance: maintenance,
+            total_rooms: totalrooms,
+            floor_no: floorno,
+            car_parking: carparking,
+            title: adtitle,
+            category: Hospitalitydata.find(
+              item => item.value === selectedCategory,
+            )?.label,
+            description: description,
+            price: price,
+            street: street,
+            house_no: houseno,
+            landmark: landmark,
+            city: city,
+            state: state,
+            pincode: pincode,
+          };
 
           axios
-            .put(`${Baseurl}/api/property/id/${newdata.item.id}`, formData, {
+            .put(`${Baseurl}/api/property/id/${newdata.item.id}`, requestBody, {
               headers: {
                 'Content-Type': 'multipart/form-data',
                 Authorization: `Bearer ${token}`,
@@ -197,7 +225,7 @@ const Editpropertyadds = (item) => {
                 25,
                 50,
               );
-             })
+            })
             .catch(error => {
               console.error('Catch Error :---->', error);
               if (error.message == 'Network Error') {
@@ -223,13 +251,12 @@ const Editpropertyadds = (item) => {
             });
         } else {
           console.log('Token not retrieved');
-         }
+        }
       })
       .catch(error => {
         console.error('Error while handling post ad:', error);
       });
   };
-
 
   return (
     <View style={{flex: 1}}>
@@ -904,4 +931,3 @@ const Editpropertyadds = (item) => {
 };
 
 export default Editpropertyadds;
-

@@ -103,6 +103,45 @@ const Edithospitalityadds = item => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        // Hit the API to save the image
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/hospitality/images/id/${newdata.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
@@ -181,60 +220,69 @@ const Edithospitalityadds = item => {
       });
   };
 
-  const deleteImage = index => {
+  const deleteImage = (index) => {
+    const imageToDelete = selectedImages[index];
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
-    handleGetToken().then(token => {
-      console.log('token---', token);
-      if (token) {
-        axios
-          .delete(
-            `${Baseurl}/api/hospitality/image/delete/id/${newdata.item.id}`,
-            {
-            selectedImages,
+  
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
+  
+    handleGetToken()
+      .then((token) => {
+        if (token) {
+          setLoading(true); 
+          axios
+            .delete(`${Baseurl}/api/hospitality/image/delete/id/${newdata.item.id}`, {
+              data: { images: extractedPart }, 
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
               },
-            },
-          )
-          .then(response => {
-            console.log('response of the api--->', response);
-            ToastAndroid.showWithGravityAndOffset(
-              `${response.data.message}`,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50,
-            );
-          })
-          .catch(error => {
-            console.error('Catch Error :---->', error);
-            if (error.message == 'Network Error') {
+            })
+            .then((response) => {
+              console.log('Response of the API:', response);
               ToastAndroid.showWithGravityAndOffset(
-                `Something went wrong, Try again later`,
+                `${response.data.message}`,
                 ToastAndroid.LONG,
                 ToastAndroid.BOTTOM,
                 25,
                 50,
               );
-            }
-            console.log('error message--->', error.response.data.message);
-            ToastAndroid.showWithGravityAndOffset(
-              `${error.response.data.message}`,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50,
-            );
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    });
+            })
+            .catch((error) => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false); // Reset loading state when the operation finishes
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch((error) => {
+        console.error('Error while handling token:', error);
+      });
   };
+  
 
   return (
     <View style={{flex: 1}}>

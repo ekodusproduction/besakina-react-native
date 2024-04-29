@@ -188,6 +188,7 @@ const Myadds = props => {
                       height: 150,
                       borderTopLeftRadius: 12,
                       borderTopRightRadius: 12,
+                      objectFit:"cover"
                     }}
                   />
                   <View

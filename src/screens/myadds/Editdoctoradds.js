@@ -22,31 +22,28 @@ import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 
-const Editdoctoradds = (item) => {
+const Editdoctoradds = item => {
   const navigation = useNavigation();
   const newdata = item.route.params;
   const fetchproductApibyid = id => {
     axios
       .get(`${Baseurl}/api/doctors/id/${id}`)
       .then(response => {
-        setCoursevalue(
-          Coursedata.find(
-            item => item.label === response.data.data.advertisement?.type,
+        console.log('response---', response);
+
+        setExpertiseValue(
+          Expertisedata.find(
+            item => item.label === response.data.data.advertisement?.expertise,
           )?.value || null,
         );
 
-        setDomainvalue(
-          Domaindata.find(
-            item => item.label === response.data.data.advertisement?.domain,
-          )?.value || null,
+        setName(response.data.data.advertisement?.name);
+        setExperiance(
+          response.data.data.advertisement?.total_experience.toString(),
         );
-
-        setInfo(response.data.data.advertisement);
-        setDuration(response.data.data.advertisement?.course_duration);
-        setInstituname(response.data.data.advertisement?.institution_name);
         setAdtitle(response.data.data.advertisement?.title);
         setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
+        setPrice(response.data.data.advertisement?.price_per_visit);
         setStreet(response.data.data.advertisement?.street);
         setLocality(response.data.data.advertisement?.locality);
         setCity(response.data.data.advertisement?.city);
@@ -114,6 +111,44 @@ const Editdoctoradds = (item) => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/doctors/images/id/${newdata.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
@@ -125,41 +160,25 @@ const Editdoctoradds = (item) => {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
 
-          const formData = new FormData();
+          const requestBody = {
+            title: adtitle,
+            expertise: Expertisedata.find(item => item.value === expertisevalue)
+              ?.label,
+            description: description,
+            total_experience: experiance,
+            price_per_visit: price,
+            name: name,
+            street: street,
+            locality: locality,
+            city: city,
+            state: state,
+            pincode: pincode,
+          };
 
-          // formData.append("plan_id", "1");
-          formData.append('title', adtitle);
-          const expertisetype = Expertisedata.filter(
-            item => item.value === expertisevalue,
-          )
-            .map(i => i.label)
-            .toString();
-
-          formData.append('expertise', expertisetype);
-          formData.append('description', description);
-          formData.append('name', name);
-          formData.append('total_experience', experiance);
-          formData.append('price_per_visit', price);
-
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
-
-          formData.append('street', street);
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-
-          console.log('formData===', formData);
           axios
-            .post(`${Baseurl}/api/doctors/add`, formData, {
+            .put(`${Baseurl}/api/doctors/id/${newdata.item.id}`, requestBody, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
               },
             })
@@ -202,6 +221,72 @@ const Editdoctoradds = (item) => {
       })
       .catch(error => {
         console.error('Error while handling post ad:', error);
+      });
+  };
+
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
+
+    handleGetToken()
+      .then(token => {
+        if (token) {
+          setLoading(true);
+          axios
+            .delete(
+              `${Baseurl}/api/doctors/image/delete/id/${newdata.item.id}`,
+              {
+                data: {images: extractedPart},
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .then(response => {
+              console.log('Response of the API:', response);
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch(error => {
+        console.error('Error while handling token:', error);
       });
   };
 
@@ -434,7 +519,7 @@ const Editdoctoradds = (item) => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -456,17 +541,35 @@ const Editdoctoradds = (item) => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}

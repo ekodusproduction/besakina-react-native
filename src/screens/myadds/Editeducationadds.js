@@ -26,47 +26,6 @@ import {useIsFocused} from '@react-navigation/native';
 const Editeducationadds = item => {
   const newdata = item.route.params;
 
-  const fetchproductApibyid = id => {
-    axios
-      .get(`${Baseurl}/api/education/id/${id}`)
-      .then(response => {
-        setCoursevalue(
-          Coursedata.find(
-            item => item.label === response.data.data.advertisement?.type,
-          )?.value || null,
-        );
-
-        setDomainvalue(
-          Domaindata.find(
-            item => item.label === response.data.data.advertisement?.domain,
-          )?.value || null,
-        );
-
-         setDuration(response.data.data.advertisement?.course_duration);
-        setInstituname(response.data.data.advertisement?.institution_name);
-        setTitle(response.data.data.advertisement?.title);
-        setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
-        setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
-        setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
-            uri: `${Baseurl}/api/${imagePath}`,
-          })),
-        );
-      })
-      .catch(error => {
-        console.error('Error fetching data: ', error);
-      });
-  };
-
-  useEffect(() => {
-    fetchproductApibyid(newdata?.item.id);
-  }, []);
-
   const navigation = useNavigation();
   const [coursevalue, setCoursevalue] = useState(null);
   const [domainvalue, setDomainvalue] = useState(null);
@@ -98,6 +57,49 @@ const Editeducationadds = item => {
   const [state, setstate] = useState(null);
   const [pincode, setPincode] = useState(null);
 
+
+  const fetchproductApibyid = id => {
+    axios
+      .get(`${Baseurl}/api/education/id/${id}`)
+      .then(response => {
+        setCoursevalue(
+          Coursedata.find(
+            item => item.label === response.data.data.advertisement?.type,
+          )?.value || null,
+        );
+
+        setDomainvalue(
+          Domaindata.find(
+            item => item.label === response.data.data.advertisement?.domain,
+          )?.value || null,
+        );
+
+        setDuration(response.data.data.advertisement?.course_duration);
+        setInstituname(response.data.data.advertisement?.institution_name);
+        setTitle(response.data.data.advertisement?.title);
+        setDescription(response.data.data.advertisement?.description);
+        setPrice(response.data.data.advertisement?.price);
+        setStreet(response.data.data.advertisement?.street);
+        setLocality(response.data.data.advertisement?.locality);
+        setCity(response.data.data.advertisement?.city);
+        setstate(response.data.data.advertisement?.state);
+        setPincode(response.data.data.advertisement?.pincode);
+        setSelectedImages(
+          response.data.data.advertisement?.images.map(imagePath => ({
+            uri: `${Baseurl}/api/${imagePath}`,
+          })),
+        );
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
+
+  useEffect(() => {
+    fetchproductApibyid(newdata?.item.id);
+  }, []);
+
+
   const handleCameraLaunch = () => {
     const options = {
       mediaType: 'photo',
@@ -119,6 +121,44 @@ const Editeducationadds = item => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/education/images/id/${newdata.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
@@ -127,54 +167,34 @@ const Editeducationadds = item => {
     handleGetToken()
       .then(token => {
         if (token) {
-          console.log('Token retrieved successfully--->', token);
           setLoading(true);
 
-          const formData = new FormData();
+          const requestBody = {
+            title: title,
+            type: Coursedata.find(item => item.value === coursevalue)?.label,
+            domain: Domaindata.find(item => item.value === domainvalue)?.label,
+            description: description,
+            institution_name: instituname,
+            course_duration: duration,
+            price: price,
+            street: street,
+            locality: locality,
+            city: city,
+            state: state,
+            pincode: pincode,
+          };
 
-          // formData.append("plan_id", "1");
-
-          const courseType = Coursedata.filter(
-            item => item.value === coursevalue,
-          )
-            .map(i => i.label)
-            .toString();
-          const domainType = Domaindata.filter(
-            item => item.value === domainvalue,
-          )
-            .map(i => i.label)
-            .toString();
-
-          formData.append('type', courseType);
-          formData.append('domain', domainType);
-          formData.append('institution_name', instituname);
-          formData.append('course_duration', duration);
-          formData.append('title', title);
-          formData.append('description', description);
-          formData.append('price', price);
-
-          // selectedImages.forEach((image, index) => {
-          //   formData.append(`images[${index}]`, {
-          //     uri: image.uri,
-          //     type: image.type,
-          //     name: image.fileName,
-          //   });
-          // });
-
-          formData.append('street', street);
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-
-          console.log('formData===', formData);
           axios
-            .put(`${Baseurl}/api/education/id/${newdata.item.id}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
+            .put(
+              `${Baseurl}/api/education/id/${newdata.item.id}`,
+              requestBody,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
+            )
             .then(response => {
               console.log('response of the api--->', response);
               ToastAndroid.showWithGravityAndOffset(
@@ -187,6 +207,7 @@ const Editeducationadds = item => {
             })
             .catch(error => {
               console.error('Catch Error :---->', error);
+              setLoading(false);
               if (error.message == 'Network Error') {
                 ToastAndroid.showWithGravityAndOffset(
                   `Something went wrong, Try again later`,
@@ -216,6 +237,70 @@ const Editeducationadds = item => {
         console.error('Error while handling post ad:', error);
       });
   };
+
+  const deleteImage = (index) => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
+  
+    handleGetToken()
+      .then((token) => {
+        if (token) {
+          setLoading(true); 
+          axios
+            .delete(`${Baseurl}/api/education/image/delete/id/${newdata.item.id}`, {
+              data: { images: extractedPart }, 
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then((response) => {
+              console.log('Response of the API:', response);
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch((error) => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false); 
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch((error) => {
+        console.error('Error while handling token:', error);
+      });
+  };
+  
 
   return (
     <View style={{flex: 1}}>
@@ -464,7 +549,7 @@ const Editeducationadds = item => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -486,17 +571,35 @@ const Editeducationadds = item => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}

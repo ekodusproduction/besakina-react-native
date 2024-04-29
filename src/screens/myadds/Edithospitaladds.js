@@ -23,25 +23,27 @@ import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 
-const Edithospitaladds = (item) => {
+const Edithospitaladds = item => {
   const navigation = useNavigation();
   const newdata = item.route.params;
   const fetchproductApibyid = id => {
     axios
-      .get(`${Baseurl}/api/doctors/id/${id}`)
+      .get(`${Baseurl}/api/hospitals/id/${id}`)
       .then(response => {
+        console.log('response ---', response);
+
+        setPrice(response.data.data.advertisement?.price_per_visit.toString());
+        setPriceperregistration(
+          response.data.data.advertisement?.price_registration.toString(),
+        );
         setHospitalorclinicvalue(
           HospitalData.find(
             item => item.label === response.data.data.advertisement?.type,
           )?.value || null,
         );
-
-        setInfo(response.data.data.advertisement);
-        setDuration(response.data.data.advertisement?.course_duration);
-        setInstituname(response.data.data.advertisement?.institution_name);
-        setAdtitle(response.data.data.advertisement?.title);
         setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
+        setAdtitle(response.data.data.advertisement?.title);
+        setName(response.data.data.advertisement?.name);
         setStreet(response.data.data.advertisement?.street);
         setLocality(response.data.data.advertisement?.locality);
         setCity(response.data.data.advertisement?.city);
@@ -72,7 +74,7 @@ const Edithospitaladds = (item) => {
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(false); 
+  const [name, setName] = useState(false);
   const [adtitle, setAdtitle] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
@@ -82,7 +84,7 @@ const Edithospitaladds = (item) => {
   const [state, setstate] = useState('');
   const [pincode, setPincode] = useState('');
   const [priceperregistration, setPriceperregistration] = useState('');
-  
+
   const handleCameraLaunch = () => {
     const options = {
       mediaType: 'photo',
@@ -104,6 +106,44 @@ const Edithospitaladds = (item) => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/hospitals/images/id/${newdata.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
@@ -115,44 +155,33 @@ const Edithospitaladds = (item) => {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
 
-          const formData = new FormData();
+          const requestBody = {
+            title: adtitle,
+            type: HospitalData.find(
+              item => item.value === hospitalorclinicvalue,
+            )?.label,
+            description: description,
+            price_registration: priceperregistration,
+            price_per_visit: price,
+            name: name,
+            street: street,
+            locality: locality,
+            city: city,
+            state: state,
+            pincode: pincode,
+          };
 
-          // formData.append("plan_id", "1");
-          formData.append('title', adtitle);
-          const hospitaltype = HospitalData.filter(
-            item => item.value === hospitalorclinicvalue,
-          )
-            .map(i => i.label)
-            .toString();
-
-          formData.append('type', hospitaltype);
-          formData.append('description', description);
-          formData.append('name', name);
-          formData.append('price_registration', priceperregistration);
-          formData.append('price_per_visit', price);
-
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
-
-          formData.append('street', street);
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-
-          console.log('formData===', formData);
           axios
-            .put(`${Baseurl}/api/hospitals/id/${newdata.item.id}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
+            .put(
+              `${Baseurl}/api/hospitals/id/${newdata.item.id}`,
+              requestBody,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
+            )
             .then(response => {
               console.log('response of the api--->', response);
               ToastAndroid.showWithGravityAndOffset(
@@ -162,7 +191,7 @@ const Edithospitaladds = (item) => {
                 25,
                 50,
               );
-             })
+            })
             .catch(error => {
               console.error('Catch Error :---->', error);
               if (error.message == 'Network Error') {
@@ -188,15 +217,78 @@ const Edithospitaladds = (item) => {
             });
         } else {
           console.log('Token not retrieved');
-         }
+        }
       })
       .catch(error => {
         console.error('Error while handling post ad:', error);
       });
   };
 
- 
- 
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
+
+    handleGetToken()
+      .then(token => {
+        if (token) {
+          setLoading(true);
+          axios
+            .delete(
+              `${Baseurl}/api/hospitals/image/delete/id/${newdata.item.id}`,
+              {
+                data: {images: extractedPart},
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .then(response => {
+              console.log('Response of the API:', response);
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch(error => {
+        console.error('Error while handling token:', error);
+      });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -424,7 +516,7 @@ const Edithospitaladds = (item) => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -446,17 +538,35 @@ const Edithospitaladds = (item) => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}
@@ -496,5 +606,3 @@ const Edithospitaladds = (item) => {
 };
 
 export default Edithospitaladds;
-
-
