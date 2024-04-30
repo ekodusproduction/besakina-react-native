@@ -17,7 +17,8 @@ const MyPlans = () => {
     const fetchMyPlansApi = () => {
         axios.get(`${Baseurl}/api/plans`)
             .then(response => {
-                setData(response.data.data?.plans || []);
+                console.log('response---',response)
+                setData(response.data.data || []);
             })
             .catch(error => {
                 console.error('Error fetching data: ', error.response);

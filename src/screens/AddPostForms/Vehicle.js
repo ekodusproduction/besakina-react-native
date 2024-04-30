@@ -371,6 +371,15 @@ const FirstRoute = () => {
       setErrorMessage('');
     }
   }, [isfocused]);
+
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  };
+
+
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -708,51 +717,66 @@ const FirstRoute = () => {
               }}>
               <View style={{padding: 0}}>
                 <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
-                <FlatList
-                  data={[...Array(20).keys()]}
-                  vertical
-                  numColumns={4}
-                  showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
-                    <TouchableOpacity
-                      onPress={handleCameraLaunch}
-                      style={{
-                        height: itemWidth,
-                        width: itemWidth,
-                        borderRadius: 5,
-                        backgroundColor: 'white',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginHorizontal: 5,
-                        marginTop: 10,
-                        marginBottom: 10,
-                        elevation: 5,
-                        shadowColor: '#000',
-                        shadowOpacity: 0.3,
-                        shadowRadius: 5,
-                        shadowOffset: {
-                          width: 0,
-                          height: 2,
-                        },
-                      }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
-                      ) : (
-                        <AntDesign name="camera" size={50} />
-                      )}
-                    </TouchableOpacity>
+              
+            <FlatList
+              data={[...Array(20).keys()]}
+              vertical
+              numColumns={4}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({item, index}) => (
+                <TouchableOpacity
+                  onPress={handleCameraLaunch}
+                  style={{
+                    height: itemWidth,
+                    width: itemWidth,
+                    borderRadius: 5,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginHorizontal: 5,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    elevation: 5,
+                    shadowColor: '#000',
+                    shadowOpacity: 0.3,
+                    shadowRadius: 5,
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                  }}>
+                  {selectedImages[index] ? (
+                    <>
+                      <Image
+                        source={{
+                          uri:
+                            typeof selectedImages[index] === 'string'
+                              ? selectedImages[index]
+                              : selectedImages[index].uri,
+                        }}
+                        style={{height: '100%', width: '100%'}}
+                        resizeMode="cover"
+                      />
+                      <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 5,
+                          right: 5,
+                          backgroundColor: 'rgba(0,0,0,0.5)',
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                        onPress={() => deleteImage(index)}>
+                        <AntDesign name="closecircle" size={20} color="white" />
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <AntDesign name="camera" size={50} />
                   )}
-                  keyExtractor={(item, index) => index.toString()}
-                />
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
               </View>
             </View>
           </View>
@@ -1308,6 +1332,15 @@ const SecondRoute = () => {
       setErrorMessage('');
     }
   }, [isfocused]);
+
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+  };
+
+
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -1634,7 +1667,7 @@ const SecondRoute = () => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -1656,17 +1689,35 @@ const SecondRoute = () => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}

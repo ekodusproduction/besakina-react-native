@@ -17,7 +17,7 @@ import axios from 'axios';
 import {Baseurl} from '../../../constant/globalparams';
 
 const HospitalorClinicCategoryDetails = ({route}) => {
-  const {data} = route.params;
+  const {data,edit} = route.params;
   const navigation = useNavigation();
   const [info, setInfo] = useState(null);
   console.log('info----', info);
@@ -275,7 +275,7 @@ const HospitalorClinicCategoryDetails = ({route}) => {
           </View>
         </View>
       </ScrollView>
-      <View style={{marginTop: 0}}>
+      {edit == 'edit' ?<View></View>:  <View style={{marginTop: 0}}>
         <TouchableOpacity
           style={{
             backgroundColor: '#f77b0b',
@@ -287,7 +287,7 @@ const HospitalorClinicCategoryDetails = ({route}) => {
             Contact Seller
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>}
     </View>
   );
 };

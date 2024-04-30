@@ -17,7 +17,7 @@ import axios from 'axios';
 import {Baseurl} from '../../../constant/globalparams';
 
 const VehicleCategoryDetails = ({route}) => {
-  const {data} = route.params;
+  const {data,edit} = route.params;
   const navigation = useNavigation();
   const [info, setInfo] = useState(null);
   console.log('info----', info);
@@ -288,7 +288,7 @@ const VehicleCategoryDetails = ({route}) => {
           </View>
         </View>
       </ScrollView>
-      <View style={{marginTop: 0}}>
+      {edit == 'edit' ?<View></View>:  <View style={{marginTop: 0}}>
         <TouchableOpacity
           style={{
             backgroundColor: '#f77b0b',
@@ -300,7 +300,7 @@ const VehicleCategoryDetails = ({route}) => {
             Contact Seller
           </Text>
         </TouchableOpacity>
-      </View>
+      </View>}
     </View>
   );
 };

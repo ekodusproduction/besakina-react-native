@@ -29,23 +29,76 @@ const Editpropertyadds = item => {
     axios
       .get(`${Baseurl}/api/property/id/${id}`)
       .then(response => {
-        setHospitalorclinicvalue(
-          HospitalData.find(
-            item => item.label === response.data.data.advertisement?.type,
+        console.log('response ---', response);
+
+        setSelectedCategory(
+          data.find(
+            item => item.label === response.data.data.advertisement?.category,
           )?.value || null,
         );
+        setSelectedType(
+          TypesData.find(
+            item => item === response.data.data.advertisement?.type,
+          ) || null,
+        );
+        setSelectedbedrooms(
+          BedroomsData.find(
+            item =>
+              item === response.data.data.advertisement?.bedrooms.toString(),
+          ) || null,
+        );
+        setSelectedbathrooms(
+          BathroomData.find(
+            item =>
+              item === response.data.data.advertisement?.bathrooms.toString(),
+          ) || null,
+        );
+        setFurnishing(
+          FurnishingData.find(
+            item =>
+              item === response.data.data.advertisement?.furnishing.toString(),
+          ) || null,
+        );
+        setConstructionstatus(
+          ConstructionData.find(
+            item =>
+              item ===
+              response.data.data.advertisement?.construction_status.toString(),
+          ) || null,
+        );
+        setListedby(
+          ListedData.find(
+            item =>
+              item === response.data.data.advertisement?.listed_by.toString(),
+          ) || null,
+        );
+        setCarparking(
+          ParkingData.find(
+            item =>
+              item === response.data.data.advertisement?.car_parking.toString(),
+          ) || null,
+        );
 
-        setInfo(response.data.data.advertisement);
-        setDuration(response.data.data.advertisement?.course_duration);
-        setInstituname(response.data.data.advertisement?.institution_name);
+        setBuiltuparea(
+          response.data.data.advertisement?.super_builtup_area.toString(),
+        );
+        setCarpetarea(response.data.data.advertisement?.carpet_area.toString());
+        setMaintenance(
+          response.data.data.advertisement?.maintenance.toString(),
+        );
+        setTotalrooms(response.data.data.advertisement?.total_rooms.toString());
+        // setFloorno(response.data.data.advertisement?.total_floors.toString());
+
         setAdtitle(response.data.data.advertisement?.title);
         setDescription(response.data.data.advertisement?.description);
         setPrice(response.data.data.advertisement?.price);
         setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
+        setCity(response.data.data.advertisement?.city);
         setCity(response.data.data.advertisement?.city);
         setstate(response.data.data.advertisement?.state);
         setPincode(response.data.data.advertisement?.pincode);
+        setLandmark(response.data.data.advertisement?.landmark);
+        setHouseno(response.data.data.advertisement?.house_no);
         setSelectedImages(
           response.data.data.advertisement?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
@@ -67,9 +120,9 @@ const Editpropertyadds = item => {
     'Farm Houses',
     'Houses and Villas',
   ];
-  const BedroomsData = ['1', '2', '3', '4', '4+'];
-  const BathroomData = ['1', '2', '3', '4', '4+'];
-  const ParkingData = ['0', '1', '2', '3', '3+'];
+  const BedroomsData = ['1', '2', '3', '4', '5'];
+  const BathroomData = ['1', '2', '3', '4', '5'];
+  const ParkingData = ['0', '1', '2', '3', '4'];
   const FurnishingData = ['Furnished', 'semi-Furnished', 'UnFurnished'];
   const ConstructionData = [
     'New Launch',
@@ -185,20 +238,17 @@ const Editpropertyadds = item => {
             type: selectedType,
             bedrooms: selectedbedrooms,
             bathrooms: selectedbathrooms,
-            carpet_area: furnishing,
-            furnishing: constructionstatus,
-            construction_status: listedby,
-            listed_by: builtuparea,
-            super_builtup_area: carpetarea,
-            maintenance: maintenance,
+            carpet_area: carpetarea,
+            furnishing: furnishing,
+            construction_status: constructionstatus,
+            listed_by: listedby,
+            super_builtup_area: builtuparea,
             maintenance: maintenance,
             total_rooms: totalrooms,
             floor_no: floorno,
             car_parking: carparking,
             title: adtitle,
-            category: Hospitalitydata.find(
-              item => item.value === selectedCategory,
-            )?.label,
+            category: data.find(item => item.value === selectedCategory)?.label,
             description: description,
             price: price,
             street: street,
@@ -212,7 +262,7 @@ const Editpropertyadds = item => {
           axios
             .put(`${Baseurl}/api/property/id/${newdata.item.id}`, requestBody, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
               },
             })
@@ -255,6 +305,72 @@ const Editpropertyadds = item => {
       })
       .catch(error => {
         console.error('Error while handling post ad:', error);
+      });
+  };
+
+  const deleteImage = index => {
+    const imageToDelete = selectedImages[index];
+    const newImages = [...selectedImages];
+    newImages.splice(index, 1);
+    setSelectedImages(newImages);
+
+    const startIndex = imageToDelete.uri.indexOf('public/');
+    const extractedPart = imageToDelete.uri.substring(startIndex);
+
+    handleGetToken()
+      .then(token => {
+        if (token) {
+          setLoading(true);
+          axios
+            .delete(
+              `${Baseurl}/api/property/image/delete/id/${newdata.item.id}`,
+              {
+                data: {images: extractedPart},
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              },
+            )
+            .then(response => {
+              console.log('Response of the API:', response);
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('Error deleting image:', error);
+              if (error.message === 'Network Error') {
+                ToastAndroid.showWithGravityAndOffset(
+                  'Something went wrong, Please try again later',
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              } else {
+                ToastAndroid.showWithGravityAndOffset(
+                  `${error.response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        } else {
+          console.log('Token not retrieved');
+        }
+      })
+      .catch(error => {
+        console.error('Error while handling token:', error);
       });
   };
 
@@ -861,7 +977,7 @@ const Editpropertyadds = item => {
               vertical
               numColumns={4}
               showsHorizontalScrollIndicator={false}
-              renderItem={({item}) => (
+              renderItem={({item, index}) => (
                 <TouchableOpacity
                   onPress={handleCameraLaunch}
                   style={{
@@ -883,17 +999,31 @@ const Editpropertyadds = item => {
                       height: 2,
                     },
                   }}>
-                  {selectedImages[item] ? (
-                    <Image
-                      source={{
-                        uri:
-                          typeof selectedImages[item] === 'string'
-                            ? selectedImages[item]
-                            : selectedImages[item].uri,
-                      }}
-                      style={{height: '100%', width: '100%'}}
-                      resizeMode="cover"
-                    />
+                  {selectedImages[index] ? (
+                    <>
+                      <Image
+                        source={{
+                          uri:
+                            typeof selectedImages[index] === 'string'
+                              ? selectedImages[index]
+                              : selectedImages[index].uri,
+                        }}
+                        style={{height: '100%', width: '100%'}}
+                        resizeMode="cover"
+                      />
+                      <TouchableOpacity
+                        style={{
+                          position: 'absolute',
+                          top: 5,
+                          right: 5,
+                          backgroundColor: 'rgba(0,0,0,0.5)',
+                          padding: 5,
+                          borderRadius: 10,
+                        }}
+                        onPress={() => deleteImage(index)}>
+                        <AntDesign name="closecircle" size={20} color="white" />
+                      </TouchableOpacity>
+                    </>
                   ) : (
                     <AntDesign name="camera" size={50} />
                   )}
