@@ -40,6 +40,7 @@ import Editpropertyadds from '../screens/myadds/Editpropertyadds';
 import Editdoctoradds from '../screens/myadds/Editdoctoradds';
 import Edithospitaladds from '../screens/myadds/Edithospitaladds';
 import Editvehicleads from '../screens/myadds/Editvehicleads';
+import AddPost from '../screens/categories/AddPost';
 
 const Stack = createNativeStackNavigator();
 
@@ -109,6 +110,22 @@ const RootNavigator = () => {
       <Stack.Screen
         name="PropertyCategoryDetails"
         component={PropertyCategoryDetails}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          animation: 'slide_from_right',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="AddPost"
+        component={AddPost}
         options={{
           headerShown: false,
           headerStyle: {

@@ -1,22 +1,15 @@
-import {View, Text, FlatList, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {SvgXml} from 'react-native-svg';
-import {
-  Education,
-  Hospitality,
-  ServicesSVG,
-  health,
-  property,
-  vehicle,
-} from '../../svg/svg';
+import {Hospitality, Education, health, property, vehicle} from '../../svg/svg';
 import {useNavigation} from '@react-navigation/native';
 import {Appbar} from 'react-native-paper';
 
 const array = [
   {
     id: 1,
-    filename: Hospitality,
-    name: 'Hospitality',
+    filename: vehicle,
+    name: 'Vehicles',
   },
   {
     id: 2,
@@ -25,23 +18,46 @@ const array = [
   },
   {
     id: 3,
-    filename: health,
-    name: 'Health Care',
-  },
-  {
-    id: 4,
     filename: property,
     name: 'Properties',
   },
   {
+    id: 4,
+    filename: health,
+    name: 'Health Care',
+  },
+  {
     id: 5,
-    filename: vehicle,
-    name: 'Vehicles',
+    filename: Hospitality,
+    name: 'Hospitality',
   },
 ];
-const ViewCategories = () => {
+const AddPost = () => {
   const navigation = useNavigation();
 
+  const handlePress = itemName => {
+    switch (itemName) {
+      case 'Properties':
+        navigation.navigate('Property');
+        break;
+      case 'Health Care':
+        navigation.navigate('Health');
+        break;
+      case 'Vehicles':
+        navigation.navigate('Vehicle');
+        break;
+      case 'Education':
+        navigation.navigate('Education');
+        break;
+      case 'Hospitality':
+        navigation.navigate('Hospitality');
+        break;
+
+      default:
+        // Handle default case
+        break;
+    }
+  };
   return (
     <View>
       <Appbar.Header>
@@ -50,16 +66,10 @@ const ViewCategories = () => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="Categories" />
+        <Appbar.Content title="Post Your Ads" />
       </Appbar.Header>
 
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: Dimensions.get('window').width,
-          height: Dimensions.get('window').height,
-        }}>
+      <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <FlatList
           data={array}
           vertical
@@ -86,7 +96,7 @@ const ViewCategories = () => {
                   height: 2,
                 },
               }}
-              onPress={() => navigation.navigate('CategoryDetails', {item})}>
+              onPress={() => handlePress(item.name)}>
               <SvgXml xml={item.filename} width="50px" height="50px" />
               <Text>{item.name}</Text>
             </TouchableOpacity>
@@ -98,4 +108,4 @@ const ViewCategories = () => {
   );
 };
 
-export default ViewCategories;
+export default AddPost;

@@ -131,6 +131,49 @@ const EditProfile = () => {
   };
 
   const handleprofile = () => {
+    const missingFields = [];
+
+    switch (true) {
+      case !fullname:
+        missingFields.push('Full Name');
+        break;
+      case !emailid:
+        missingFields.push('Email id');
+        break;
+      case !phone:
+        missingFields.push('Alternate phone number');
+        break;
+      case !city:
+        missingFields.push('City');
+        break;
+      case !state:
+        missingFields.push('State');
+        break;
+      case !pincode:
+        missingFields.push('Zip code');
+        break;
+      case !documentvalue:
+        missingFields.push('documents');
+        break;
+      case selectedImagesfront.length === 0:
+        missingFields.push('Images');
+        break;
+      default:
+        break;
+    }
+
+    if (missingFields.length > 0) {
+      const errorMessage = `Please fill the ${missingFields[0]} field`;
+      ToastAndroid.showWithGravityAndOffset(
+        errorMessage,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50,
+      );
+      return;
+    }
+
     handleGetToken()
       .then(token => {
         if (token) {

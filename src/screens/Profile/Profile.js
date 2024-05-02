@@ -56,7 +56,7 @@ const Profile = () => {
           style={{marginTop: 3, marginRight: 5}}
         />
       ),
-      movenewscreen: 'AddAds',
+      movenewscreen: 'AddPost',
     },
     {
       name: 'Price List',
@@ -86,7 +86,7 @@ const Profile = () => {
     },
   ];
 
-  const fetchmyadsApi = async () => {
+  const fetuserapi = async () => {
     try {
       const token = await handleGetToken();
       if (token) {
@@ -117,7 +117,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (isfocused) {
-      fetchmyadsApi();
+      fetuserapi();
     }
   }, [isfocused]);
 

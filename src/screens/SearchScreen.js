@@ -25,7 +25,9 @@ const SearchScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    searchapi();
+    if (search.length !== 0) {
+      searchapi();
+    }
   }, [search]);
 
   const searchapi = () => {

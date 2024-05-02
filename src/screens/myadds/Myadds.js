@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,41 +8,28 @@ import {
   Switch,
   Alert,
   ToastAndroid,
+  Dimensions,
 } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 import axios from 'axios';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import { Baseurl } from '../../constant/globalparams';
-import { handleGetToken } from '../../constant/tokenUtils';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {Baseurl} from '../../constant/globalparams';
+import {handleGetToken} from '../../constant/tokenUtils';
 import LottieView from 'lottie-react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { SvgXml } from 'react-native-svg';
-import { location } from '../../svg/svg';
+import {SvgXml} from 'react-native-svg';
+import {location} from '../../svg/svg';
 import style from '../../style';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
-const Myadds = (props) => {
+const Myadds = () => {
   const navigation = useNavigation();
   const isfocused = useIsFocused();
-  const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState(null);
   const [switchState, setSwitchState] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleWishlist = (id) => {
-    const updatedWishlist = [...wishlist];
-    const index = updatedWishlist.indexOf(id);
-    if (index === -1) {
-      updatedWishlist.push(id);
-    } else {
-      updatedWishlist.splice(index, 1);
-    }
-    setWishlist(updatedWishlist);
-  };
-
-  const isWishlisted = (id) => {
-    return wishlist.includes(id);
-  };
-
-  const getCreatedAtLabel = (created_at) => {
+  const getCreatedAtLabel = created_at => {
     const currentDate = new Date();
     const createdDate = new Date(created_at);
 
@@ -60,7 +47,8 @@ const Myadds = (props) => {
   };
 
   const fetchmyadsApi = () => {
-    handleGetToken().then((token) => {
+    setLoading(true);
+    handleGetToken().then(token => {
       if (token) {
         axios
           .get(`${Baseurl}/api/users/myads`, {
@@ -69,16 +57,19 @@ const Myadds = (props) => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then((response) => {
+          .then(response => {
             console.log('response ---', response.data.data);
             setData(response.data.data);
+            setLoading(false);
           })
-          .catch((error) => {
+          .catch(error => {
             console.error('Error fetching data: ', error);
+            setLoading(false);
           });
       } else {
         console.log('Token not retrieved');
         setShowTokenModal(true);
+        setLoading(false);
       }
     });
   };
@@ -90,12 +81,10 @@ const Myadds = (props) => {
   }, [isfocused]);
 
   useEffect(() => {
-    // Check if data is not null and contains items
-    if (data && data.length > 0) {
-      // Toggle switch based on the is_active property of the first item
-      setSwitchState(data[0].is_active);
+    if (isfocused == true) {
+      fetchmyadsApi();
     }
-  }, [data]);
+  }, [isfocused]);
 
   const deleteItem = (category, id) => {
     Alert.alert(
@@ -114,12 +103,12 @@ const Myadds = (props) => {
           },
         },
       ],
-      { cancelable: true }
+      {cancelable: true},
     );
   };
 
   const handleDeleteConfirmed = (category, id) => {
-    handleGetToken().then((token) => {
+    handleGetToken().then(token => {
       if (token) {
         axios
           .delete(`${Baseurl}/api/${category}/id/${id}`, {
@@ -127,37 +116,45 @@ const Myadds = (props) => {
               Authorization: `Bearer ${token}`,
             },
           })
-          .then((response) => {
+          .then(response => {
             console.log('Deleted item:', response.data);
             // Remove the deleted item from the state
-            setData((prevData) => prevData.filter((item) => item.id !== id));
+            setData(prevData => prevData.filter(item => item.id !== id));
             ToastAndroid.showWithGravityAndOffset(
               'Item deleted successfully',
               ToastAndroid.LONG,
               ToastAndroid.BOTTOM,
               25,
-              50
+              50,
             );
             fetchmyadsApi(); // Refresh the data after deletion
           })
-          .catch((error) => {
+          .catch(error => {
             console.error('Error deleting item:', error);
             ToastAndroid.showWithGravityAndOffset(
               'Failed to delete item',
               ToastAndroid.LONG,
               ToastAndroid.BOTTOM,
               25,
-              50
+              50,
             );
           });
       }
     });
   };
 
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setSwitchState(data[0].is_active === 1);
+    }
+  }, [data]);
+
   const toggleActivation = (category, id, is_active) => {
     Alert.alert(
       'Confirm',
-      is_active ? 'Deactivate this item?' : 'Activate this item?',
+      !is_active
+        ? `Deactivate this ${category} add ?`
+        : `Activate this ${category} add ?`,
       [
         {
           text: 'Cancel',
@@ -166,60 +163,113 @@ const Myadds = (props) => {
         {
           text: 'Confirm',
           onPress: () => {
-            handleToggleActivation(category, id);
+            handleToggleActivation(category, id, is_active);
           },
         },
       ],
-      { cancelable: true }
+      {cancelable: true},
     );
   };
 
-  const handleToggleActivation = (category, id) => {
-    handleGetToken().then((token) => {
+  const handleToggleActivation = (category, id, is_active) => {
+    handleGetToken().then(token => {
       if (token) {
-        axios
-          .put(
-            `${Baseurl}/api/${category}/deactivate/id/${id}`,
-            {},
-            {
+        const action = !is_active ? 'deactivate' : 'activate';
+        if (action == 'deactivate') {
+          axios
+            .delete(`${Baseurl}/api/${category}/${action}/id/${id}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
-          )
-          .then((response) => {
-            console.log('Activation toggled:', response);
-            fetchmyadsApi();
-            setSwitchState(!switchState);
-            setData((prevData) =>
-              prevData.map((item) =>
-                item.id === id ? { ...item, is_active: !item.is_active } : item
-              )
-            );
-            ToastAndroid.showWithGravityAndOffset(
-              'Activation status updated successfully',
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50
-            );
-          })
-          .catch((error) => {
-            console.error('Error toggling activation:', error);
-            ToastAndroid.showWithGravityAndOffset(
-              'Failed to update activation status',
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM,
-              25,
-              50
-            );
-          });
+            })
+            .then(response => {
+              console.log('response:', response);
+              fetchmyadsApi();
+              setSwitchState(!switchState);
+              setData(prevData =>
+                prevData.map(item =>
+                  item.id === id ? {...item, is_active: !is_active} : item,
+                ),
+              );
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('error:', error);
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            });
+        } else {
+          axios
+            .put(`${Baseurl}/api/${category}/${action}/id/${id}`,{}, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+            .then(response => {
+              console.log('response:', response);
+              fetchmyadsApi();
+              setSwitchState(!switchState);
+              setData(prevData =>
+                prevData.map(item =>
+                  item.id === id ? {...item, is_active: !is_active} : item,
+                ),
+              );
+              ToastAndroid.showWithGravityAndOffset(
+                `${response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            })
+            .catch(error => {
+              console.error('error:', error);
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
+            });
+        }
       }
     });
   };
 
+  if (loading) {
+    return (
+      <SkeletonPlaceholder speed={500}>
+        {[1, 2, 3, 4].map((item, index) => (
+          <View
+            style={{
+              height: 200,
+              width: '90%',
+              top: 80,
+              marginBottom: 15,
+              alignSelf: 'center',
+              borderRadius: 20,
+            }}
+            key={index}
+          />
+        ))}
+      </SkeletonPlaceholder>
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{flex: 1}}>
       <Appbar.Header>
         <Appbar.BackAction
           onPress={() => {
@@ -240,9 +290,9 @@ const Myadds = (props) => {
             source={require('../../../assets/404.json')}
             autoPlay
             loop
-            style={{ height: 200, width: 200 }}
+            style={{height: 200, width: 200}}
             onAnimationFinish={() => console.log('Animation Finished')}
-            onError={(error) => console.log('Lottie Error:', error)}
+            onError={error => console.log('Lottie Error:', error)}
           />
           <TouchableOpacity
             style={{
@@ -267,10 +317,10 @@ const Myadds = (props) => {
         <FlatList
           data={data}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => {
+          renderItem={({item, index}) => {
             let imageurl = `${Baseurl}/api/${item.images[0]}`;
             return (
-              <View style={{ padding: 10 }}>
+              <View style={{padding: 10}}>
                 <View
                   style={{
                     paddingHorizontal: 2,
@@ -330,7 +380,7 @@ const Myadds = (props) => {
                       : null
                   }>
                   <Image
-                    source={{ uri: imageurl }}
+                    source={{uri: imageurl}}
                     style={{
                       height: 150,
                       borderTopLeftRadius: 12,
@@ -358,7 +408,7 @@ const Myadds = (props) => {
                       }}>
                       <AntDesign
                         name="checkcircle"
-                        style={{ color: '#3184b6', marginRight: 5 }}
+                        style={{color: '#3184b6', marginRight: 5}}
                       />
                       <Text
                         style={{
@@ -370,31 +420,6 @@ const Myadds = (props) => {
                         Verified
                       </Text>
                     </View>
-
-                    <TouchableOpacity
-                      onPress={() => handleWishlist(index)}
-                      style={{
-                        paddingHorizontal: 2,
-                        paddingVertical: 2,
-                        borderRadius: 5,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        backgroundColor: 'white',
-                      }}>
-                      {isWishlisted(index) ? (
-                        <AntDesign
-                          name="heart"
-                          style={{ color: '#3184b6' }}
-                          size={20}
-                        />
-                      ) : (
-                        <AntDesign
-                          name="hearto"
-                          style={{ color: '#3184b6' }}
-                          size={20}
-                        />
-                      )}
-                    </TouchableOpacity>
                   </View>
 
                   <View
@@ -402,24 +427,30 @@ const Myadds = (props) => {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                     }}>
-                    <View style={{ marginTop: 10, marginLeft: 10 }}>
+                    <View style={{marginTop: 10, marginLeft: 10}}>
                       <Text variant="titleLarge" style={style.subsubtitle}>
                         ₹ {item.price}
                       </Text>
                       <Text
                         numberOfLines={2}
-                        style={{ width: 250 }}
+                        style={{width: 250}}
                         variant="bodyMedium">
                         {item.title}
                       </Text>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{flexDirection: 'row'}}>
                       <Switch
-                        value={switchState}
-                        onValueChange={(value) =>
-                          toggleActivation(item.category, item.id, value)
+                        value={item.is_active === 1}
+                        onValueChange={value =>
+                          toggleActivation(
+                            item.category,
+                            item.id,
+                            value,
+                            item.is_active,
+                          )
                         }
                       />
+
                       <AntDesign
                         name="delete"
                         size={20}
@@ -478,7 +509,7 @@ const Myadds = (props) => {
                                     : item.category == 'hospitality'
                                     ? navigation.navigate(
                                         'Edithospitalityadds',
-                                        { item }
+                                        {item},
                                       )
                                     : item.category == 'doctors'
                                     ? navigation.navigate('Editdoctoradds', {
@@ -492,7 +523,7 @@ const Myadds = (props) => {
                                 },
                               },
                             ],
-                            { cancelable: true }
+                            {cancelable: true},
                           )
                         }
                       />
@@ -506,12 +537,12 @@ const Myadds = (props) => {
                       marginBottom: 10,
                       marginHorizontal: 10,
                     }}>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{flexDirection: 'row'}}>
                       <SvgXml
                         xml={location}
                         width="15px"
                         height="15px"
-                        style={{ marginTop: 3, marginRight: 0 }}
+                        style={{marginTop: 3, marginRight: 0}}
                       />
                       <Text variant="titleLarge">{item.state}</Text>
                     </View>
