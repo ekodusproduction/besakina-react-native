@@ -32,6 +32,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const HealthCategory = ({item}) => {
   const isFocused = useIsFocused();
   const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState([]);
@@ -513,6 +514,7 @@ const HealthCategory = ({item}) => {
                       flex: 1,
                       justifyContent: 'center',
                       alignItems: 'center',
+                      top: screenHeight * 0.2,
                     }}>
                     <LottieView
                       source={require('../../../../assets/404.json')}
@@ -761,6 +763,7 @@ const HealthCategory = ({item}) => {
                       flex: 1,
                       justifyContent: 'center',
                       alignItems: 'center',
+                      top: screenHeight * 0.2,
                     }}>
                     <LottieView
                       source={require('../../../../assets/404.json')}

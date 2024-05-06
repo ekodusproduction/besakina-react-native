@@ -29,10 +29,12 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const EducationCategory = ({item}) => {
   const isFocused = useIsFocused();
   const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [filtereddata, setFiltereddata] = useState(null);
+  console.log('filtereddata---', filtereddata);
   const [minbudget, setMinbudget] = useState('');
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -135,7 +137,12 @@ const EducationCategory = ({item}) => {
       )
       .then(response => {
         console.log('response --->>', response.data.data.advertisements);
-        setFiltereddata(response.data.data.advertisements);
+        if (response.data.data.advertisements?.length == 0) {
+          setFiltereddata(null);
+          setData(null);
+        } else {
+          setFiltereddata(response.data.data.advertisements);
+        }
         refRBSheet.current.close();
       })
       .catch(error => {
@@ -414,7 +421,7 @@ const EducationCategory = ({item}) => {
                     fontSize: 12,
                     textAlign: 'center',
                   }}>
-                  Budget
+                  Filter
                 </Text>
               </TouchableOpacity>
             </View>
@@ -425,6 +432,7 @@ const EducationCategory = ({item}) => {
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  top: screenHeight * 0.2,
                 }}>
                 <LottieView
                   source={require('../../../../assets/404.json')}

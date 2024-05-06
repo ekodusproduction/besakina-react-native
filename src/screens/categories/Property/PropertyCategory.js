@@ -31,6 +31,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const PropertyCategory = ({item}) => {
   const isFocused = useIsFocused();
   const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState(null);
   const [filtereddata, setFiltereddata] = useState(null);
@@ -136,7 +137,12 @@ const PropertyCategory = ({item}) => {
       )
       .then(response => {
         console.log('response --->>', response.data.data.advertisements);
-        setFiltereddata(response.data.data.advertisements);
+        if (response.data.data.advertisements?.length==0) {
+          setFiltereddata(null);
+          setData(null);
+        } else {
+          setFiltereddata(response.data.data.advertisements);
+        }
         refRBSheet.current.close();
       })
       .catch(error => {
@@ -416,7 +422,7 @@ const PropertyCategory = ({item}) => {
                     fontSize: 12,
                     textAlign: 'center',
                   }}>
-                  Budget
+                  Filter
                 </Text>
               </TouchableOpacity>
             </View>
@@ -427,6 +433,7 @@ const PropertyCategory = ({item}) => {
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  top: screenHeight * 0.2,
                 }}>
                 <LottieView
                   source={require('../../../../assets/404.json')}

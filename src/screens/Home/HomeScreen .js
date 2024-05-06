@@ -68,12 +68,16 @@ const HomeScreen = () => {
   const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
     const createdDate = new Date(createdAt);
-  
+
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const diffMonths = Math.abs(currentDate.getMonth() - createdDate.getMonth()) + (12 * (currentDate.getFullYear() - createdDate.getFullYear()));
-    const diffYears = Math.abs(currentDate.getFullYear() - createdDate.getFullYear());
-  
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
@@ -92,7 +96,6 @@ const HomeScreen = () => {
       return createdAt;
     }
   };
-  
 
   const image = [
     require('../../../assets/banner1.png'),

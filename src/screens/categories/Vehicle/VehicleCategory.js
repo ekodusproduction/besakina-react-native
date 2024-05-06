@@ -10,7 +10,7 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
-import {Appbar, Card} from 'react-native-paper';
+import {Appbar, Card, Divider} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -27,18 +27,24 @@ import {Baseurl} from '../../../constant/globalparams';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const VehicleCategory = ({item}) => {
   const isFocused = useIsFocused();
   const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState(null);
   const [filtereddata, setFiltereddata] = useState(null);
+  console.log('filtereddata--->', filtereddata);
   const [refreshing, setRefreshing] = useState(false);
   const [minbudget, setMinbudget] = useState('');
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [vehiclevalue, setVehiclevalue] = useState(null);
+  const [modelvalue, setModelValue] = useState(null);
+  const [fuelvalue, setFuelvalue] = useState(null);
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -99,18 +105,57 @@ const VehicleCategory = ({item}) => {
   };
 
   const handlebudget = () => {
+    const vehicletype = Vehicledata.filter(item => item.value === vehiclevalue)
+      .map(i => i.label)
+      .toString();
+    const modeltype = modelData
+      .filter(item => item.value === modelvalue)
+      .map(i => i.label)
+      .toString();
+    const fueldatatype = Fueldata.filter(item => item.value === fuelvalue)
+      .map(i => i.label)
+      .toString();
+
+    let url = `${Baseurl}/api/vehicles/filter?`;
+
+    if (minbudget) {
+      url = url + `minPrice=${minbudget}&`;
+    }
+
+    if (maxbudget) {
+      url = url + `maxPrice=${maxbudget}&`;
+    }
+
+    if (modeltype) {
+      url = url + `brand=${modeltype}&`;
+    }
+
+    if (vehicletype) {
+      url = url + `type=${vehicletype}&`;
+    }
+
+    if (fueldatatype) {
+      url = url + `fuel=${fueldatatype}`;
+    }
+
+    if (url.endsWith('&')) {
+      url = url.slice(0, -1);
+    }
+
     axios
-      .get(
-        `${Baseurl}/api/vehicles/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
-      )
+      .get(url)
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        setFiltereddata(response.data.data.advertisements);
+        console.log('response--->', response);
+        if (response.data.data.vehicles?.length == 0) {
+          setFiltereddata(null);
+          setData(null);
+        } else {
+          setFiltereddata(response.data.data.vehicles);
+        }
         refRBSheet.current.close();
       })
       .catch(error => {
-        //  navigation.navigate('Error404');
-        console.error('Error: ', error?.response);
+        console.error('Error: ', error);
         setFiltereddata(null);
         setData(null);
         refRBSheet.current.close();
@@ -270,6 +315,30 @@ const VehicleCategory = ({item}) => {
     );
   }
 
+  const Vehicledata = [
+    {label: 'Car', value: '1'},
+    {label: 'MotorCycle', value: '2'},
+    {label: 'Scooty', value: '3'},
+    {label: 'Bike', value: '4'},
+  ];
+  const modelData = [
+    {label: 'BMW', value: '1'},
+    {label: 'Ford', value: '2'},
+    {label: 'Fiat', value: '3'},
+    {label: 'Honda', value: '4'},
+    {label: 'Hyundai', value: '5'},
+    {label: 'Jeep', value: '6'},
+    {label: 'Mercedes', value: '7'},
+    {label: 'Toyota', value: '8'},
+  ];
+  const Fueldata = [
+    {label: 'Petrol', value: '1'},
+    {label: 'Diesel', value: '2'},
+    {label: 'CNG', value: '3'},
+    {label: 'LPG', value: '4'},
+    {label: 'Electric', value: '5'},
+    {label: 'Hybrid', value: '6'},
+  ];
   return (
     <View>
       <Appbar.Header>
@@ -416,7 +485,7 @@ const VehicleCategory = ({item}) => {
                     fontSize: 12,
                     textAlign: 'center',
                   }}>
-                  Budget
+                  Filter
                 </Text>
               </TouchableOpacity>
             </View>
@@ -427,6 +496,7 @@ const VehicleCategory = ({item}) => {
                   flex: 1,
                   justifyContent: 'center',
                   alignItems: 'center',
+                  top: screenHeight * 0.2,
                 }}>
                 <LottieView
                   source={require('../../../../assets/404.json')}
@@ -445,7 +515,6 @@ const VehicleCategory = ({item}) => {
                 showsVerticalScrollIndicator={false}
                 renderItem={({item, index}) => {
                   let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                  console.log('item ---', item);
 
                   return (
                     <TouchableOpacity
@@ -575,7 +644,7 @@ const VehicleCategory = ({item}) => {
         useNativeDriver={false}
         draggable={true}
         dragOnContent
-        height={600}
+        height={screenHeight}
         closeOnPressMask={true}
         closeOnPressBack={true}
         customStyles={{
@@ -598,8 +667,13 @@ const VehicleCategory = ({item}) => {
           enabled: false,
         }}>
         <View style={{flex: 1, padding: 20}}>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={[style.subtitle, {textAlign: 'left'}]}>Budget</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginBottom: 15,
+            }}>
+            <Text style={[style.subtitle, {textAlign: 'left'}]}>Filter</Text>
             <Entypo
               name="cross"
               size={30}
@@ -607,12 +681,43 @@ const VehicleCategory = ({item}) => {
             />
           </View>
           <View>
-            <Text style={{textAlign: 'left', marginTop: 10}}>
-              Choose a range below ({' '}
+            <View>
+              <Text style={[style.subsubtitle, {marginBottom: 5}]}>Type</Text>
+              <Dropdown
+                style={style.dropdown}
+                placeholderStyle={style.placeholderStyle}
+                selectedTextStyle={style.selectedTextStyle}
+                inputSearchStyle={style.inputSearchStyle}
+                iconStyle={style.iconStyle}
+                data={Vehicledata}
+                // search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder="Select Vehicle Type"
+                // searchPlaceholder="Search..."
+                value={vehiclevalue}
+                onChange={item => {
+                  setVehiclevalue(item.value);
+                }}
+              />
+            </View>
+          </View>
+          <Divider
+            style={{
+              color: 'black',
+              marginTop: 15,
+              marginBottom: 15,
+              width: 'auto',
+            }}
+          />
+          <View>
+            <Text style={[style.subsubtitle, {marginBottom: 5}]}>
+              Budget : Choose a range below ({' '}
               <FontAwesome5 name="rupee-sign" size={12} /> )
             </Text>
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{}}>
             <TextInput
               placeholder="Min."
               placeholderTextColor="black"
@@ -645,6 +750,67 @@ const VehicleCategory = ({item}) => {
               inputMode="numeric"
               value={maxbudget}
               onChangeText={max => setMaxbudget(max)}
+            />
+          </View>
+
+          <Divider
+            style={{
+              color: 'black',
+              marginTop: 15,
+              marginBottom: 15,
+              width: 'auto',
+            }}
+          />
+
+          <View>
+            <Text style={[style.subsubtitle, {marginBottom: 5}]}>Brand</Text>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={modelData}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Vehicle Brand"
+              // searchPlaceholder="Search..."
+              value={modelvalue}
+              onChange={item => {
+                setModelValue(item.value);
+              }}
+            />
+          </View>
+          <Divider
+            style={{
+              color: 'black',
+              marginTop: 15,
+              marginBottom: 15,
+              width: 'auto',
+            }}
+          />
+
+          <View>
+            <Text style={[style.subsubtitle, {marginBottom: 5}]}>Fuel</Text>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={Fueldata}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Fuel type"
+              // searchPlaceholder="Search..."
+              value={fuelvalue}
+              onChange={item => {
+                setFuelvalue(item.value);
+              }}
             />
           </View>
         </View>
