@@ -10,14 +10,12 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
-import {Appbar, Card} from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../../style';
-import FeaturedAds from '../../FeaturedAds/FeaturedAds';
-import AllAds from '../../AllAds/AllAds';
 import {SliderBox} from 'react-native-image-slider-box';
 import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
@@ -26,22 +24,19 @@ import axios from 'axios';
 import {Baseurl} from '../../../constant/globalparams';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const EducationCategory = ({item}) => {
+  const isFocused = useIsFocused();
+  const screenWidth = Dimensions.get('window').width;
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState(null);
-  const screenWidth = Dimensions.get('window').width;
   const [refreshing, setRefreshing] = useState(false);
   const [filtereddata, setFiltereddata] = useState(null);
   const [minbudget, setMinbudget] = useState('');
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-
-  console.log('data----->>>', data);
-  console.log('filtereddata----->>>', filtereddata);
-  console.log('data-----', data);
-
-  const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -49,7 +44,6 @@ const EducationCategory = ({item}) => {
     }
   }, [isFocused, isSheetOpen]);
 
-  console.log('data0-----', data);
   const handleWishlist = id => {
     const updatedWishlist = [...wishlist];
     const index = updatedWishlist.indexOf(id);
@@ -76,14 +70,17 @@ const EducationCategory = ({item}) => {
   const refRBSheet = useRef();
 
   const fetchproductApi = () => {
+    setLoading(true);
     axios
       .get(`${Baseurl}/api/education/list`)
       .then(response => {
         console.log('response ---', response.data);
         setData(response.data.data.advertisements);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setLoading(false);
       });
   };
 
@@ -99,22 +96,35 @@ const EducationCategory = ({item}) => {
     }, 1000);
   };
 
-  const getCreatedAtLabel = created_at => {
-    console.log('created_at-------', created_at);
+  const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
-    const createdDate = new Date(created_at);
+    const createdDate = new Date(createdAt);
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    console.log('diffDays ----', diffDays);
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
-      return created_at;
+      return createdAt;
     }
   };
 
@@ -129,13 +139,135 @@ const EducationCategory = ({item}) => {
         refRBSheet.current.close();
       })
       .catch(error => {
-        //  navigation.navigate('Error404');
         console.error('Error: ', error?.response);
         setFiltereddata(null);
         setData(null);
         refRBSheet.current.close();
       });
   };
+
+  if (loading) {
+    return (
+      <View>
+        <Appbar.Header>
+          <Appbar.BackAction
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <Appbar.Content title="Education" />
+          <TouchableOpacity
+            onPress={() => {}}
+            style={{bottom: 10, marginRight: 5}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+                gap: 5,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+              }}>
+              <SvgXml xml={location} width="15px" height="15px" />
+              <Text style={style.subsubtitle}>Guwahati</Text>
+              <AntDesign name="caretdown" size={12} />
+            </View>
+          </TouchableOpacity>
+        </Appbar.Header>
+
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={{padding: 1}}>
+            <SkeletonPlaceholder speed={500}>
+              <View
+                style={{
+                  height: 200,
+                  width: '90%',
+                  top: 10,
+                  marginBottom: 15,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  bottom: 20,
+                }}
+              />
+            </SkeletonPlaceholder>
+
+            <SkeletonPlaceholder speed={500}>
+              {[1, 2, 3, 4].map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 10,
+                    marginTop: 10,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 10,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                </View>
+              ))}
+            </SkeletonPlaceholder>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
   return (
     <View>
       <Appbar.Header>

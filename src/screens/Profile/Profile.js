@@ -29,9 +29,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [token, setToken] = useState(null);
 
-  console.log('toekn', token);
-  console.log('picture', picture);
-  const data = [
+   const data = [
     {
       name: 'My Adds',
       id: 1,
@@ -86,7 +84,7 @@ const Profile = () => {
     },
   ];
 
-  const fetuserapi = async () => {
+  const fetchuserapi = async () => {
     try {
       const token = await handleGetToken();
       if (token) {
@@ -117,7 +115,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (isfocused) {
-      fetuserapi();
+      fetchuserapi();
     }
   }, [isfocused]);
 

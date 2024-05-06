@@ -27,20 +27,22 @@ import {Baseurl} from '../../../constant/globalparams';
 import {Dropdown} from 'react-native-element-dropdown';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const HealthCategory = ({item}) => {
+  const isFocused = useIsFocused();
+  const screenWidth = Dimensions.get('window').width;
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState([]);
-  const screenWidth = Dimensions.get('window').width;
   const [refreshing, setRefreshing] = useState(false);
-  const isFocused = useIsFocused();
   const [filtereddata, setFiltereddata] = useState(null);
   const [minbudget, setMinbudget] = useState('');
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectexpertise, setselectexpertise] = useState(false);
   const [expertisedata, setExterptisedata] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -83,6 +85,7 @@ const HealthCategory = ({item}) => {
   const refRBSheetDoctors = useRef();
 
   const fetchdoctorApi = () => {
+    setLoading(true);
     axios
       .get(`${Baseurl}/api/doctors/list`)
       .then(response => {
@@ -98,21 +101,26 @@ const HealthCategory = ({item}) => {
         }));
         console.log('formattedData---', formattedData);
         setExterptisedata(formattedData);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setLoading(false);
       });
   };
 
   const fetchhospitalApi = () => {
+    setLoading(true);
     axios
       .get(`${Baseurl}/api/hospitals/list`)
       .then(response => {
         console.log('response ---', response.data);
         setData(response.data.data.advertisements);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setLoading(false);
       });
   };
 
@@ -133,22 +141,35 @@ const HealthCategory = ({item}) => {
     }, 1000);
   };
 
-  const getCreatedAtLabel = created_at => {
-    console.log('created_at-------', created_at);
+  const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
-    const createdDate = new Date(created_at);
+    const createdDate = new Date(createdAt);
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    console.log('diffDays ----', diffDays);
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
-      return created_at;
+      return createdAt;
     }
   };
 
@@ -191,6 +212,128 @@ const HealthCategory = ({item}) => {
       });
   };
 
+  if (loading) {
+    return (
+      <View>
+        <Appbar.Header>
+          <Appbar.BackAction
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <Appbar.Content title="Health Care" />
+          <TouchableOpacity
+            onPress={() => {}}
+            style={{ bottom: 10, marginRight: 5 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+                gap: 5,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+              }}>
+              <SvgXml xml={location} width="15px" height="15px" />
+              <Text style={style.subsubtitle}>Guwahati</Text>
+              <AntDesign name="caretdown" size={12} />
+            </View>
+          </TouchableOpacity>
+        </Appbar.Header>
+  
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={{ padding: 1 }}>
+          <SkeletonPlaceholder speed={500}>
+                <View
+                  style={{
+                    height: 200,
+                    width: '90%',  
+                    top: 10,
+                    marginBottom: 15,
+                    alignSelf: 'center',
+                    borderRadius: 20,
+                    bottom:20,
+                   }}
+                />
+              </SkeletonPlaceholder>
+  
+            <SkeletonPlaceholder speed={500}>
+              {[1, 2, 3, 4].map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 10,
+                    marginTop: 10,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 10,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                </View>
+              ))}
+            </SkeletonPlaceholder>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
+
   return (
     <View>
       <Appbar.Header>
@@ -225,7 +368,7 @@ const HealthCategory = ({item}) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
         <View style={{position: '', bottom: 0, width: '100%'}}>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{margin: 10}}>
             <Dropdown
               style={style.dropdown}
               placeholderStyle={style.placeholderStyle}

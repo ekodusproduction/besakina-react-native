@@ -440,7 +440,7 @@ const Property = () => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            selectedType === item ? '#3184b6' : 'transparent', // Set background color based on selection
+                            selectedType === item ? '#3184b6' : 'transparent',  
                         }}
                         onPress={() => setSelectedType(item)}>
                         <Text

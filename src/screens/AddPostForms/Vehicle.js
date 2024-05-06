@@ -379,7 +379,6 @@ const FirstRoute = () => {
     setSelectedImages(newImages);
   };
 
-
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -505,21 +504,43 @@ const FirstRoute = () => {
                   />
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text>Transmission (Auto/Manual)</Text>
-                  <TextInput
-                    placeholderTextColor="black"
+                <View
+                  style={{
+                    marginTop: 10,
+                  }}>
+                  <Text>Transmission</Text>
+                  <View
                     style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={transmission}
-                    onChangeText={reg => setTransmission(reg)}
-                  />
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {['Auto', 'Manual'].map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: 'row',
+                          backgroundColor:
+                            transmission === item ? '#3184b6' : 'transparent',
+                        }}
+                        onPress={() => setTransmission(item)}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: '500',
+                            color: transmission === item ? 'white' : 'black',
+                          }}>
+                          {item}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
                 <View style={{marginTop: 10}}>
                   <Text>Kilometer Driven*</Text>
@@ -717,66 +738,70 @@ const FirstRoute = () => {
               }}>
               <View style={{padding: 0}}>
                 <Text style={style.subsubtitle}>UPLOAD UPTO 20 PHOTOS</Text>
-              
-            <FlatList
-              data={[...Array(20).keys()]}
-              vertical
-              numColumns={4}
-              showsHorizontalScrollIndicator={false}
-              renderItem={({item, index}) => (
-                <TouchableOpacity
-                  onPress={handleCameraLaunch}
-                  style={{
-                    height: itemWidth,
-                    width: itemWidth,
-                    borderRadius: 5,
-                    backgroundColor: 'white',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginHorizontal: 5,
-                    marginTop: 10,
-                    marginBottom: 10,
-                    elevation: 5,
-                    shadowColor: '#000',
-                    shadowOpacity: 0.3,
-                    shadowRadius: 5,
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                  }}>
-                  {selectedImages[index] ? (
-                    <>
-                      <Image
-                        source={{
-                          uri:
-                            typeof selectedImages[index] === 'string'
-                              ? selectedImages[index]
-                              : selectedImages[index].uri,
-                        }}
-                        style={{height: '100%', width: '100%'}}
-                        resizeMode="cover"
-                      />
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          top: 5,
-                          right: 5,
-                          backgroundColor: 'rgba(0,0,0,0.5)',
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                        onPress={() => deleteImage(index)}>
-                        <AntDesign name="closecircle" size={20} color="white" />
-                      </TouchableOpacity>
-                    </>
-                  ) : (
-                    <AntDesign name="camera" size={50} />
+
+                <FlatList
+                  data={[...Array(20).keys()]}
+                  vertical
+                  numColumns={4}
+                  showsHorizontalScrollIndicator={false}
+                  renderItem={({item, index}) => (
+                    <TouchableOpacity
+                      onPress={handleCameraLaunch}
+                      style={{
+                        height: itemWidth,
+                        width: itemWidth,
+                        borderRadius: 5,
+                        backgroundColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginHorizontal: 5,
+                        marginTop: 10,
+                        marginBottom: 10,
+                        elevation: 5,
+                        shadowColor: '#000',
+                        shadowOpacity: 0.3,
+                        shadowRadius: 5,
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                      }}>
+                      {selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
+                      ) : (
+                        <AntDesign name="camera" size={50} />
+                      )}
+                    </TouchableOpacity>
                   )}
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-            />
+                  keyExtractor={(item, index) => index.toString()}
+                />
               </View>
             </View>
           </View>
@@ -1340,7 +1365,6 @@ const SecondRoute = () => {
     setSelectedImages(newImages);
   };
 
-
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -1466,23 +1490,44 @@ const SecondRoute = () => {
                     onChangeText={reg => setVehiclevariant(reg)}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>Transmission (Auto/Manual)</Text>
-                  <TextInput
-                    placeholderTextColor="black"
+                <View
+                  style={{
+                    marginTop: 10,
+                  }}>
+                  <Text>Transmission</Text>
+                  <View
                     style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={transmission}
-                    onChangeText={reg => setTransmission(reg)}
-                  />
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {['Auto', 'Manual'].map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: 'row',
+                          backgroundColor:
+                            transmission === item ? '#3184b6' : 'transparent',
+                        }}
+                        onPress={() => setTransmission(item)}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: '500',
+                            color: transmission === item ? 'white' : 'black',
+                          }}>
+                          {item}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
-
                 <View style={{marginTop: 10}}>
                   <Text>Ad Title*</Text>
                   <TextInput

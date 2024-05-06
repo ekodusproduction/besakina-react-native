@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  RefreshControl,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Appbar, Divider} from 'react-native-paper';
@@ -15,12 +16,16 @@ import {SliderBox} from 'react-native-image-slider-box';
 import TableView from '../../../components/TableView';
 import axios from 'axios';
 import {Baseurl} from '../../../constant/globalparams';
+import {SvgXml} from 'react-native-svg';
+import {location} from '../../../svg/svg';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 const HospitalityCategoryDetails = ({route}) => {
-  const {data,edit} = route.params;
+  const {data, edit} = route.params;
   const navigation = useNavigation();
   const [info, setInfo] = useState(null);
-  console.log('info----', info);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [createdAtLabel, setCreatedAtLabel] = useState('');
   let imageUrls =
     info && info?.images && info?.images.length > 0
@@ -37,6 +42,7 @@ const HospitalityCategoryDetails = ({route}) => {
   ];
 
   const fetchproductApibyid = id => {
+    setLoading(true);
     axios
       .get(`${Baseurl}/api/hospitality/id/${id}`)
       .then(response => {
@@ -45,9 +51,11 @@ const HospitalityCategoryDetails = ({route}) => {
         setCreatedAtLabel(
           getCreatedAtLabel(response.data.data.advertisement.created_at),
         );
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
+        setLoading(false);
       });
   };
 
@@ -61,6 +69,12 @@ const HospitalityCategoryDetails = ({route}) => {
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
 
     if (diffDays === 1) {
       return 'Today';
@@ -68,10 +82,148 @@ const HospitalityCategoryDetails = ({route}) => {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
       return createdAt;
     }
   };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchproductApibyid(data.id);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
+
+  if (loading) {
+    return (
+      <View>
+        <Appbar.Header>
+          <Appbar.BackAction
+            onPress={() => {
+              navigation.goBack();
+            }}
+          />
+          <Appbar.Content title="Hospitality" />
+          <TouchableOpacity
+            onPress={() => {}}
+            style={{bottom: 10, marginRight: 5}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginTop: 20,
+                gap: 5,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+              }}>
+              <SvgXml xml={location} width="15px" height="15px" />
+              <Text style={style.subsubtitle}>Guwahati</Text>
+              <AntDesign name="caretdown" size={12} />
+            </View>
+          </TouchableOpacity>
+        </Appbar.Header>
+
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }>
+          <View style={{padding: 1}}>
+            <SkeletonPlaceholder speed={500}>
+              <View
+                style={{
+                  height: 200,
+                  width: '90%',
+                  top: 10,
+                  marginBottom: 15,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  bottom: 20,
+                }}
+              />
+            </SkeletonPlaceholder>
+
+            <SkeletonPlaceholder speed={500}>
+              {[1, 2, 3, 4].map((item, index) => (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'row',
+                    marginHorizontal: 10,
+                    marginTop: 10,
+                  }}>
+                  <View
+                    style={{
+                      flex: 1,
+                      marginRight: 10,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                    }}>
+                    <View
+                      style={{
+                        height: 120,
+                        borderRadius: 12,
+                        marginBottom: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '50%',
+                        borderRadius: 5,
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: '90%',
+                        borderRadius: 5,
+                        marginTop: 5,
+                      }}
+                    />
+                  </View>
+                </View>
+              ))}
+            </SkeletonPlaceholder>
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 
   return (
     <View style={{flex: 1}}>
@@ -287,19 +439,23 @@ const HospitalityCategoryDetails = ({route}) => {
           </View>
         </View>
       </ScrollView>
-      {edit == 'edit' ?<View></View>:  <View style={{marginTop: 0}}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#f77b0b',
-            borderRadius: 0,
-            height: 60,
-            justifyContent: 'center',
-          }}>
-          <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-            Contact Seller
-          </Text>
-        </TouchableOpacity>
-      </View>}
+      {edit == 'edit' ? (
+        <View></View>
+      ) : (
+        <View style={{marginTop: 0}}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#f77b0b',
+              borderRadius: 0,
+              height: 60,
+              justifyContent: 'center',
+            }}>
+            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
+              Contact Seller
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

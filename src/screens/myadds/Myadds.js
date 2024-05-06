@@ -25,24 +25,40 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const Myadds = () => {
   const navigation = useNavigation();
   const isfocused = useIsFocused();
+  const imageHeight = Dimensions.get('window').height / 2.5;
   const [data, setData] = useState(null);
   const [switchState, setSwitchState] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const getCreatedAtLabel = created_at => {
+  const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
-    const createdDate = new Date(created_at);
+    const createdDate = new Date(createdAt);
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
-      return created_at;
+      return createdAt;
     }
   };
 
@@ -67,18 +83,12 @@ const Myadds = () => {
             setLoading(false);
           });
       } else {
-        console.log('Token not retrieved');
-        setShowTokenModal(true);
+        console.log('Token not retrieved !');
         setLoading(false);
+        setShowTokenModal(true);
       }
     });
   };
-
-  useEffect(() => {
-    if (isfocused == true) {
-      fetchmyadsApi();
-    }
-  }, [isfocused]);
 
   useEffect(() => {
     if (isfocused == true) {
@@ -211,11 +221,15 @@ const Myadds = () => {
             });
         } else {
           axios
-            .put(`${Baseurl}/api/${category}/${action}/id/${id}`,{}, {
-              headers: {
-                Authorization: `Bearer ${token}`,
+            .put(
+              `${Baseurl}/api/${category}/${action}/id/${id}`,
+              {},
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
+            )
             .then(response => {
               console.log('response:', response);
               fetchmyadsApi();
@@ -379,46 +393,52 @@ const Myadds = () => {
                         })
                       : null
                   }>
-                  <Image
-                    source={{uri: imageurl}}
-                    style={{
-                      height: 150,
-                      borderTopLeftRadius: 12,
-                      borderTopRightRadius: 12,
-                      objectFit: 'cover',
-                    }}
-                  />
                   <View
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      position: 'absolute',
-                      top: 10,
-                      left: 10,
-                      right: 10,
+                      position: 'relative',
+                      borderRadius: 12,
+                      overflow: 'hidden',
                     }}>
+                    <Image
+                      source={{uri: imageurl}}
+                      style={{
+                        height: imageHeight,
+                        width: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
                     <View
                       style={{
-                        backgroundColor: 'white',
-                        paddingHorizontal: 2,
-                        paddingVertical: 2,
-                        borderRadius: 5,
                         flexDirection: 'row',
-                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        position: 'absolute',
+                        top: 10,
+                        left: 10,
+                        right: 10,
                       }}>
-                      <AntDesign
-                        name="checkcircle"
-                        style={{color: '#3184b6', marginRight: 5}}
-                      />
-                      <Text
+                      <View
                         style={{
-                          color: 'white',
-                          fontWeight: 'bold',
-                          color: '#3184b6',
-                          fontSize: 12,
+                          backgroundColor: 'white',
+                          paddingHorizontal: 2,
+                          paddingVertical: 2,
+                          borderRadius: 5,
+                          flexDirection: 'row',
+                          alignItems: 'center',
                         }}>
-                        Verified
-                      </Text>
+                        <AntDesign
+                          name="checkcircle"
+                          style={{color: '#3184b6', marginRight: 5}}
+                        />
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontWeight: 'bold',
+                            color: '#3184b6',
+                            fontSize: 12,
+                          }}>
+                          Verified
+                        </Text>
+                      </View>
                     </View>
                   </View>
 

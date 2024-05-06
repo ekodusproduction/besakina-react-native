@@ -39,7 +39,6 @@ const EditProfile = () => {
   const [selectedImagesfront, setSelectedImagesfront] = useState([]);
   const [selectedImagesback, setSelectedImagesback] = useState([]);
   const [selectedImagesprofile, setSelectedImagesprofile] = useState([]);
-  console.log('selectedImagesprofile---', selectedImagesprofile);
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
   const [loadingotp, setLoadingotp] = useState(false);
@@ -130,6 +129,83 @@ const EditProfile = () => {
     });
   };
 
+  const fetchuserapi = async () => {
+    try {
+      const token = await handleGetToken();
+      if (token) {
+        const response = await axios.get(`${Baseurl}/api/users/details`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        console.log('response --->>', response.data.data);
+        setFullname(
+          response.data.data?.fullname == null
+            ? ''
+            : response.data.data?.fullname,
+        );
+        setEmailid(
+          response.data.data?.email == null ? '' : response.data.data?.email,
+        );
+        setPhone(
+          response.data.data?.alternate_mobile == null
+            ? ''
+            : response.data.data?.alternate_mobile.toString(),
+        );
+        setstate(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
+        setLocality(
+          response.data.data?.locality == null
+            ? ''
+            : response.data.data?.locality,
+        );
+        setPincode(
+          response.data.data?.pincode == null
+            ? ''
+            : response.data.data?.pincode,
+        );
+        serDoc_number(
+          response.data.data?.doc_number == null
+            ? ''
+            : response.data.data?.doc_number,
+        );
+        setSelectedImagesprofile(
+          response.data.data?.profile_pic == null
+            ? []
+            : [response.data.data?.profile_pic].map(imagePath => ({
+                uri: `${Baseurl}/api/${imagePath}`,
+              })),
+        );
+        setSelectedImagesback(
+          response.data.data?.doc_file_back == null
+            ? []
+            : [response.data.data?.doc_file_back].map(imagePath => ({
+                uri: `${Baseurl}/api/${imagePath}`,
+              })),
+        );
+        setSelectedImagesfront(
+          response.data.data?.doc_file == null
+            ? []
+            : [response.data.data?.doc_file].map(imagePath => ({
+                uri: `${Baseurl}/api/${imagePath}`,
+              })),
+        );
+        setDocumentvalue(
+          DocumentData.find(item => item.label === response.data.data?.doc_type)
+            ?.value || null,
+        );
+      } else {
+        console.log('Token not retrieved');
+      }
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    }
+  };
+
   const handleprofile = () => {
     const missingFields = [];
 
@@ -177,9 +253,7 @@ const EditProfile = () => {
     handleGetToken()
       .then(token => {
         if (token) {
-          console.log('Token retrieved successfully--->', token);
           setLoading(true);
-
           const formData = new FormData();
           const documentvalueType = DocumentData.filter(
             item => item.value === documentvalue,
@@ -195,22 +269,22 @@ const EditProfile = () => {
           selectedImagesfront.forEach((image, index) => {
             formData.append(`doc_file`, {
               uri: image.uri,
-              type: image.type,
-              name: image.fileName,
+              type: image.type == undefined ? 'image/jpeg' : image.type,
+              name: image.fileName == undefined ? '' : image.fileName,
             });
           });
           selectedImagesback.forEach((image, index) => {
             formData.append(`doc_file_back`, {
               uri: image.uri,
-              type: image.type,
-              name: image.fileName,
+              type: image.type == undefined ? 'image/jpeg' : image.type,
+              name: image.fileName == undefined ? '' : image.fileName,
             });
           });
           selectedImagesprofile.forEach((image, index) => {
             formData.append(`profile_pic`, {
               uri: image.uri,
-              type: image.type,
-              name: image.fileName,
+              type: image.type == undefined ? 'image/jpeg' : image.type,
+              name: image.fileName == undefined ? '' : image.fileName,
             });
           });
 
@@ -219,8 +293,7 @@ const EditProfile = () => {
           formData.append('state', state);
           formData.append('pincode', pincode);
           formData.append('about', pincode);
-
-          console.log('formData===', formData);
+          console.log('formData--->', formData);
           axios
             .post(`${Baseurl}/api/users/details`, formData, {
               headers: {
@@ -230,6 +303,9 @@ const EditProfile = () => {
             })
             .then(response => {
               console.log('response of the api--->', response);
+              if (response.data.success ==true) {
+                setLoading(false);
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,
@@ -241,9 +317,6 @@ const EditProfile = () => {
             })
             .catch(error => {
               console.error('Catch Error :---->', error);
-              console.log('error message--->', error.response.data.message);
-            })
-            .finally(() => {
               setLoading(false);
             });
         } else {
@@ -358,6 +431,7 @@ const EditProfile = () => {
   useEffect(() => {
     if (isfocused == true) {
       setErrorMessage('');
+      fetchuserapi();
     }
   }, [isfocused]);
 
@@ -394,7 +468,11 @@ const EditProfile = () => {
                   }}>
                   {selectedImagesprofile.length > 0 ? (
                     <Image
-                      source={{uri: selectedImagesprofile[0].uri}}
+                      source={{
+                        uri: selectedImagesprofile[
+                          selectedImagesprofile.length - 1
+                        ].uri,
+                      }}
                       style={{
                         height: 100,
                         width: 100,
@@ -735,6 +813,28 @@ const EditProfile = () => {
         </KeyboardAvoidingView>
       </ScrollView>
 
+      <View style={{marginTop: 0}}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: style.button.backgroundColor,
+            borderRadius: 0,
+            height: 60,
+            justifyContent: 'center',
+            borderColor: 'gray',
+            borderWidth: 0.5,
+          }}
+          onPress={handleprofile}
+          disabled={loading ? true : false}>
+          {loading ? (
+            <ActivityIndicator size="small" color="white" />
+          ) : (
+            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
+              Save
+            </Text>
+          )}
+        </TouchableOpacity>
+      </View>
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -921,28 +1021,6 @@ const EditProfile = () => {
           </View>
         </View>
       </Modal>
-
-      <View style={{marginTop: 0}}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: style.button.backgroundColor,
-            borderRadius: 0,
-            height: 60,
-            justifyContent: 'center',
-            borderColor: 'gray',
-            borderWidth: 0.5,
-          }}
-          onPress={handleprofile}
-          disabled={loading ? true : false}>
-          {loading ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Save
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

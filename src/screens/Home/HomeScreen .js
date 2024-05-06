@@ -68,20 +68,31 @@ const HomeScreen = () => {
   const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
     const createdDate = new Date(createdAt);
-
+  
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
+    const diffMonths = Math.abs(currentDate.getMonth() - createdDate.getMonth()) + (12 * (currentDate.getFullYear() - createdDate.getFullYear()));
+    const diffYears = Math.abs(currentDate.getFullYear() - createdDate.getFullYear());
+  
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
       return createdAt;
     }
   };
+  
 
   const image = [
     require('../../../assets/banner1.png'),
@@ -348,9 +359,10 @@ const HomeScreen = () => {
         <View style={style.sliderContainer}>
           <SliderBox
             images={image}
-            dotStyle={{height: 10, width: 30, borderRadius: 5}}
+            dotStyle={{height: 10, width: 10, borderRadius: 5}}
             dotColor="#3184b6"
             inactiveDotColor="white"
+            // imageLoadingColor="white"
             autoplay={true}
             circleLoop={true}
             resizeMode="contain"
