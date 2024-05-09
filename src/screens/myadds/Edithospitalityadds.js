@@ -29,23 +29,23 @@ const Edithospitalityadds = item => {
     axios
       .get(`${Baseurl}/api/hospitality/id/${id}`)
       .then(response => {
-        console.log('response----', response);
+        console.log('response----', response.data.data);
         setHospitalityvalue(
           Hospitalitydata.find(
-            item => item.label === response.data.data.advertisement?.type,
+            item => item.label === response.data.data?.type,
           )?.value || null,
         );
-        setName(response.data.data.advertisement?.name);
-        setAdtitle(response.data.data.advertisement?.title);
-        setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
-        setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
+        setName(response.data.data?.name);
+        setAdtitle(response.data.data?.title);
+        setDescription(response.data.data?.description);
+        setPrice(response.data.data?.price);
+        setStreet(response.data.data?.street);
+        setLocality(response.data.data?.locality);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
         setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
+          response.data.data?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
           })),
         );
@@ -220,28 +220,31 @@ const Edithospitalityadds = item => {
       });
   };
 
-  const deleteImage = (index) => {
+  const deleteImage = index => {
     const imageToDelete = selectedImages[index];
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
-  
+
     const startIndex = imageToDelete.uri.indexOf('public/');
     const extractedPart = imageToDelete.uri.substring(startIndex);
-  
+
     handleGetToken()
-      .then((token) => {
+      .then(token => {
         if (token) {
-          setLoading(true); 
+          setLoading(true);
           axios
-            .delete(`${Baseurl}/api/hospitality/image/delete/id/${newdata.item.id}`, {
-              data: { images: extractedPart }, 
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
+            .delete(
+              `${Baseurl}/api/hospitality/image/delete/id/${newdata.item.id}`,
+              {
+                data: {images: extractedPart},
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
-            .then((response) => {
+            )
+            .then(response => {
               console.log('Response of the API:', response);
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
@@ -251,7 +254,7 @@ const Edithospitalityadds = item => {
                 50,
               );
             })
-            .catch((error) => {
+            .catch(error => {
               console.error('Error deleting image:', error);
               if (error.message === 'Network Error') {
                 ToastAndroid.showWithGravityAndOffset(
@@ -278,11 +281,10 @@ const Edithospitalityadds = item => {
           console.log('Token not retrieved');
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Error while handling token:', error);
       });
   };
-  
 
   return (
     <View style={{flex: 1}}>
@@ -518,7 +520,7 @@ const Edithospitalityadds = item => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[index] ? (
+                      {selectedImages && selectedImages[index] ? (
                         <>
                           <Image
                             source={{

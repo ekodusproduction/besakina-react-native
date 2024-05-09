@@ -10,14 +10,12 @@ import {
   Dimensions,
   RefreshControl,
 } from 'react-native';
-import {Appbar, Card} from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../../style';
-import FeaturedAds from '../../FeaturedAds/FeaturedAds';
-import AllAds from '../../AllAds/AllAds';
 import {SliderBox} from 'react-native-image-slider-box';
 import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
@@ -27,6 +25,7 @@ import {Baseurl} from '../../../constant/globalparams';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const PropertyCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -38,9 +37,16 @@ const PropertyCategory = ({item}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [minbudget, setMinbudget] = useState('');
   const [maxbudget, setMaxbudget] = useState('');
-  const [isSheetOpen, setIsSheetOpen] = useState(false); 
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [propertyvalue, setpropertyvalue] = useState(null); console.log('propertyvalue---',propertyvalue)
 
+  const TypesData = [
+    {label: 'Apartments', value: 'apartments'},
+    {label: 'Builder Floors', value: 'builder_floors'},
+    {label: 'Farm Houses', value: 'farm_houses'},
+    {label: 'Houses and Villas', value: 'houses_and_villas'},
+  ];
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -68,24 +74,22 @@ const PropertyCategory = ({item}) => {
     require('../../../../assets/banner2.png'),
     require('../../../../assets/banner2.png'),
     require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
   ];
   const navigation = useNavigation();
   const refRBSheet = useRef();
 
   const fetchproductApi = () => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get(`${Baseurl}/api/property/list`)
       .then(response => {
         console.log('response --->>', response);
-        setData(response.data.data.advertisements);
-        setLoading(false)
+        setData(response.data.data.property);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
-        setLoading(false)
-
+        setLoading(false);
       });
   };
 
@@ -96,12 +100,16 @@ const PropertyCategory = ({item}) => {
   const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
     const createdDate = new Date(createdAt);
-  
+
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const diffMonths = Math.abs(currentDate.getMonth() - createdDate.getMonth()) + (12 * (currentDate.getFullYear() - createdDate.getFullYear()));
-    const diffYears = Math.abs(currentDate.getFullYear() - createdDate.getFullYear());
-  
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
@@ -120,7 +128,6 @@ const PropertyCategory = ({item}) => {
       return createdAt;
     }
   };
-  
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -131,23 +138,44 @@ const PropertyCategory = ({item}) => {
   };
 
   const handlebudget = () => {
-    axios
-      .get(
-        `${Baseurl}/api/property/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
+    let url = `${Baseurl}/api/property/filter?`;
+
+    if (minbudget) {
+      url = url + `minPrice=${minbudget}&`;
+    }
+
+    if (maxbudget) {
+      url = url + `maxPrice=${maxbudget}&`;
+    }
+
+    if (propertyvalue) {
+      const propertyType = TypesData.filter(
+        item => item.value === propertyvalue,
       )
+        .map(i => i.value)
+        .toString();
+      url = url + `type=${propertyType}&`;
+    }
+
+    if (url.endsWith('&')) {
+      url = url.slice(0, -1);
+    }
+
+    axios
+      .get(url)
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        if (response.data.data.advertisements?.length==0) {
+        console.log(url)
+        console.log('response --->>', response.data.data.property);
+        if (response.data.data?.property.length == 0) {
           setFiltereddata(null);
           setData(null);
         } else {
-          setFiltereddata(response.data.data.advertisements);
+          setFiltereddata(response.data.data.property);
         }
         refRBSheet.current.close();
       })
       .catch(error => {
-        // navigation.navigate('Error404');
-        console.error('Error: ', error?.response);
+        console.error('Error: ', error);
         setFiltereddata(null);
         setData(null);
         refRBSheet.current.close();
@@ -166,7 +194,7 @@ const PropertyCategory = ({item}) => {
           <Appbar.Content title="Properties" />
           <TouchableOpacity
             onPress={() => {}}
-            style={{ bottom: 10, marginRight: 5 }}>
+            style={{bottom: 10, marginRight: 5}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -182,27 +210,27 @@ const PropertyCategory = ({item}) => {
             </View>
           </TouchableOpacity>
         </Appbar.Header>
-  
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ padding: 1 }}>
-          <SkeletonPlaceholder speed={500}>
-                <View
-                  style={{
-                    height: 200,
-                    width: '90%',  
-                    top: 10,
-                    marginBottom: 15,
-                    alignSelf: 'center',
-                    borderRadius: 20,
-                    bottom:20,
-                   }}
-                />
-              </SkeletonPlaceholder>
-   
+          <View style={{padding: 1}}>
+            <SkeletonPlaceholder speed={500}>
+              <View
+                style={{
+                  height: 200,
+                  width: '90%',
+                  top: 10,
+                  marginBottom: 15,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  bottom: 20,
+                }}
+              />
+            </SkeletonPlaceholder>
+
             <SkeletonPlaceholder speed={500}>
               {[1, 2, 3, 4].map((item, index) => (
                 <View
@@ -323,7 +351,17 @@ const PropertyCategory = ({item}) => {
               autoplayInterval={5000}
               sliderBoxHeight={200}
               onCurrentImagePressed={index =>
-                console.log(`image ${index} pressed`)
+                index == 0
+                  ? navigation.navigate('AuthNavigator')
+                  : index == 1
+                  ? navigation.navigate('AddPost')
+                  : index == 2
+                  ? navigation.navigate('AddPost')
+                  : index == 3
+                  ? navigation.navigate('AddPost')
+                  : index == 4
+                  ? navigation.navigate('AddPost')
+                  : null
               }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
@@ -540,7 +578,12 @@ const PropertyCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text style={style.subsubtitle}>₹ {item.price}</Text>
+                          <Text style={style.subsubtitle}>
+                            ₹{' '}
+                            {item.price
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                          </Text>
                           <Text numberOfLines={1} style={{width: 150}}>
                             {item.title}
                           </Text>
@@ -612,6 +655,26 @@ const PropertyCategory = ({item}) => {
               onPress={() => refRBSheet.current.close()}
             />
           </View>
+
+          <View style={{marginTop: 15}}>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={TypesData}
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Property Type"
+              value={propertyvalue}
+              onChange={item => {
+                setpropertyvalue(item.value);
+              }}
+            />
+          </View>
+
           <View>
             <Text style={{textAlign: 'left', marginTop: 10}}>
               Choose a range below ({' '}

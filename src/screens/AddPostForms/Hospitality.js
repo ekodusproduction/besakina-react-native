@@ -57,25 +57,6 @@ const Hospitality = () => {
     {label: 'Resort', value: '4'},
     {label: 'Paying Guest', value: '5'},
   ];
-  const openGallery = () => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 2000,
-      maxWidth: 2000,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('Image picker error: ', response.error);
-      } else {
-        let imageUri = response.uri || response.assets?.[0]?.uri;
-        setSelectedImages([...selectedImages, imageUri]);
-      }
-    });
-  };
 
   const handleCameraLaunch = () => {
     const options = {
@@ -212,6 +193,12 @@ const Hospitality = () => {
                 );
               }
               console.log('error message--->', error.response.data.message);
+              if (error.response.data.message=='User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
+              if (error.response.data.message=='No plans subscribed. Please subscribe to a plan.') {
+                navigation.navigate('MyPlans');
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,
@@ -340,7 +327,6 @@ const Hospitality = () => {
   }, [isfocused]);
 
   const deleteImage = index => {
-    const imageToDelete = selectedImages[index];
     const newImages = [...selectedImages];
     newImages.splice(index, 1);
     setSelectedImages(newImages);
@@ -558,7 +544,7 @@ const Hospitality = () => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item, index}) => (
+                  renderItem={({index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{

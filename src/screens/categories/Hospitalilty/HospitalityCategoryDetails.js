@@ -23,22 +23,22 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 const HospitalityCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
   const navigation = useNavigation();
-  const [info, setInfo] = useState(null);
+  const [info, setInfo] = useState(null); console.log('info---',info)
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [createdAtLabel, setCreatedAtLabel] = useState('');
   let imageUrls =
-    info && info?.images && info?.images.length > 0
-      ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+    info && info?.data.images && info?.data.images.length > 0
+      ? info?.data.images.map(url => `${Baseurl}/api/${url.trim()}`)
       : [];
 
   let image =
-    imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+    imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.data.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type}`];
+  const headers = ['Property Type', '', '', `${info?.data.type}`];
   const rows = [
-    ['Locality', '', '', `${info?.locality}`],
-    ['Location', '', '', `${info?.city}`],
+    ['Locality', '', '', `${info?.data.locality}`],
+    ['Location', '', '', `${info?.data.city}`],
   ];
 
   const fetchproductApibyid = id => {
@@ -47,9 +47,9 @@ const HospitalityCategoryDetails = ({route}) => {
       .get(`${Baseurl}/api/hospitality/id/${id}`)
       .then(response => {
         console.log('response ---', response.data);
-        setInfo(response.data.data.advertisement);
+        setInfo(response.data);
         setCreatedAtLabel(
-          getCreatedAtLabel(response.data.data.advertisement.created_at),
+          getCreatedAtLabel(response.data.created_at),
         );
         setLoading(false);
       })
@@ -233,7 +233,7 @@ const HospitalityCategoryDetails = ({route}) => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title={info?.title} />
+        <Appbar.Content title={info?.data.title} />
         <TouchableOpacity
           onPress={() => {}}
           style={{bottom: 10, marginRight: 5}}>
@@ -296,11 +296,11 @@ const HospitalityCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 10,
                 }}>
-                <Text style={style.subsubtitle}>₹ {info?.price}</Text>
+                <Text style={style.subsubtitle}>₹ {info?.data.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
                 <AntDesign name="hearto" size={25} />
               </View>
               <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
-                {info?.title}
+                {info?.data.title}
               </Text>
 
               <View
@@ -317,7 +317,7 @@ const HospitalityCategoryDetails = ({route}) => {
                     size={15}
                     style={{marginHorizontal: 5}}
                   />
-                  <Text variant="titleLarge">{info?.city}</Text>
+                  <Text variant="titleLarge">{info?.data.city}</Text>
                 </View>
                 <Text style={style.subsubtitle} variant="bodyMedium">
                   {createdAtLabel}
@@ -357,7 +357,7 @@ const HospitalityCategoryDetails = ({route}) => {
                       textAlign: 'justify',
                     },
                   ]}>
-                  {info?.description}
+                  {info?.data.description}
                 </Text>
               </View>
             </View>
@@ -405,9 +405,9 @@ const HospitalityCategoryDetails = ({route}) => {
               </View>
             </View>
             <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
-              {info?.user?.fullname == null
+              {info?.data.user?.fullname == null
                 ? 'Not Available'
-                : info?.user?.fullname}
+                : info?.data.user?.fullname}
             </Text>
 
             <View
@@ -418,13 +418,13 @@ const HospitalityCategoryDetails = ({route}) => {
                 marginTop: 5,
               }}>
               <Text style={{marginLeft: 10}}>
-                {info?.user?.doc_type == null
+                {info?.data.user?.doc_type == null
                   ? 'Not Available'
-                  : info?.user?.doc_type}{' '}
+                  : info?.data.user?.doc_type}{' '}
                 :{' '}
-                {info?.user?.doc_number == null
+                {info?.data.user?.doc_number == null
                   ? 'Not Available'
-                  : info?.user?.doc_number}
+                  : info?.data.user?.doc_number}
               </Text>
               <View
                 style={{
@@ -434,7 +434,7 @@ const HospitalityCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                 }}
               />
-              <Text>{getCreatedAtLabel(info?.created_at)}</Text>
+              <Text>{getCreatedAtLabel(info?.data.created_at)}</Text>
             </View>
           </View>
         </View>

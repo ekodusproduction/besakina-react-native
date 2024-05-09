@@ -32,25 +32,25 @@ const Edithospitaladds = item => {
       .then(response => {
         console.log('response ---', response);
 
-        setPrice(response.data.data.advertisement?.price_per_visit.toString());
+        setPrice(response.data.data?.price_per_visit.toString());
         setPriceperregistration(
-          response.data.data.advertisement?.price_registration.toString(),
+          response.data.data?.price_registration.toString(),
         );
         setHospitalorclinicvalue(
           HospitalData.find(
-            item => item.label === response.data.data.advertisement?.type,
+            item => item.label === response.data.data?.type,
           )?.value || null,
         );
-        setDescription(response.data.data.advertisement?.description);
-        setAdtitle(response.data.data.advertisement?.title);
-        setName(response.data.data.advertisement?.name);
-        setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
+        setDescription(response.data.data?.description);
+        setAdtitle(response.data.data?.title);
+        setName(response.data.data?.name);
+        setStreet(response.data.data?.street);
+        setLocality(response.data.data?.locality);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
         setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
+          response.data.data?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
           })),
         );
@@ -538,7 +538,7 @@ const Edithospitaladds = item => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[index] ? (
+                      {selectedImages && selectedImages[index] ? (
                         <>
                           <Image
                             source={{

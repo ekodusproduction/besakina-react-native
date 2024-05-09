@@ -28,8 +28,6 @@ import {useIsFocused} from '@react-navigation/native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 
 const FirstRoute = item => {
-  console.log('item --', item);
-
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
@@ -45,13 +43,20 @@ const FirstRoute = item => {
     {label: 'Jeep', value: '6'},
     {label: 'Mercedes', value: '7'},
     {label: 'Toyota', value: '8'},
+    {label: 'Mahindra', value: '9'},
+    {label: 'Renault', value: '10'},
+    {label: 'Volkswagen', value: '11'},
+    {label: 'Audi', value: '12'},
+    {label: 'Tata Motors', value: '13'},
+    {label: 'Maruti Suzuki', value: '14'},
+    {label: 'All Brands', value: '15'},
   ];
   const Vehicledata = [
     {label: 'Car', value: '1'},
     {label: 'MotorCycle', value: '2'},
     {label: 'Scooty', value: '3'},
     {label: 'Bike', value: '4'},
-  ];
+   ];
   const Fueldata = [
     {label: 'Petrol', value: '1'},
     {label: 'Diesel', value: '2'},
@@ -60,6 +65,7 @@ const FirstRoute = item => {
     {label: 'Electric', value: '5'},
     {label: 'Hybrid', value: '6'},
   ];
+
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
@@ -85,35 +91,37 @@ const FirstRoute = item => {
         console.log('response----', response);
         setVehiclevalue(
           Vehicledata.find(
-            item => item.label === response.data.data.advertisement?.type,
+            item => item.label === response.data.data?.type,
           )?.value || null,
         );
         setModelValue(
           modelData.find(
-            item => item.label === response.data.data.advertisement?.brand,
+            item =>
+              item.label.toLowerCase() ===
+              response.data.data?.brand,
           )?.value || null,
         );
         setFuelvalue(
           Fueldata.find(
-            item => item.label === response.data.data.advertisement?.fuel,
+            item => item.label === response.data.data?.fuel,
           )?.value || null,
         );
 
-        setVehiclemodel(response.data.data.advertisement?.model);
-        setVehiclevariant(response.data.data.advertisement?.variant);
-        seRegistrationyear(response.data.data.advertisement?.registration_year);
-        setAdtitle(response.data.data.advertisement?.title);
-        setKilometerdirven(response.data.data.advertisement?.kilometer_driven);
-        setTransmission(response.data.data.advertisement?.transmission);
-        setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
-        setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
+        setVehiclemodel(response.data.data?.model);
+        setVehiclevariant(response.data.data?.variant);
+        seRegistrationyear(response.data.data?.registration_year);
+        setAdtitle(response.data.data?.title);
+        setKilometerdirven(response.data.data?.kilometer_driven);
+        setTransmission(response.data.data?.transmission);
+        setDescription(response.data.data?.description);
+        setPrice(response.data.data?.price);
+        setStreet(response.data.data?.street);
+        setLocality(response.data.data?.locality);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
         setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
+          response.data.data?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
           })),
         );
@@ -460,21 +468,43 @@ const FirstRoute = item => {
                   />
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text>Transmission (Auto/Manual)</Text>
-                  <TextInput
-                    placeholderTextColor="black"
+                <View
+                  style={{
+                    marginTop: 10,
+                  }}>
+                  <Text>Transmission</Text>
+                  <View
                     style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={transmission}
-                    onChangeText={reg => setTransmission(reg)}
-                  />
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {['Auto', 'Manual'].map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: 'row',
+                          backgroundColor:
+                            transmission === item ? '#3184b6' : 'transparent',
+                        }}
+                        onPress={() => setTransmission(item)}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: '500',
+                            color: transmission === item ? 'white' : 'black',
+                          }}>
+                          {item}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
                 <View style={{marginTop: 10}}>
                   <Text>Kilometer Driven*</Text>
@@ -699,7 +729,7 @@ const FirstRoute = item => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[index] ? (
+                      {selectedImages && selectedImages[index] ? (
                         <>
                           <Image
                             source={{
@@ -789,13 +819,20 @@ const SecondRoute = () => {
     {label: 'Jeep', value: '6'},
     {label: 'Mercedes', value: '7'},
     {label: 'Toyota', value: '8'},
+    {label: 'Mahindra', value: '9'},
+    {label: 'Renault', value: '10'},
+    {label: 'Volkswagen', value: '11'},
+    {label: 'Audi', value: '12'},
+    {label: 'Tata Motors', value: '13'},
+    {label: 'Maruti Suzuki', value: '14'},
+    {label: 'All Brands', value: '15'},
   ];
   const Vehicledata = [
     {label: 'Car', value: '1'},
     {label: 'MotorCycle', value: '2'},
     {label: 'Scooty', value: '3'},
     {label: 'Bike', value: '4'},
-  ];
+   ];
   const Fueldata = [
     {label: 'Petrol', value: '1'},
     {label: 'Diesel', value: '2'},
@@ -804,6 +841,7 @@ const SecondRoute = () => {
     {label: 'Electric', value: '5'},
     {label: 'Hybrid', value: '6'},
   ];
+
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
@@ -1171,21 +1209,43 @@ const SecondRoute = () => {
                     onChangeText={reg => setVehiclevariant(reg)}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>Transmission (Auto/Manual)</Text>
-                  <TextInput
-                    placeholderTextColor="black"
+                <View
+                  style={{
+                    marginTop: 10,
+                  }}>
+                  <Text>Transmission</Text>
+                  <View
                     style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={transmission}
-                    onChangeText={reg => setTransmission(reg)}
-                  />
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {['Auto', 'Manual'].map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        style={{
+                          height: 40,
+                          width: 115,
+                          borderWidth: 0.5,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          margin: 5,
+                          flexDirection: 'row',
+                          backgroundColor:
+                            transmission === item ? '#3184b6' : 'transparent',
+                        }}
+                        onPress={() => setTransmission(item)}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: '500',
+                            color: transmission === item ? 'white' : 'black',
+                          }}>
+                          {item}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
 
                 <View style={{marginTop: 10}}>
@@ -1372,7 +1432,7 @@ const SecondRoute = () => {
                   vertical
                   numColumns={4}
                   showsHorizontalScrollIndicator={false}
-                  renderItem={({item}) => (
+                  renderItem={({item, index}) => (
                     <TouchableOpacity
                       onPress={handleCameraLaunch}
                       style={{
@@ -1394,17 +1454,35 @@ const SecondRoute = () => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[item] ? (
-                        <Image
-                          source={{
-                            uri:
-                              typeof selectedImages[item] === 'string'
-                                ? selectedImages[item]
-                                : selectedImages[item].uri,
-                          }}
-                          style={{height: '100%', width: '100%'}}
-                          resizeMode="cover"
-                        />
+                      {selectedImages && selectedImages[index] ? (
+                        <>
+                          <Image
+                            source={{
+                              uri:
+                                typeof selectedImages[index] === 'string'
+                                  ? selectedImages[index]
+                                  : selectedImages[index].uri,
+                            }}
+                            style={{height: '100%', width: '100%'}}
+                            resizeMode="cover"
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              backgroundColor: 'rgba(0,0,0,0.5)',
+                              padding: 5,
+                              borderRadius: 10,
+                            }}
+                            onPress={() => deleteImage(index)}>
+                            <AntDesign
+                              name="closecircle"
+                              size={20}
+                              color="white"
+                            />
+                          </TouchableOpacity>
+                        </>
                       ) : (
                         <AntDesign name="camera" size={50} />
                       )}
@@ -1646,7 +1724,7 @@ const Editvehicleads = item => {
       .get(`${Baseurl}/api/vehicles/id/${id}`)
       .then(response => {
         console.log('response----', response);
-        setIndex(response.data.data.advertisement.second_hand == 1 ? 0 : 1);
+        setIndex(response.data.data.second_hand == 1 ? 0 : 1);
       })
       .catch(error => {
         console.error('Error fetching data: ', error);

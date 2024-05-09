@@ -38,7 +38,7 @@ const HospitalorClinicCategoryDetails = ({route}) => {
   const headers = ['Property Type', '', '', `${info?.type}`];
   const rows = [
     ['Name', '', '', `${info?.name}`],
-    ['Price per registration', '', '', `₹${info?.price_registration}`],
+    ['Price per registration', '', '', `₹${info?.price_registration.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`],
     ['Location', '', '', `${info?.city}`],
   ];
 
@@ -48,9 +48,9 @@ const HospitalorClinicCategoryDetails = ({route}) => {
       .get(`${Baseurl}/api/hospitals/id/${id}`)
       .then(response => {
         console.log('response ---', response.data);
-        setInfo(response.data.data.advertisement);
+        setInfo(response.data.data);
         setCreatedAtLabel(
-          getCreatedAtLabel(response.data.data.advertisement.created_at),
+          getCreatedAtLabel(response.data.data.created_at),
         );
         setLoading(false);
       })
@@ -276,7 +276,7 @@ const HospitalorClinicCategoryDetails = ({route}) => {
                   marginTop: 10,
                 }}>
                 <Text style={style.subsubtitle}>
-                  ₹ {info?.price_registration}
+                  ₹ {info?.price_registration.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                 </Text>
                 <AntDesign name="hearto" size={25} />
               </View>

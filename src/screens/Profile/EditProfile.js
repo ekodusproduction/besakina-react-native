@@ -210,6 +210,9 @@ const EditProfile = () => {
     const missingFields = [];
 
     switch (true) {
+      case !selectedImagesprofile:
+        missingFields.push('Profile picture');
+        break;
       case !fullname:
         missingFields.push('Full Name');
         break;
@@ -231,9 +234,9 @@ const EditProfile = () => {
       case !documentvalue:
         missingFields.push('documents');
         break;
-      case selectedImagesfront.length === 0:
-        missingFields.push('Images');
-        break;
+      // case selectedImagesfront.length === 0:
+      //   missingFields.push('Images');
+      //   break;
       default:
         break;
     }
@@ -303,7 +306,7 @@ const EditProfile = () => {
             })
             .then(response => {
               console.log('response of the api--->', response);
-              if (response.data.success ==true) {
+              if (response.data.success == true) {
                 setLoading(false);
               }
               ToastAndroid.showWithGravityAndOffset(

@@ -31,11 +31,12 @@ const Property = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const TypesData = [
-    'Apartments',
-    'Builders Floors',
-    'Farm Houses',
-    'Houses and Villas',
+    {label: 'Apartments', value: 'apartments'},
+    {label: 'Builder Floors', value: 'builder_floors'},
+    {label: 'Farm Houses', value: 'farm_houses'},
+    {label: 'Houses and Villas', value: 'houses_and_villas'},
   ];
+
   const BedroomsData = ['1', '2', '3', '4', '5'];
   const BathroomData = ['1', '2', '3', '4', '5'];
   const ParkingData = ['0', '1', '2', '3', '4'];
@@ -237,6 +238,15 @@ const Property = () => {
                 );
               }
               console.log('error message--->', error.response.data.message);
+              if (error.response.data.message == 'User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
+              if (
+                error.response.data.message ==
+                'No plans subscribed. Please subscribe to a plan.'
+              ) {
+                navigation.navigate('MyPlans');
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,
@@ -440,16 +450,19 @@ const Property = () => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            selectedType === item ? '#3184b6' : 'transparent',  
+                            selectedType === item.value
+                              ? '#3184b6'
+                              : 'transparent',
                         }}
-                        onPress={() => setSelectedType(item)}>
+                        onPress={() => setSelectedType(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: selectedType === item ? 'white' : 'black',
+                            color:
+                              selectedType === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}

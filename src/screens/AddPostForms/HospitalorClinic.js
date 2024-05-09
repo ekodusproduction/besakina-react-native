@@ -34,6 +34,7 @@ const HospitalorClinic = () => {
     {label: 'Clinic', value: '2'},
     {label: 'Laboratoy', value: '3'},
     {label: 'Nurshing Home', value: '4'},
+    {label: 'Care Giving Service', value: '5'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -204,6 +205,12 @@ const HospitalorClinic = () => {
                 );
               }
               console.log('error message--->', error.response.data.message);
+              if (error.response.data.message=='User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
+              if (error.response.data.message=='No plans subscribed. Please subscribe to a plan.') {
+                navigation.navigate('MyPlans');
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,

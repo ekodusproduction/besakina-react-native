@@ -193,7 +193,7 @@ const FeaturedAds = props => {
 
                       <View style={{marginTop: 10, marginLeft: 10}}>
                         <Text variant="titleLarge" style={style.subsubtitle}>
-                          ₹ {item.price}
+                          ₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                         </Text>
                         <Text
                           numberOfLines={2}

@@ -542,23 +542,24 @@ const HomeScreen = () => {
                           </View>
 
                           <View style={{marginTop: 10, marginLeft: 10}}>
+                            
                             <Text
-                              variant="titleLarge"
-                              style={style.subsubtitle}>
-                              ₹ {item.price}
-                            </Text>
-                            <Text
-                              numberOfLines={2}
+                              numberOfLines={1}
                               style={{width: 250}}
                               variant="bodyMedium">
                               {item.title}
+                            </Text>
+                            <Text
+                              variant="titleLarge"
+                              style={style.subsubtitle}>
+                              ₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                             </Text>
                           </View>
                           <View
                             style={{
                               flexDirection: 'row',
                               justifyContent: 'space-between',
-                              marginTop: 20,
+                              marginTop: 10,
                               marginBottom: 10,
                               marginHorizontal: 10,
                             }}>
@@ -695,10 +696,11 @@ const HomeScreen = () => {
                     </View>
 
                     <View style={{marginTop: 10, marginLeft: 10}}>
-                      <Text style={style.subsubtitle}>₹ {item.price}</Text>
-                      <Text numberOfLines={1} style={{width: 150}}>
+                    <Text numberOfLines={1} style={{width: 150}}>
                         {item.title}
                       </Text>
+                      <Text style={style.subsubtitle}>₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+                      
                     </View>
 
                     <View

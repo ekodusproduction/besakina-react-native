@@ -18,7 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {launchCamera} from 'react-native-image-picker';
 import {Dimensions} from 'react-native';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
@@ -216,6 +216,15 @@ const Education = () => {
             })
             .catch(error => {
               console.error('Catch Error :---->', error);
+              if (error.response.data.message == 'User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
+              if (
+                error.response.data.message ==
+                'No plans subscribed. Please subscribe to a plan.'
+              ) {
+                navigation.navigate('MyPlans');
+              }
               if (error.message == 'Network Error') {
                 ToastAndroid.showWithGravityAndOffset(
                   `Something went wrong, Try again later`,
@@ -350,7 +359,7 @@ const Education = () => {
     newImages.splice(index, 1);
     setSelectedImages(newImages);
   };
-  
+
   return (
     <View style={{flex: 1}}>
       <Appbar.Header>
@@ -405,12 +414,10 @@ const Education = () => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Domaindata}
-                    // search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Domain"
-                    // searchPlaceholder="Search..."
                     value={domainvalue}
                     onChange={item => {
                       setDomainvalue(item.value);

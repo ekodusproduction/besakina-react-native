@@ -39,7 +39,7 @@ const DoctorCategoryDetails = ({route}) => {
     'Fees per Visit',
     '',
     '',
-    `₹${info?.price_per_visit == null ? 'N/A' : info?.price_per_visit}`,
+    `₹${info?.price_per_visit == null ? 'N/A' : info?.price_per_visit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
   ];
   const rows = [
     ['Name', '', '', `${info?.name}`],
@@ -48,15 +48,15 @@ const DoctorCategoryDetails = ({route}) => {
     ['Location', '', '', `${info?.city}`],
   ];
 
-  const fetchproductApibyid = id => {
+  const fetchdoctorApibyid = id => {
     setLoading(true);
     axios
       .get(`${Baseurl}/api/doctors/id/${id}`)
       .then(response => {
         console.log('response ---', response.data);
-        setInfo(response.data.data.advertisement);
+        setInfo(response.data.data);
         setCreatedAtLabel(
-          getCreatedAtLabel(response.data.data.advertisement.created_at),
+          getCreatedAtLabel(response.data.data.created_at),
         );
         setLoading(false);
       })
@@ -67,7 +67,7 @@ const DoctorCategoryDetails = ({route}) => {
   };
 
   useEffect(() => {
-    fetchproductApibyid(data.id);
+    fetchdoctorApibyid(data.id);
   }, []);
 
   const getCreatedAtLabel = createdAt => {
@@ -100,7 +100,7 @@ const DoctorCategoryDetails = ({route}) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchproductApibyid(data.id);
+    fetchdoctorApibyid(data.id);
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);

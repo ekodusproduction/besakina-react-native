@@ -26,9 +26,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {Fueldata, modelData, Vehicledata} from '../../json/Vehicle';
 
 const FirstRoute = () => {
-  const navigation = useNavigation();
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
@@ -40,33 +40,9 @@ const FirstRoute = () => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
-  const modelData = [
-    {label: 'BMW', value: '1'},
-    {label: 'Ford', value: '2'},
-    {label: 'Fiat', value: '3'},
-    {label: 'Honda', value: '4'},
-    {label: 'Hyundai', value: '5'},
-    {label: 'Jeep', value: '6'},
-    {label: 'Mercedes', value: '7'},
-    {label: 'Toyota', value: '8'},
-  ];
-  const Vehicledata = [
-    {label: 'Car', value: '1'},
-    {label: 'MotorCycle', value: '2'},
-    {label: 'Scooty', value: '3'},
-    {label: 'Bike', value: '4'},
-  ];
-  const Fueldata = [
-    {label: 'Petrol', value: '1'},
-    {label: 'Diesel', value: '2'},
-    {label: 'CNG', value: '3'},
-    {label: 'LPG', value: '4'},
-    {label: 'Electric', value: '5'},
-    {label: 'Hybrid', value: '6'},
-  ];
-  const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
+  const [selectedImages, setSelectedImages] = useState([]);
   const [registrationyear, seRegistrationyear] = useState('');
   const [vehiclevariant, setVehiclevariant] = useState('');
   const [vehiclemodel, setVehiclemodel] = useState('');
@@ -113,21 +89,21 @@ const FirstRoute = () => {
     const missingFields = [];
 
     switch (true) {
-      case !vehiclemodel:
-        missingFields.push('vehiclemodel');
-        break;
-      case !vehiclevariant:
-        missingFields.push('vehiclevariant');
-        break;
-      case !registrationyear:
-        missingFields.push('registrationyear');
-        break;
-      case !transmission:
-        missingFields.push('transmission');
-        break;
-      case !kilometerdriven:
-        missingFields.push('kilometerdriven');
-        break;
+      // case !vehiclemodel:
+      //   missingFields.push('vehiclemodel');
+      //   break;
+      // case !vehiclevariant:
+      //   missingFields.push('vehiclevariant');
+      //   break;
+      // case !registrationyear:
+      //   missingFields.push('registrationyear');
+      //   break;
+      // case !transmission:
+      //   missingFields.push('transmission');
+      //   break;
+      // case !kilometerdriven:
+      //   missingFields.push('kilometerdriven');
+      //   break;
       case !adtitle:
         missingFields.push('adtitle');
         break;
@@ -146,9 +122,9 @@ const FirstRoute = () => {
       case !price:
         missingFields.push('price');
         break;
-      case selectedImages.length === 0:
-        missingFields.push('Images');
-        break;
+      // case selectedImages.length === 0:
+      //   missingFields.push('Images');
+      //   break;
       default:
         break;
     }
@@ -180,15 +156,15 @@ const FirstRoute = () => {
           )
             .map(i => i.label)
             .toString();
-          const modeltype = modelData
-            .filter(item => item.value === modelvalue)
-            .map(i => i.label)
-            .toString();
+          // const modeltype = modelData
+          //   .filter(item => item.value === modelvalue)
+          //   .map(i => i.label)
+          //   .toString();
           const fueldatatype = Fueldata.filter(item => item.value === fuelvalue)
             .map(i => i.label)
             .toString();
 
-          formData.append('brand', modeltype);
+          formData.append('brand', modelvalue);
           formData.append('type', vehicletype);
           formData.append('fuel', fueldatatype);
           formData.append('variant', vehiclevariant);
@@ -246,6 +222,15 @@ const FirstRoute = () => {
                 );
               }
               console.log('error message--->', error.response.data.message);
+              if (error.response.data.message == 'User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
+              if (
+                error.response.data.message ==
+                'No plans subscribed. Please subscribe to a plan.'
+              ) {
+                navigation.navigate('MyPlans');
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,
@@ -403,37 +388,55 @@ const FirstRoute = () => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Vehicledata}
-                    // search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Type"
-                    // searchPlaceholder="Search..."
                     value={vehiclevalue}
                     onChange={item => {
                       setVehiclevalue(item.value);
                     }}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Dropdown
+                <View>
+                  {/* <Dropdown
                     style={style.dropdown}
                     placeholderStyle={style.placeholderStyle}
                     selectedTextStyle={style.selectedTextStyle}
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={modelData}
-                    // search
-                    maxHeight={300}
+                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Brand"
-                    // searchPlaceholder="Search..."
-                    value={modelvalue}
+                     value={modelvalue}
                     onChange={item => {
                       setModelValue(item.value);
                     }}
-                  />
+                  /> */}
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select Vehicle Brand"
+                      data={
+                        modelData
+                          .find(item => item.value === vehiclevalue)
+                          ?.models?.map(model => ({
+                            label: model,
+                            value: model.toLowerCase(),
+                          })) || []
+                      }
+                      value={modelvalue}
+                      onChange={item => setModelValue(item.value)}
+                    />
+                  </View>
                 </View>
                 <View style={{marginTop: 10}}>
                   <Dropdown
@@ -504,44 +507,57 @@ const FirstRoute = () => {
                   />
                 </View>
 
-                <View
-                  style={{
-                    marginTop: 10,
-                  }}>
-                  <Text>Transmission</Text>
+                {Vehicledata.filter(item => item.value === vehiclevalue)
+                  .map(i => i.label)
+                  .toString() == 'MotorCycle' ||
+                Vehicledata.filter(item => item.value === vehiclevalue)
+                  .map(i => i.label)
+                  .toString() == 'Scooty' ||
+                Vehicledata.filter(item => item.value === vehiclevalue)
+                  .map(i => i.label)
+                  .toString() == 'Bike' ? (
+                  <View style={{display: 'none'}}></View>
+                ) : (
                   <View
                     style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
+                      marginTop: 10,
                     }}>
-                    {['Auto', 'Manual'].map((item, index) => (
-                      <TouchableOpacity
-                        key={index}
-                        style={{
-                          height: 40,
-                          width: 115,
-                          borderWidth: 0.5,
-                          borderRadius: 5,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          margin: 5,
-                          flexDirection: 'row',
-                          backgroundColor:
-                            transmission === item ? '#3184b6' : 'transparent',
-                        }}
-                        onPress={() => setTransmission(item)}>
-                        <Text
+                    <Text>Transmission</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      {['Auto', 'Manual'].map((item, index) => (
+                        <TouchableOpacity
+                          key={index}
                           style={{
-                            fontSize: 12,
-                            fontWeight: '500',
-                            color: transmission === item ? 'white' : 'black',
-                          }}>
-                          {item}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                            height: 40,
+                            width: 115,
+                            borderWidth: 0.5,
+                            borderRadius: 5,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            margin: 5,
+                            flexDirection: 'row',
+                            backgroundColor:
+                              transmission === item ? '#3184b6' : 'transparent',
+                          }}
+                          onPress={() => setTransmission(item)}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: '500',
+                              color: transmission === item ? 'white' : 'black',
+                            }}>
+                            {item}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
                   </View>
-                </View>
+                )}
+
                 <View style={{marginTop: 10}}>
                   <Text>Kilometer Driven*</Text>
                   <TextInput
@@ -1034,30 +1050,6 @@ const SecondRoute = () => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
-  const modelData = [
-    {label: 'BMW', value: '1'},
-    {label: 'Ford', value: '2'},
-    {label: 'Fiat', value: '3'},
-    {label: 'Honda', value: '4'},
-    {label: 'Hyundai', value: '5'},
-    {label: 'Jeep', value: '6'},
-    {label: 'Mercedes', value: '7'},
-    {label: 'Toyota', value: '8'},
-  ];
-  const Vehicledata = [
-    {label: 'Car', value: '1'},
-    {label: 'MotorCycle', value: '2'},
-    {label: 'Scooty', value: '3'},
-    {label: 'Bike', value: '4'},
-  ];
-  const Fueldata = [
-    {label: 'Petrol', value: '1'},
-    {label: 'Diesel', value: '2'},
-    {label: 'CNG', value: '3'},
-    {label: 'LPG', value: '4'},
-    {label: 'Electric', value: '5'},
-    {label: 'Hybrid', value: '6'},
-  ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
@@ -1106,15 +1098,21 @@ const SecondRoute = () => {
     const missingFields = [];
 
     switch (true) {
-      case !vehiclemodel:
-        missingFields.push('vehiclemodel');
-        break;
-      case !vehiclevariant:
-        missingFields.push('vehiclevariant');
-        break;
-      case !transmission:
-        missingFields.push('transmission');
-        break;
+      // case !vehiclemodel:
+      //   missingFields.push('vehiclemodel');
+      //   break;
+      // case !vehiclevariant:
+      //   missingFields.push('vehiclevariant');
+      //   break;
+      // case !registrationyear:
+      //   missingFields.push('registrationyear');
+      //   break;
+      // case !transmission:
+      //   missingFields.push('transmission');
+      //   break;
+      // case !kilometerdriven:
+      //   missingFields.push('kilometerdriven');
+      //   break;
       case !adtitle:
         missingFields.push('adtitle');
         break;
@@ -1133,9 +1131,9 @@ const SecondRoute = () => {
       case !price:
         missingFields.push('price');
         break;
-      case selectedImages.length === 0:
-        missingFields.push('Images');
-        break;
+      // case selectedImages.length === 0:
+      //   missingFields.push('Images');
+      //   break;
       default:
         break;
     }
@@ -1167,15 +1165,15 @@ const SecondRoute = () => {
           )
             .map(i => i.label)
             .toString();
-          const modeltype = modelData
-            .filter(item => item.value === modelvalue)
-            .map(i => i.label)
-            .toString();
+          // const modeltype = modelData
+          //   .filter(item => item.value === modelvalue)
+          //   .map(i => i.label)
+          //   .toString();
           const fueldatatype = Fueldata.filter(item => item.value === fuelvalue)
             .map(i => i.label)
             .toString();
 
-          formData.append('brand', modeltype);
+          formData.append('brand', modelvalue);
           formData.append('type', vehicletype);
           formData.append('fuel', fueldatatype);
           formData.append('variant', vehiclevariant);
@@ -1232,6 +1230,9 @@ const SecondRoute = () => {
                 );
               }
               console.log('error message--->', error.response.data.message);
+              if (error.response.data.message == 'User Profile Incomplete') {
+                navigation.navigate('EditProfile');
+              }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
                 ToastAndroid.LONG,
@@ -1408,17 +1409,19 @@ const SecondRoute = () => {
                     selectedTextStyle={style.selectedTextStyle}
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
-                    data={modelData}
-                    // search
-                    maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Brand"
-                    // searchPlaceholder="Search..."
+                    data={
+                      modelData
+                        .find(item => item.value === vehiclevalue)
+                        ?.models?.map(model => ({
+                          label: model,
+                          value: model.toLowerCase(),
+                        })) || []
+                    }
                     value={modelvalue}
-                    onChange={item => {
-                      setModelValue(item.value);
-                    }}
+                    onChange={item => setModelValue(item.value)}
                   />
                 </View>
                 <View style={{marginTop: 10}}>
@@ -1474,22 +1477,6 @@ const SecondRoute = () => {
                   />
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text>Vehicle Variant</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={vehiclevariant}
-                    onChangeText={reg => setVehiclevariant(reg)}
-                  />
-                </View>
                 <View
                   style={{
                     marginTop: 10,

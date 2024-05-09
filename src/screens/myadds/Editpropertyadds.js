@@ -32,75 +32,61 @@ const Editpropertyadds = item => {
         console.log('response ---', response);
 
         setSelectedCategory(
-          data.find(
-            item => item.label === response.data.data.advertisement?.category,
-          )?.value || null,
+          data.find(item => item.label === response.data.data?.category)
+            ?.value || null,
         );
         setSelectedType(
-          TypesData.find(
-            item => item === response.data.data.advertisement?.type,
-          ) || null,
+          TypesData.find(item => item.value === response.data.data?.type)?.value || null
         );
+        
         setSelectedbedrooms(
           BedroomsData.find(
-            item =>
-              item === response.data.data.advertisement?.bedrooms.toString(),
+            item => item === response.data.data?.bedrooms.toString(),
           ) || null,
         );
         setSelectedbathrooms(
           BathroomData.find(
-            item =>
-              item === response.data.data.advertisement?.bathrooms.toString(),
+            item => item === response.data.data?.bathrooms.toString(),
           ) || null,
         );
         setFurnishing(
           FurnishingData.find(
-            item =>
-              item === response.data.data.advertisement?.furnishing.toString(),
+            item => item === response.data.data?.furnishing.toString(),
           ) || null,
         );
         setConstructionstatus(
           ConstructionData.find(
-            item =>
-              item ===
-              response.data.data.advertisement?.construction_status.toString(),
+            item => item === response.data.data?.construction_status.toString(),
           ) || null,
         );
         setListedby(
           ListedData.find(
-            item =>
-              item === response.data.data.advertisement?.listed_by.toString(),
+            item => item === response.data.data?.listed_by.toString(),
           ) || null,
         );
         setCarparking(
           ParkingData.find(
-            item =>
-              item === response.data.data.advertisement?.car_parking.toString(),
+            item => item === response.data.data?.car_parking.toString(),
           ) || null,
         );
 
-        setBuiltuparea(
-          response.data.data.advertisement?.super_builtup_area.toString(),
-        );
-        setCarpetarea(response.data.data.advertisement?.carpet_area.toString());
-        setMaintenance(
-          response.data.data.advertisement?.maintenance.toString(),
-        );
-        setTotalrooms(response.data.data.advertisement?.total_rooms.toString());
-        // setFloorno(response.data.data.advertisement?.total_floors.toString());
+        setBuiltuparea(response.data.data?.super_builtup_area.toString());
+        setCarpetarea(response.data.data?.carpet_area.toString());
+        setMaintenance(response.data.data?.maintenance.toString());
+        setTotalrooms(response.data.data?.total_rooms.toString());
+        setFloorno(response.data.data?.floor_no?.toString());
 
-        setAdtitle(response.data.data.advertisement?.title);
-        setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
-        setStreet(response.data.data.advertisement?.street);
-        setCity(response.data.data.advertisement?.city);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
-        setLandmark(response.data.data.advertisement?.landmark);
-        setHouseno(response.data.data.advertisement?.house_no);
+        setAdtitle(response.data.data?.title);
+        setDescription(response.data.data?.description);
+        setPrice(response.data.data?.price);
+        setStreet(response.data.data?.street);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
+        setLandmark(response.data.data?.landmark);
+        setHouseno(response.data.data?.house_no);
         setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
+          response.data.data?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
           })),
         );
@@ -115,10 +101,10 @@ const Editpropertyadds = item => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const TypesData = [
-    'Apartments',
-    'Builders Floors',
-    'Farm Houses',
-    'Houses and Villas',
+    {label: 'Apartments', value: 'apartments'},
+    {label: 'Builder Floors', value: 'builder_floors'},
+    {label: 'Farm Houses', value: 'farm_houses'},
+    {label: 'Houses and Villas', value: 'houses_and_villas'},
   ];
   const BedroomsData = ['1', '2', '3', '4', '5'];
   const BathroomData = ['1', '2', '3', '4', '5'];
@@ -440,16 +426,19 @@ const Editpropertyadds = item => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            selectedType === item ? '#3184b6' : 'transparent', // Set background color based on selection
+                            selectedType === item.value
+                              ? '#3184b6'
+                              : 'transparent',
                         }}
-                        onPress={() => setSelectedType(item)}>
+                        onPress={() => setSelectedType(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: selectedType === item ? 'white' : 'black',
+                            color:
+                              selectedType === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -999,7 +988,7 @@ const Editpropertyadds = item => {
                       height: 2,
                     },
                   }}>
-                  {selectedImages[index] ? (
+                  {selectedImages && selectedImages[index] ? (
                     <>
                       <Image
                         source={{

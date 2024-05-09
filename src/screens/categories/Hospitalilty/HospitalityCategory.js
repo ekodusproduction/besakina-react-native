@@ -76,8 +76,8 @@ const HospitalityCategory = ({item}) => {
     axios
       .get(`${Baseurl}/api/hospitality/list`)
       .then(response => {
-        console.log('response ---', response.data);
-        setData(response.data.data.advertisements);
+        console.log('response ---', response);
+        setData(response.data.data.hospitality);
         setLoading(false);
       })
       .catch(error => {
@@ -133,12 +133,12 @@ const HospitalityCategory = ({item}) => {
         `${Baseurl}/api/hospitality/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
       )
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        if (response.data.data.advertisements?.length==0) {
+        console.log('response --->>', response.data.data.hospitality);
+        if (response.data.data.hospitality?.length==0) {
           setFiltereddata(null);
           setData(null);
         } else {
-          setFiltereddata(response.data.data.advertisements);
+          setFiltereddata(response.data.data.hospitality);
         }
         refRBSheet.current.close();
       })
@@ -443,7 +443,17 @@ const HospitalityCategory = ({item}) => {
               autoplayInterval={5000}
               sliderBoxHeight={200}
               onCurrentImagePressed={index =>
-                console.log(`image ${index} pressed`)
+                index == 0
+                  ? navigation.navigate('AuthNavigator')
+                  : index == 1
+                  ? navigation.navigate('AddPost')
+                  : index == 2
+                  ? navigation.navigate('AddPost')
+                  : index == 3
+                  ? navigation.navigate('AddPost')
+                  : index == 4
+                  ? navigation.navigate('AddPost')
+                  : null
               }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
@@ -661,7 +671,7 @@ const HospitalityCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text style={style.subsubtitle}>₹ {item.price}</Text>
+                          <Text style={style.subsubtitle}>₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
                           <Text numberOfLines={1} style={{width: 150}}>
                             {item.title}
                           </Text>

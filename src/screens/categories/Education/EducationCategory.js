@@ -25,6 +25,7 @@ import {Baseurl} from '../../../constant/globalparams';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const EducationCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -39,6 +40,13 @@ const EducationCategory = ({item}) => {
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [coursevalue, setCoursevalue] = useState(null);
+  console.log('coursevalue--', coursevalue);
+  const Coursedata = [
+    {label: 'Graduation', value: '1'},
+    {label: 'Diploma', value: '2'},
+    {label: 'Certification', value: '3'},
+  ];
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -77,7 +85,7 @@ const EducationCategory = ({item}) => {
       .get(`${Baseurl}/api/education/list`)
       .then(response => {
         console.log('response ---', response.data);
-        setData(response.data.data.advertisements);
+        setData(response.data.data.education);
         setLoading(false);
       })
       .catch(error => {
@@ -131,17 +139,36 @@ const EducationCategory = ({item}) => {
   };
 
   const handlebudget = () => {
+    let url = `${Baseurl}/api/education/filter?`;
+
+    if (minbudget) {
+      url = url + `minPrice=${minbudget}&`;
+    }
+
+    if (maxbudget) {
+      url = url + `maxPrice=${maxbudget}&`;
+    }
+
+    if (coursevalue) {
+      const courseType = Coursedata.filter(item => item.value === coursevalue)
+        .map(i => i.label)
+        .toString();
+      url = url + `type=${courseType}&`;
+    }
+
+    if (url.endsWith('&')) {
+      url = url.slice(0, -1);
+    }
+
     axios
-      .get(
-        `${Baseurl}/api/education/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
-      )
+      .get(url)
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        if (response.data.data.advertisements?.length == 0) {
+        console.log('response --->>', response.data);
+        if (response.data.data.education?.length == 0) {
           setFiltereddata(null);
           setData(null);
         } else {
-          setFiltereddata(response.data.data.advertisements);
+          setFiltereddata(response.data.data.education);
         }
         refRBSheet.current.close();
       })
@@ -322,7 +349,15 @@ const EducationCategory = ({item}) => {
               autoplayInterval={5000}
               sliderBoxHeight={200}
               onCurrentImagePressed={index =>
-                console.log(`image ${index} pressed`)
+                index == 0
+                  ? navigation.navigate('AuthNavigator')
+                  : index == 1
+                  ? navigation.navigate('AddPost')
+                  : index == 2
+                  ? navigation.navigate('AddPost')
+                  : index == 3
+                  ? navigation.navigate('AddPost')
+                  : null
               }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
@@ -540,7 +575,12 @@ const EducationCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text style={style.subsubtitle}>₹ {item.price}</Text>
+                          <Text style={style.subsubtitle}>
+                            ₹{' '}
+                            {item.price
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                          </Text>
                           <Text numberOfLines={1} style={{width: 150}}>
                             {item.title}
                           </Text>
@@ -612,6 +652,28 @@ const EducationCategory = ({item}) => {
               onPress={() => refRBSheet.current.close()}
             />
           </View>
+
+          <View style={{marginTop: 15}}>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={Coursedata}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Course Type"
+              // searchPlaceholder="Search..."
+              value={coursevalue}
+              onChange={item => {
+                setCoursevalue(item.value);
+              }}
+            />
+          </View>
+
           <View>
             <Text style={{textAlign: 'left', marginTop: 10}}>
               Choose a range below ({' '}

@@ -24,10 +24,10 @@ import {location} from '../../../svg/svg';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import axios from 'axios';
 import {Baseurl} from '../../../constant/globalparams';
-import {Dropdown} from 'react-native-element-dropdown';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const HealthCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -44,6 +44,7 @@ const HealthCategory = ({item}) => {
   const [selectexpertise, setselectexpertise] = useState(false);
   const [expertisedata, setExterptisedata] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hospitalorclinicvalue, setHospitalorclinicvalue] = useState(null);
 
   useEffect(() => {
     if (isFocused && isSheetOpen) {
@@ -91,10 +92,8 @@ const HealthCategory = ({item}) => {
       .get(`${Baseurl}/api/doctors/list`)
       .then(response => {
         console.log('response ---', response.data);
-        setData(response.data.data.advertisements);
-        let titledata = response.data.data.advertisements?.map(
-          i => i.expertise,
-        );
+        setData(response.data.data.doctors);
+        let titledata = response.data.data.doctors?.map(i => i.expertise);
 
         const formattedData = titledata.map((title, index) => ({
           label: title,
@@ -116,7 +115,7 @@ const HealthCategory = ({item}) => {
       .get(`${Baseurl}/api/hospitals/list`)
       .then(response => {
         console.log('response ---', response.data);
-        setData(response.data.data.advertisements);
+        setData(response.data.data.hospitals);
         setLoading(false);
       })
       .catch(error => {
@@ -174,14 +173,41 @@ const HealthCategory = ({item}) => {
     }
   };
 
+  const HospitalData = [
+    {label: 'Hospital', value: '1'},
+    {label: 'Clinic', value: '2'},
+    {label: 'Laboratoy', value: '3'},
+    {label: 'Nurshing Home', value: '4'},
+    {label: 'Care Giving Service', value: '5'},
+  ];
+
   const filterhospitalsbudget = () => {
+    let url = `${Baseurl}/api/hospitals/filter?`;
+
+    if (hospitalorclinicvalue) {
+      const hospitalType = HospitalData.filter(item => item.value === hospitalorclinicvalue)
+        .map(i => i.label)
+        .toString();
+      url = url + `type=${hospitalType}&`;
+    }
+
+    if (url.endsWith('&')) {
+      url = url.slice(0, -1);
+    }
+
     axios
       .get(
-        `${Baseurl}/api/hospitals/filter?minPrice=${minbudget}&maxPrice=${maxbudget}`,
+       url,
       )
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        setFiltereddata(response.data.data.advertisements);
+        console.log('response --->>', response.data.data.hospitals);
+        setFiltereddata(response.data.data.hospitals);
+        if (response.data.data.hospitals?.length == 0) {
+          setFiltereddata(null);
+          setData(null);
+        } else {
+          setFiltereddata(response.data.data.hospitals);
+        }
         refRBSheetHospitals.current.close();
       })
       .catch(error => {
@@ -201,8 +227,8 @@ const HealthCategory = ({item}) => {
     axios
       .get(`${Baseurl}/api/doctors/filter?expertise=${expertisetype}`)
       .then(response => {
-        console.log('response --->>', response.data.data.advertisements);
-        setFiltereddata(response.data.data.advertisements);
+        console.log('response --->>', response.data.data.doctors);
+        setFiltereddata(response.data.data.doctors);
         refRBSheetDoctors.current.close();
       })
       .catch(error => {
@@ -225,7 +251,7 @@ const HealthCategory = ({item}) => {
           <Appbar.Content title="Health Care" />
           <TouchableOpacity
             onPress={() => {}}
-            style={{ bottom: 10, marginRight: 5 }}>
+            style={{bottom: 10, marginRight: 5}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -241,27 +267,27 @@ const HealthCategory = ({item}) => {
             </View>
           </TouchableOpacity>
         </Appbar.Header>
-  
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ padding: 1 }}>
-          <SkeletonPlaceholder speed={500}>
-                <View
-                  style={{
-                    height: 200,
-                    width: '90%',  
-                    top: 10,
-                    marginBottom: 15,
-                    alignSelf: 'center',
-                    borderRadius: 20,
-                    bottom:20,
-                   }}
-                />
-              </SkeletonPlaceholder>
-  
+          <View style={{padding: 1}}>
+            <SkeletonPlaceholder speed={500}>
+              <View
+                style={{
+                  height: 200,
+                  width: '90%',
+                  top: 10,
+                  marginBottom: 15,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  bottom: 20,
+                }}
+              />
+            </SkeletonPlaceholder>
+
             <SkeletonPlaceholder speed={500}>
               {[1, 2, 3, 4].map((item, index) => (
                 <View
@@ -402,7 +428,15 @@ const HealthCategory = ({item}) => {
               autoplayInterval={5000}
               sliderBoxHeight={200}
               onCurrentImagePressed={index =>
-                console.log(`image ${index} pressed`)
+                index == 0
+                  ? navigation.navigate('AuthNavigator')
+                  : index == 1
+                  ? navigation.navigate('AddPost')
+                  : index == 2
+                  ? navigation.navigate('AddPost')
+                  : index == 3
+                  ? navigation.navigate('AddPost')
+                  : null
               }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
@@ -624,8 +658,11 @@ const HealthCategory = ({item}) => {
                             </View>
 
                             <View style={{marginTop: 10, marginLeft: 10}}>
-                              {/* <Text numberOfLines={1} style={{ width: 150, fontWeight: "600" }}>{item.name}</Text> */}
-                              <Text style={{}}>{item.expertise}</Text>
+                              <Text
+                                numberOfLines={1}
+                                style={{width: 150, fontWeight: 'bold'}}>
+                                {item.name}
+                              </Text>
                             </View>
 
                             <View
@@ -635,7 +672,9 @@ const HealthCategory = ({item}) => {
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
                               }}>
-                              <Text>₹{item.price_per_visit}/visit</Text>
+                              <Text style={{}} numberOfLines={1}>
+                                {item.expertise}
+                              </Text>
                               <Text style={{marginRight: 5}}>
                                 Exp. {item.total_experience}years
                               </Text>
@@ -947,47 +986,28 @@ const HealthCategory = ({item}) => {
               onPress={() => refRBSheetHospitals.current.close()}
             />
           </View>
-          <View>
-            <Text style={{textAlign: 'left', marginTop: 10}}>
-              Choose a range below ({' '}
-              <FontAwesome5 name="rupee-sign" size={12} /> )
-            </Text>
-          </View>
-          <View style={{marginTop: 10}}>
-            <TextInput
-              placeholder="Min."
-              placeholderTextColor="black"
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 5,
-                height: 60,
-                paddingLeft: 20,
-                borderWidth: 0.5,
+
+          <View style={{marginTop: 15}}>
+            <Dropdown
+              style={style.dropdown}
+              placeholderStyle={style.placeholderStyle}
+              selectedTextStyle={style.selectedTextStyle}
+              inputSearchStyle={style.inputSearchStyle}
+              iconStyle={style.iconStyle}
+              data={HospitalData}
+              // search
+              maxHeight={300}
+              labelField="label"
+              valueField="value"
+              placeholder="Select Type"
+              // searchPlaceholder="Search..."
+              value={hospitalorclinicvalue}
+              onChange={item => {
+                setHospitalorclinicvalue(item.value);
               }}
-              inputMode="numeric"
-              value={minbudget}
-              onChangeText={min => setMinbudget(min)}
             />
           </View>
-          <View>
-            <Text style={{textAlign: 'center', marginTop: 10}}>To</Text>
-          </View>
-          <View style={{marginTop: 10}}>
-            <TextInput
-              placeholder="Max."
-              placeholderTextColor="black"
-              style={{
-                backgroundColor: 'white',
-                borderRadius: 5,
-                height: 60,
-                paddingLeft: 20,
-                borderWidth: 0.5,
-              }}
-              inputMode="numeric"
-              value={maxbudget}
-              onChangeText={max => setMaxbudget(max)}
-            />
-          </View>
+
         </View>
         <View style={{marginTop: 0}}>
           <TouchableOpacity

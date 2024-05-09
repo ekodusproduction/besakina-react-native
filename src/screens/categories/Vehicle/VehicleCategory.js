@@ -386,7 +386,17 @@ const VehicleCategory = ({item}) => {
               autoplayInterval={5000}
               sliderBoxHeight={200}
               onCurrentImagePressed={index =>
-                console.log(`image ${index} pressed`)
+                index == 0
+                  ? navigation.navigate('AuthNavigator')
+                  : index == 1
+                  ? navigation.navigate('AddPost')
+                  : index == 2
+                  ? navigation.navigate('AddPost')
+                  : index == 3
+                  ? navigation.navigate('AddPost')
+                  : index == 4
+                  ? navigation.navigate('AddPost')
+                  : null
               }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
@@ -603,7 +613,7 @@ const VehicleCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text style={style.subsubtitle}>₹ {item.price}</Text>
+                          <Text style={style.subsubtitle}>₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
                           <Text numberOfLines={1} style={{width: 150}}>
                             {item.title}
                           </Text>

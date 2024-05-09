@@ -64,28 +64,28 @@ const Editeducationadds = item => {
       .then(response => {
         setCoursevalue(
           Coursedata.find(
-            item => item.label === response.data.data.advertisement?.type,
+            item => item.label === response.data.data?.type,
           )?.value || null,
         );
 
         setDomainvalue(
           Domaindata.find(
-            item => item.label === response.data.data.advertisement?.domain,
+            item => item.label === response.data.data?.domain,
           )?.value || null,
         );
 
-        setDuration(response.data.data.advertisement?.course_duration);
-        setInstituname(response.data.data.advertisement?.institution_name);
-        setTitle(response.data.data.advertisement?.title);
-        setDescription(response.data.data.advertisement?.description);
-        setPrice(response.data.data.advertisement?.price);
-        setStreet(response.data.data.advertisement?.street);
-        setLocality(response.data.data.advertisement?.locality);
-        setCity(response.data.data.advertisement?.city);
-        setstate(response.data.data.advertisement?.state);
-        setPincode(response.data.data.advertisement?.pincode);
+        setDuration(response.data.data?.course_duration);
+        setInstituname(response.data.data?.institution_name);
+        setTitle(response.data.data?.title);
+        setDescription(response.data.data?.description);
+        setPrice(response.data.data?.price);
+        setStreet(response.data.data?.street);
+        setLocality(response.data.data?.locality);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
         setSelectedImages(
-          response.data.data.advertisement?.images.map(imagePath => ({
+          response.data.data?.images.map(imagePath => ({
             uri: `${Baseurl}/api/${imagePath}`,
           })),
         );
@@ -571,7 +571,7 @@ const Editeducationadds = item => {
                           height: 2,
                         },
                       }}>
-                      {selectedImages[index] ? (
+                      {selectedImages && selectedImages[index] ? (
                         <>
                           <Image
                             source={{

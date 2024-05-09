@@ -38,7 +38,7 @@ const VehicleCategoryDetails = ({route}) => {
   const headers = ['Vehicle Type', '', '', `${info?.type}`];
   const rows = [
     ['Brand', '', '', `${info?.brand}`],
-    ['Price', '', '', `₹ ${info?.price}`],
+    ['Price', '', '', `₹ ${info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`],
     ['Registration Years', '', '', `${info?.registration_year}`],
     ['Kilometer Driven', '', '', `${info?.kilometer_driven}`],
     ['Location', '', '', `${info?.city}`],
@@ -50,9 +50,9 @@ const VehicleCategoryDetails = ({route}) => {
       .get(`${Baseurl}/api/vehicles/id/${id}`)
       .then(response => {
         console.log('response ---', response.data);
-        setInfo(response.data.data.advertisement);
+        setInfo(response.data.data);
         setCreatedAtLabel(
-          getCreatedAtLabel(response.data.data.advertisement.created_at),
+          getCreatedAtLabel(response.data.data.created_at),
         );
         setLoading(false);
       })

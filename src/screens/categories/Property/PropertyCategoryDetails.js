@@ -49,10 +49,10 @@ const PropertyCategoryDetails = ({route}) => {
     axios
       .get(`${Baseurl}/api/property/id/${id}`)
       .then(response => {
-        console.log('response ---', response.data);
-        setInfo(response.data.data.advertisement);
+        console.log('response ---', response.data.data);
+        setInfo(response.data.data);
         setCreatedAtLabel(
-          getCreatedAtLabel(response.data.data.advertisement.created_at),
+          getCreatedAtLabel(response.data.data.created_at),
         );
         setLoading(false);
       })
@@ -298,7 +298,7 @@ const PropertyCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 10,
                 }}>
-                <Text style={style.subsubtitle}>₹ {info?.price}</Text>
+                <Text style={style.subsubtitle}>₹ {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
                 <AntDesign name="hearto" size={25} />
               </View>
               <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
