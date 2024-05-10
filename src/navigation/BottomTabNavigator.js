@@ -10,6 +10,7 @@ import {categories, chaticon, homeicon, usericon} from '../svg/svg';
 import Profile from '../screens/Profile/Profile';
 import Chat from '../chat/Chat';
 import {createMaterialBottomTabNavigator} from 'react-native-paper';
+import Mywishlist from '../screens/wishlist/Mywishlist';
 
 const Tab = createBottomTabNavigator();
 
@@ -79,8 +80,8 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Chat"
-        component={Chat}
+        name="Mywishlist"
+        component={Mywishlist}
         options={{
           tabBarIcon: ({focused}) => (
             <SvgXml

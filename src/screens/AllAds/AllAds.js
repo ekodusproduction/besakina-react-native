@@ -14,8 +14,7 @@ const AllAds = props => {
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState([]);
   console.log('data----->', data);
-  const [createdAtLabel, setCreatedAtLabel] = useState('');
-
+ 
   const handleWishlist = id => {
     const updatedWishlist = [...wishlist];
     const index = updatedWishlist.indexOf(id);
@@ -53,6 +52,12 @@ const AllAds = props => {
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
 
     if (diffDays === 1) {
       return 'Today';
@@ -60,6 +65,14 @@ const AllAds = props => {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
       return createdAt;
     }
@@ -172,7 +185,12 @@ const AllAds = props => {
                 </View>
 
                 <View style={{marginTop: 10, marginLeft: 10}}>
-                  <Text style={style.subsubtitle}>$ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
+                  <Text style={style.subsubtitle}>
+                    ${' '}
+                    {item.price
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  </Text>
                   <Text numberOfLines={1} style={{width: 150}}>
                     {item.title}
                   </Text>

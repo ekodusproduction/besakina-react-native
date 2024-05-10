@@ -7,9 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Avatar, Button, Card} from 'react-native-paper';
 import style from '../../style';
-import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {useNavigation} from '@react-navigation/native';
 import {SvgXml} from 'react-native-svg';
@@ -20,9 +18,8 @@ import {Baseurl} from '../../constant/globalparams';
 const FeaturedAds = props => {
   const navigation = useNavigation();
   const [wishlist, setWishlist] = useState([]);
+  console.log('wishlist---', wishlist);
   const [data, setData] = useState([]);
-  console.log('data----->', data);
-  const [createdAtLabel, setCreatedAtLabel] = useState('');
   const [loading, setLoading] = useState(true);
 
   const handleWishlist = id => {
@@ -64,6 +61,12 @@ const FeaturedAds = props => {
 
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
 
     if (diffDays === 1) {
       return 'Today';
@@ -71,6 +74,14 @@ const FeaturedAds = props => {
       return 'Yesterday';
     } else if (diffDays <= 7) {
       return `${diffDays} days ago`;
+    } else if (diffMonths === 1) {
+      return 'Last month';
+    } else if (diffMonths > 1) {
+      return `${diffMonths} months ago`;
+    } else if (diffYears === 1) {
+      return 'Last year';
+    } else if (diffYears > 1) {
+      return `${diffYears} years ago`;
     } else {
       return createdAt;
     }
@@ -95,7 +106,7 @@ const FeaturedAds = props => {
               showsHorizontalScrollIndicator={false}
               renderItem={({item, index}) => {
                 let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                return (
+                 return (
                   <View style={{width: 300, padding: 10}}>
                     <TouchableOpacity
                       onPress={() =>
@@ -166,7 +177,7 @@ const FeaturedAds = props => {
                           </Text>
                         </View>
                         <TouchableOpacity
-                          onPress={() => handleWishlist(index)}
+                          onPress={() => handleWishlist(item.id)}
                           style={{
                             backgroundColor: 'white',
                             paddingHorizontal: 2,
@@ -175,7 +186,7 @@ const FeaturedAds = props => {
                             flexDirection: 'row',
                             alignItems: 'center',
                           }}>
-                          {isWishlisted(index) ? (
+                          {isWishlisted(item.id) ? (
                             <AntDesign
                               name="heart"
                               style={{color: '#3184b6'}}
@@ -193,7 +204,10 @@ const FeaturedAds = props => {
 
                       <View style={{marginTop: 10, marginLeft: 10}}>
                         <Text variant="titleLarge" style={style.subsubtitle}>
-                          ₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                          ₹{' '}
+                          {item.price
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                         </Text>
                         <Text
                           numberOfLines={2}

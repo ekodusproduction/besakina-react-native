@@ -31,6 +31,7 @@ const EducationCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
   const navigation = useNavigation();
   const [info, setInfo] = useState(null);
+  console.log('info---', info);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [createdAtLabel, setCreatedAtLabel] = useState('');
@@ -469,6 +470,9 @@ const EducationCategoryDetails = ({route}) => {
                 borderRadius: 12,
                 marginTop: 10,
               }}>
+              <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
+                {info?.title}
+              </Text>
               <View
                 style={{
                   flexDirection: 'row',
@@ -480,11 +484,8 @@ const EducationCategoryDetails = ({route}) => {
                   ₹{' '}
                   {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </Text>
-                <AntDesign name="hearto" size={25} />
+                {/* <AntDesign name="hearto" size={25} /> */}
               </View>
-              <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
-                {info?.title}
-              </Text>
 
               <View
                 style={{

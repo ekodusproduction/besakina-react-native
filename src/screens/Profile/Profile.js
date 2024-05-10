@@ -226,10 +226,10 @@ const Profile = () => {
             color={'black'}
           />
         </TouchableOpacity>
-        <Image
+        {/* <Image
           source={require('../../../assets/mobileapp-20.png')}
           style={{height: 40, width: '40%'}}
-        />
+        /> */}
       </View>
 
       <View style={{marginBottom: 20, marginTop: 20}}>
@@ -243,7 +243,7 @@ const Profile = () => {
             source={{
               uri:
                 token == null || picture == null
-                  ? 'https://picsum.photos/200'
+                  ? 'https://fastly.picsum.photos/id/8/5000/3333.jpg?hmac=OeG5ufhPYQBd6Rx1TAldAuF92lhCzAhKQKttGfawWuA'
                   : `${Baseurl}/api/${picture}`,
             }}
             style={{

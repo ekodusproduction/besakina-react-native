@@ -39,7 +39,6 @@ const HospitalityCategory = ({item}) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     if (isFocused && isSheetOpen) {
       refRBSheet.current.open();
@@ -93,12 +92,16 @@ const HospitalityCategory = ({item}) => {
   const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
     const createdDate = new Date(createdAt);
-  
+
     const diffTime = Math.abs(currentDate - createdDate);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const diffMonths = Math.abs(currentDate.getMonth() - createdDate.getMonth()) + (12 * (currentDate.getFullYear() - createdDate.getFullYear()));
-    const diffYears = Math.abs(currentDate.getFullYear() - createdDate.getFullYear());
-  
+    const diffMonths =
+      Math.abs(currentDate.getMonth() - createdDate.getMonth()) +
+      12 * (currentDate.getFullYear() - createdDate.getFullYear());
+    const diffYears = Math.abs(
+      currentDate.getFullYear() - createdDate.getFullYear(),
+    );
+
     if (diffDays === 1) {
       return 'Today';
     } else if (diffDays === 2) {
@@ -117,7 +120,6 @@ const HospitalityCategory = ({item}) => {
       return createdAt;
     }
   };
-  
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -134,7 +136,7 @@ const HospitalityCategory = ({item}) => {
       )
       .then(response => {
         console.log('response --->>', response.data.data.hospitality);
-        if (response.data.data.hospitality?.length==0) {
+        if (response.data.data.hospitality?.length == 0) {
           setFiltereddata(null);
           setData(null);
         } else {
@@ -150,7 +152,6 @@ const HospitalityCategory = ({item}) => {
       });
   };
 
-  
   if (loading) {
     return (
       <View>
@@ -163,7 +164,7 @@ const HospitalityCategory = ({item}) => {
           <Appbar.Content title="Hospitality" />
           <TouchableOpacity
             onPress={() => {}}
-            style={{ bottom: 10, marginRight: 5 }}>
+            style={{bottom: 10, marginRight: 5}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -179,27 +180,26 @@ const HospitalityCategory = ({item}) => {
             </View>
           </TouchableOpacity>
         </Appbar.Header>
-  
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ padding: 1 }}>
-                
-          <SkeletonPlaceholder speed={500}>
-                <View
-                  style={{
-                    height: 200,
-                    width: '90%',  
-                    top: 10,
-                    marginBottom: 15,
-                    alignSelf: 'center',
-                    borderRadius: 20,
-                    bottom:20,
-                   }}
-                />
-              </SkeletonPlaceholder>
+          <View style={{padding: 1}}>
+            <SkeletonPlaceholder speed={500}>
+              <View
+                style={{
+                  height: 200,
+                  width: '90%',
+                  top: 10,
+                  marginBottom: 15,
+                  alignSelf: 'center',
+                  borderRadius: 20,
+                  bottom: 20,
+                }}
+              />
+            </SkeletonPlaceholder>
             <SkeletonPlaceholder speed={500}>
               {[1, 2, 3, 4].map((item, index) => (
                 <View
@@ -273,7 +273,6 @@ const HospitalityCategory = ({item}) => {
     );
   }
 
-  
   if (loading) {
     return (
       <View>
@@ -286,7 +285,7 @@ const HospitalityCategory = ({item}) => {
           <Appbar.Content title="Hospitality" />
           <TouchableOpacity
             onPress={() => {}}
-            style={{ bottom: 10, marginRight: 5 }}>
+            style={{bottom: 10, marginRight: 5}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -302,13 +301,13 @@ const HospitalityCategory = ({item}) => {
             </View>
           </TouchableOpacity>
         </Appbar.Header>
-  
+
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+          contentContainerStyle={{flexGrow: 1, paddingBottom: 150}}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
-          <View style={{ padding: 1 }}>
+          <View style={{padding: 1}}>
             <View style={style.sliderContainer}>
               <SkeletonPlaceholder speed={500}>
                 <View
@@ -323,7 +322,7 @@ const HospitalityCategory = ({item}) => {
                 />
               </SkeletonPlaceholder>
             </View>
-  
+
             <SkeletonPlaceholder speed={500}>
               {[1, 2, 3, 4].map((item, index) => (
                 <View
@@ -648,6 +647,7 @@ const HospitalityCategory = ({item}) => {
                           <TouchableOpacity
                             onPress={() => handleWishlist(index)}
                             style={{
+                              backgroundColor: 'white',
                               paddingHorizontal: 2,
                               paddingVertical: 2,
                               borderRadius: 5,
@@ -657,13 +657,13 @@ const HospitalityCategory = ({item}) => {
                             {isWishlisted(index) ? (
                               <AntDesign
                                 name="heart"
-                                style={{color: '#3184b6', marginRight: 5}}
+                                style={{color: '#3184b6'}}
                                 size={20}
                               />
                             ) : (
                               <AntDesign
                                 name="hearto"
-                                style={{color: '#3184b6', marginRight: 5}}
+                                style={{color: '#3184b6'}}
                                 size={20}
                               />
                             )}
@@ -671,9 +671,14 @@ const HospitalityCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text style={style.subsubtitle}>₹ {item.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Text>
-                          <Text numberOfLines={1} style={{width: 150}}>
+                          <Text numberOfLines={1} style={[style.subsubtitle,{width:150}]}>
                             {item.title}
+                          </Text>
+                          <Text>
+                            ₹{' '}
+                            {item.price
+                              .toString()
+                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                           </Text>
                         </View>
 

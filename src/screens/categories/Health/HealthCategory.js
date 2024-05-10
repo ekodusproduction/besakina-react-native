@@ -185,7 +185,9 @@ const HealthCategory = ({item}) => {
     let url = `${Baseurl}/api/hospitals/filter?`;
 
     if (hospitalorclinicvalue) {
-      const hospitalType = HospitalData.filter(item => item.value === hospitalorclinicvalue)
+      const hospitalType = HospitalData.filter(
+        item => item.value === hospitalorclinicvalue,
+      )
         .map(i => i.label)
         .toString();
       url = url + `type=${hospitalType}&`;
@@ -196,9 +198,7 @@ const HealthCategory = ({item}) => {
     }
 
     axios
-      .get(
-       url,
-      )
+      .get(url)
       .then(response => {
         console.log('response --->>', response.data.data.hospitals);
         setFiltereddata(response.data.data.hospitals);
@@ -635,6 +635,7 @@ const HealthCategory = ({item}) => {
                               <TouchableOpacity
                                 onPress={() => handleWishlist(index)}
                                 style={{
+                                  backgroundColor: 'white',
                                   paddingHorizontal: 2,
                                   paddingVertical: 2,
                                   borderRadius: 5,
@@ -644,13 +645,13 @@ const HealthCategory = ({item}) => {
                                 {isWishlisted(index) ? (
                                   <AntDesign
                                     name="heart"
-                                    style={{color: '#3184b6', marginRight: 5}}
+                                    style={{color: '#3184b6'}}
                                     size={20}
                                   />
                                 ) : (
                                   <AntDesign
                                     name="hearto"
-                                    style={{color: '#3184b6', marginRight: 5}}
+                                    style={{color: '#3184b6'}}
                                     size={20}
                                   />
                                 )}
@@ -890,6 +891,7 @@ const HealthCategory = ({item}) => {
                               <TouchableOpacity
                                 onPress={() => handleWishlist(index)}
                                 style={{
+                                  backgroundColor: 'white',
                                   paddingHorizontal: 2,
                                   paddingVertical: 2,
                                   borderRadius: 5,
@@ -899,13 +901,13 @@ const HealthCategory = ({item}) => {
                                 {isWishlisted(index) ? (
                                   <AntDesign
                                     name="heart"
-                                    style={{color: '#3184b6', marginRight: 5}}
+                                    style={{color: '#3184b6'}}
                                     size={20}
                                   />
                                 ) : (
                                   <AntDesign
                                     name="hearto"
-                                    style={{color: '#3184b6', marginRight: 5}}
+                                    style={{color: '#3184b6'}}
                                     size={20}
                                   />
                                 )}
@@ -913,7 +915,9 @@ const HealthCategory = ({item}) => {
                             </View>
 
                             <View style={{marginTop: 10, marginLeft: 10}}>
-                              <Text numberOfLines={1} style={{width: 150}}>
+                              <Text
+                                numberOfLines={1}
+                                style={{width: 150, fontWeight: 'bold'}}>
                                 {item.title}
                               </Text>
                             </View>
@@ -1007,7 +1011,6 @@ const HealthCategory = ({item}) => {
               }}
             />
           </View>
-
         </View>
         <View style={{marginTop: 0}}>
           <TouchableOpacity
