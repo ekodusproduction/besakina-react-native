@@ -8,28 +8,15 @@ import {location} from '../../svg/svg';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import {Baseurl} from '../../constant/globalparams';
+import Custom_Wishist from '../../components/Custom_Wishist';
 
-const AllAds = props => {
+const AllAds = () => {
   const navigation = useNavigation();
-  const [wishlist, setWishlist] = useState([]);
+  const [wishlist, setWishlist] = useState([]);  
+  console.log('wishlist All ads---', wishlist);
   const [data, setData] = useState([]);
   console.log('data----->', data);
  
-  const handleWishlist = id => {
-    const updatedWishlist = [...wishlist];
-    const index = updatedWishlist.indexOf(id);
-    if (index === -1) {
-      updatedWishlist.push(id);
-    } else {
-      updatedWishlist.splice(index, 1);
-    }
-    setWishlist(updatedWishlist);
-  };
-
-  const isWishlisted = id => {
-    return wishlist.includes(id);
-  };
-
   const fetchproductApi = () => {
     axios
       .get(`${Baseurl}/api/home/latest`)
@@ -80,7 +67,17 @@ const AllAds = props => {
 
   return (
     <View style={{marginTop: 10}}>
-      <Text style={[style.subtitle, {marginLeft: 10}]}>All Ads</Text>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: 0,
+          marginHorizontal: 10,
+        }}>
+        <Text style={style.subtitle}>All Ads</Text>
+        <Text style={[style.subtitle, {color: '#3184b6'}]}>See all</Text>
+      </View>
 
       <FlatList
         data={data}
@@ -88,7 +85,6 @@ const AllAds = props => {
         numColumns={2}
         showsVerticalScrollIndicator={false}
         renderItem={({item, index}) => {
-          let imageurl = `${Baseurl}/api/${item.images[0]}`;
           return (
             <View style={{flex: 1, margin: 5, width: '50%'}}>
               <TouchableOpacity
@@ -111,7 +107,9 @@ const AllAds = props => {
                         data: item,
                       })
                     : item.category == 'doctors'
-                    ? navigation.navigate('DoctorCategoryDetails', {data: item})
+                    ? navigation.navigate('DoctorCategoryDetails', {
+                        data: item,
+                      })
                     : item.category == 'hospitals'
                     ? navigation.navigate('HospitalorClinicCategoryDetails', {
                         data: item,
@@ -119,7 +117,7 @@ const AllAds = props => {
                     : null
                 }>
                 <Image
-                  source={{uri: imageurl}}
+                  source={{uri: item.images[0]}}
                   style={{
                     height: 120,
                     borderTopLeftRadius: 12,
@@ -158,30 +156,7 @@ const AllAds = props => {
                       Verified
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => handleWishlist(index)}
-                    style={{
-                      paddingHorizontal: 2,
-                      paddingVertical: 2,
-                      borderRadius: 5,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      backgroundColor: 'white',
-                    }}>
-                    {isWishlisted(index) ? (
-                      <AntDesign
-                        name="heart"
-                        style={{color: '#3184b6'}}
-                        size={20}
-                      />
-                    ) : (
-                      <AntDesign
-                        name="hearto"
-                        style={{color: '#3184b6'}}
-                        size={20}
-                      />
-                    )}
-                  </TouchableOpacity>
+                  <Custom_Wishist index={index} category={item.category} />
                 </View>
 
                 <View style={{marginTop: 10, marginLeft: 10}}>

@@ -290,7 +290,7 @@ const Mywishlist = () => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="My Adds" />
+        <Appbar.Content title="My WishList" />
       </Appbar.Header>
 
       {data == null || data.length == 0 ? (

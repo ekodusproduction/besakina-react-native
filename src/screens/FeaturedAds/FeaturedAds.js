@@ -14,28 +14,17 @@ import {SvgXml} from 'react-native-svg';
 import {location} from '../../svg/svg';
 import axios from 'axios';
 import {Baseurl} from '../../constant/globalparams';
+import Custom_Wishist from '../../components/Custom_Wishist';
 
-const FeaturedAds = props => {
+const FeaturedAds = () => {
   const navigation = useNavigation();
   const [wishlist, setWishlist] = useState([]);
-  console.log('wishlist---', wishlist);
+  console.log('wishlist featured ads---', wishlist);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const handleWishlist = id => {
-    const updatedWishlist = [...wishlist];
-    const index = updatedWishlist.indexOf(id);
-    if (index === -1) {
-      updatedWishlist.push(id);
-    } else {
-      updatedWishlist.splice(index, 1);
-    }
-    setWishlist(updatedWishlist);
-  };
+  
 
-  const isWishlisted = id => {
-    return wishlist.includes(id);
-  };
 
   const fetchproductApi = () => {
     axios
@@ -54,6 +43,8 @@ const FeaturedAds = props => {
   useEffect(() => {
     fetchproductApi();
   }, []);
+
+
 
   const getCreatedAtLabel = createdAt => {
     const currentDate = new Date();
@@ -91,7 +82,17 @@ const FeaturedAds = props => {
     <View>
       <View style={{marginTop: 10}}>
         <View style={{marginTop: 15}}>
-          <Text style={[style.subtitle, {marginLeft: 10}]}>Featured Ads</Text>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              marginTop: 0,
+              marginHorizontal: 10,
+            }}>
+            <Text style={style.subtitle}>Featured Ads</Text>
+            <Text style={[style.subtitle, {color: '#3184b6'}]}>See all</Text>
+          </View>
 
           {loading ? (
             <ActivityIndicator
@@ -105,8 +106,8 @@ const FeaturedAds = props => {
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({item, index}) => {
-                let imageurl = `${Baseurl}/api/${item.images[0]}`;
-                 return (
+
+                return (
                   <View style={{width: 300, padding: 10}}>
                     <TouchableOpacity
                       onPress={() =>
@@ -136,7 +137,7 @@ const FeaturedAds = props => {
                         borderBottomRightRadius: 12,
                       }}>
                       <Image
-                        source={{uri: imageurl}}
+                        source={{uri: item.images[0]}}
                         style={{
                           height: 130,
                           objectFit: 'cover',
@@ -176,30 +177,7 @@ const FeaturedAds = props => {
                             Verified
                           </Text>
                         </View>
-                        <TouchableOpacity
-                          onPress={() => handleWishlist(item.id)}
-                          style={{
-                            backgroundColor: 'white',
-                            paddingHorizontal: 2,
-                            paddingVertical: 2,
-                            borderRadius: 5,
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                          }}>
-                          {isWishlisted(item.id) ? (
-                            <AntDesign
-                              name="heart"
-                              style={{color: '#3184b6'}}
-                              size={20}
-                            />
-                          ) : (
-                            <AntDesign
-                              name="hearto"
-                              style={{color: '#3184b6'}}
-                              size={20}
-                            />
-                          )}
-                        </TouchableOpacity>
+                        <Custom_Wishist index={index} category={item.category} />
                       </View>
 
                       <View style={{marginTop: 10, marginLeft: 10}}>

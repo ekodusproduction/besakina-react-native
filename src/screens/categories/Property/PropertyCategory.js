@@ -39,7 +39,7 @@ const PropertyCategory = ({item}) => {
   const [maxbudget, setMaxbudget] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [propertyvalue, setpropertyvalue] = useState(null); console.log('propertyvalue---',propertyvalue)
+  const [propertyvalue, setpropertyvalue] = useState(null); 
 
   const TypesData = [
     {label: 'Apartments', value: 'apartments'},
@@ -513,7 +513,7 @@ const PropertyCategory = ({item}) => {
                           borderBottomRightRadius: 12,
                         }}>
                         <Image
-                          source={{uri: imageurl}}
+                          source={{uri: item.images[0]}}
                           style={{
                             height: 120,
                             borderTopLeftRadius: 12,

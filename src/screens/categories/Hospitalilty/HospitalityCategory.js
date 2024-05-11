@@ -605,7 +605,7 @@ const HospitalityCategory = ({item}) => {
                           borderBottomRightRadius: 12,
                         }}>
                         <Image
-                          source={{uri: imageurl}}
+                          source={{uri: item.images[0]}}
                           style={{
                             height: 120,
                             borderTopLeftRadius: 12,

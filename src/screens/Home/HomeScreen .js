@@ -421,10 +421,10 @@ const HomeScreen = () => {
           />
         </View>
 
-       <FeaturedAds/>
-       <AllAds/>
-
-       
+        <FeaturedAds />
+        <View style={{marginBottom: 60}}>
+          <AllAds />
+        </View>
       </View>
     </ScrollView>
   );

@@ -1,1 +1,2 @@
-export const Baseurl = 'http://167.71.235.196';
+import {Baseurldevelopment, Baseurlproduction} from '@env';
+export const Baseurl = Baseurldevelopment;

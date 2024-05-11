@@ -681,6 +681,7 @@ const HospitalorClinic = () => {
                   inputMode="numeric"
                   value={mobile}
                   onChangeText={phone => setMobile(phone)}
+                  maxLength={10}
                 />
                 <View
                   style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>

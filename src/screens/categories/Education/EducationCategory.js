@@ -510,7 +510,7 @@ const EducationCategory = ({item}) => {
                           borderBottomRightRadius: 12,
                         }}>
                         <Image
-                          source={{uri: imageurl}}
+                          source={{uri: item.images[0]}}
                           style={{
                             height: 120,
                             borderTopLeftRadius: 12,
@@ -576,10 +576,12 @@ const EducationCategory = ({item}) => {
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text numberOfLines={1} style={{width: 150, fontWeight:"bold"}}  >
+                          <Text
+                            numberOfLines={1}
+                            style={{width: 150, fontWeight: 'bold'}}>
                             {item.title}
                           </Text>
-                          <Text >
+                          <Text>
                             ₹{' '}
                             {item.price
                               .toString()
