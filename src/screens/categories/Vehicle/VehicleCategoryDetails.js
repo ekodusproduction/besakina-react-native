@@ -48,11 +48,10 @@ const VehicleCategoryDetails = ({route}) => {
 
   let imageUrls =
     info && info?.images && info?.images.length > 0
-      ? info?.images.map(url => `${Baseurl}/api/${url.trim()}`)
+      ? info?.images.map(url => `${url.trim()}`)
       : [];
 
-  let image =
-    imageUrls.length > 0 ? imageUrls : [`${Baseurl}/api/${info?.images}`];
+  let image = imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
   const headers = ['Vehicle Type', '', '', `${info?.type}`];
   const rows = [
@@ -472,7 +471,9 @@ const VehicleCategoryDetails = ({route}) => {
                 borderRadius: 12,
                 marginTop: 10,
               }}>
-                <Text style={{marginLeft: 10, width: 300, fontWeight:"bold"}} numberOfLines={1}>
+              <Text
+                style={{marginLeft: 10, width: 300, fontWeight: 'bold'}}
+                numberOfLines={1}>
                 {info?.title}
               </Text>
               <View
@@ -482,7 +483,7 @@ const VehicleCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 10,
                 }}>
-                  <Text>
+                <Text>
                   ₹{' '}
                   {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                 </Text>
@@ -599,7 +600,7 @@ const VehicleCategoryDetails = ({route}) => {
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-evenly',
+                justifyContent: 'space-between',
                 alignItems: 'flex-start',
                 marginTop: 5,
               }}>
@@ -620,7 +621,7 @@ const VehicleCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                 }}
               />
-           <Text>Member Since : {getCreatedAtLabel(info?.created_at)}</Text>
+              <Text>Member Since : {getCreatedAtLabel(info?.created_at)}</Text>
             </View>
             {contactsellerphone && (
               <View style={{marginLeft: 10, marginTop: 5}}>
@@ -634,8 +635,7 @@ const VehicleCategoryDetails = ({route}) => {
         <View></View>
       ) : (
         <View style={{marginTop: 0}}>
-
-<Modal
+          <Modal
             animationType="slide"
             transparent={true}
             visible={showTokenModal}

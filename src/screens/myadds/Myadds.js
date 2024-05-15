@@ -332,7 +332,7 @@ const Myadds = () => {
           data={data}
           showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => {
-            let imageurl = `${Baseurl}/api/${item.images[0]}`;
+            let imageurl = `${item.images[0]}`;
             return (
               <View style={{padding: 10}}>
                 <View

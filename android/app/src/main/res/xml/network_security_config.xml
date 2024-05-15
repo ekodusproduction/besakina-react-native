@@ -1,0 +1,8 @@
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <!-- Trust user-added CA certificates -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

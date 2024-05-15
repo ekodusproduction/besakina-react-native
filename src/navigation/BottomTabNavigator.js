@@ -6,7 +6,7 @@ import HomeScreen from '../screens/Home/HomeScreen ';
 import ViewCategories from '../screens/categories/ViewCategories';
 import CategoryList from '../screens/categories/SelectCategoryList';
 import {SvgXml} from 'react-native-svg';
-import {categories, chaticon, homeicon, usericon} from '../svg/svg';
+import {categories, chaticon, favourite, homeicon, usericon} from '../svg/svg';
 import Profile from '../screens/Profile/Profile';
 import Chat from '../chat/Chat';
 import {createMaterialBottomTabNavigator} from 'react-native-paper';
@@ -85,7 +85,7 @@ const BottomTabNavigator = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <SvgXml
-              xml={chaticon}
+              xml={favourite}
               width="25px"
               height="25px"
               style={{fill: focused ? '#3184b6' : ''}}

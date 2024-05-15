@@ -28,6 +28,7 @@ import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Dropdown} from 'react-native-element-dropdown';
+import Custom_Wishist from '../../../components/Custom_Wishist';
 
 const VehicleCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -524,8 +525,6 @@ const VehicleCategory = ({item}) => {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
                 renderItem={({item, index}) => {
-                  let imageurl = `${Baseurl}/api/${item.images[0]}`;
-
                   return (
                     <TouchableOpacity
                       style={{
@@ -548,7 +547,7 @@ const VehicleCategory = ({item}) => {
                           borderBottomRightRadius: 12,
                         }}>
                         <Image
-                          source={{uri: imageurl}}
+                          source={{uri: item.images[0]}}
                           style={{
                             height: 120,
                             borderTopLeftRadius: 12,
@@ -587,34 +586,18 @@ const VehicleCategory = ({item}) => {
                               Verified
                             </Text>
                           </View>
-                          <TouchableOpacity
-                            onPress={() => handleWishlist(index)}
-                            style={{
-                              backgroundColor: 'white',
-                              paddingHorizontal: 2,
-                              paddingVertical: 2,
-                              borderRadius: 5,
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                            }}>
-                            {isWishlisted(index) ? (
-                              <AntDesign
-                                name="heart"
-                                style={{color: '#3184b6'}}
-                                size={20}
-                              />
-                            ) : (
-                              <AntDesign
-                                name="hearto"
-                                style={{color: '#3184b6'}}
-                                size={20}
-                              />
-                            )}
-                          </TouchableOpacity>
+                          <View>
+                            <Custom_Wishist
+                              index={index}
+                              category={item.category}
+                            />
+                          </View>
                         </View>
 
                         <View style={{marginTop: 10, marginLeft: 10}}>
-                          <Text numberOfLines={1} style={[style.subsubtitle,{width:150}]}>
+                          <Text
+                            numberOfLines={1}
+                            style={[style.subsubtitle, {width: 150}]}>
                             {item.title}
                           </Text>
                           <Text>

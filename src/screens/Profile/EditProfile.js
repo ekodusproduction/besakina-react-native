@@ -177,21 +177,21 @@ const EditProfile = () => {
           response.data.data?.profile_pic == null
             ? []
             : [response.data.data?.profile_pic].map(imagePath => ({
-                uri: `${Baseurl}/api/${imagePath}`,
+                uri: `${imagePath}`,
               })),
         );
         setSelectedImagesback(
           response.data.data?.doc_file_back == null
             ? []
             : [response.data.data?.doc_file_back].map(imagePath => ({
-                uri: `${Baseurl}/api/${imagePath}`,
+                uri: `${imagePath}`,
               })),
         );
         setSelectedImagesfront(
           response.data.data?.doc_file == null
             ? []
             : [response.data.data?.doc_file].map(imagePath => ({
-                uri: `${Baseurl}/api/${imagePath}`,
+                uri: `${imagePath}`,
               })),
         );
         setDocumentvalue(

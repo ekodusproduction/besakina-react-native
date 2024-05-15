@@ -19,10 +19,12 @@ import {AddPost, MyPost, Pricing, Settings} from '../../svg/svg';
 import style from '../../style';
 import {handleGetToken} from '../../constant/tokenUtils';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const Profile = () => {
   const navigation = useNavigation();
   const isfocused = useIsFocused();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const [name, setName] = useState('');
   const [picture, setPicture] = useState('');
@@ -122,7 +124,7 @@ const Profile = () => {
   if (isLoading) {
     return (
       <ScrollView
-        style={{flex: 1, marginBottom: 70}}
+        style={{flex: 1, marginBottom: tabBarHeight}}
         alwaysBounceVertical
         showsVerticalScrollIndicator={false}>
         <StatusBar animated={true} backgroundColor="" translucent={false} />
@@ -244,7 +246,7 @@ const Profile = () => {
               uri:
                 token == null || picture == null
                   ? 'https://fastly.picsum.photos/id/8/5000/3333.jpg?hmac=OeG5ufhPYQBd6Rx1TAldAuF92lhCzAhKQKttGfawWuA'
-                  : `${Baseurl}/api/${picture}`,
+                  : `${picture}`,
             }}
             style={{
               height: 100,

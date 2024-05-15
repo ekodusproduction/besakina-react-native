@@ -30,10 +30,12 @@ import {Baseurl} from '../../constant/globalparams';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import FeaturedAds from '../FeaturedAds/FeaturedAds';
 import AllAds from '../AllAds/AllAds';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const isfocused = useIsFocused();
+  const tabBarHeight = useBottomTabBarHeight();
   const [wishlist, setWishlist] = useState([]);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,6 +60,7 @@ const HomeScreen = () => {
     axios
       .get(`${Baseurl}/api/home/latest`)
       .then(response => {
+        console.log(`xxxxxx------${Baseurl}/api/home/latest`);
         setData(response.data.data.advertisements);
         setLoading(false);
       })
@@ -422,7 +425,7 @@ const HomeScreen = () => {
         </View>
 
         <FeaturedAds />
-        <View style={{marginBottom: 60}}>
+        <View style={{marginBottom: tabBarHeight}}>
           <AllAds />
         </View>
       </View>

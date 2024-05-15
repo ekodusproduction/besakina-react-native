@@ -10,6 +10,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Linking,
+  Vibration,
+  Platform,
 } from 'react-native';
 import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,10 +20,24 @@ import {Baseurl} from '../constant/globalparams';
 import {handleGetToken} from '../constant/tokenUtils';
 import style from '../style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from './Toast';
 
 const Custom_Wishist = ({index, category}) => {
   const [wishlist, setWishlist] = useState([]);
   console.log('wishlist---', wishlist);
+
+  const ONE_SECOND_IN_MS = 1000;
+
+  const PATTERN = [
+    1 * ONE_SECOND_IN_MS,
+    2 * ONE_SECOND_IN_MS,
+    3 * ONE_SECOND_IN_MS,
+  ];
+
+  const PATTERN_DESC =
+    Platform.OS === 'android'
+      ? 'wait 1s, vibrate 2s, wait 3s'
+      : 'wait 1s, vibrate, wait 2s, vibrate, wait 3s';
 
   const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
@@ -32,7 +48,7 @@ const Custom_Wishist = ({index, category}) => {
   const [showNestedModal, setShowNestedModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
-   const [data, setData] = useState(null);
+  const [data, setData] = useState(null);
 
   const handleWishlist = (id, category) => {
     handleGetToken().then(token => {
@@ -70,9 +86,25 @@ const Custom_Wishist = ({index, category}) => {
       .post(`${Baseurl}/api/wishlist/add`, {id, category})
       .then(response => {
         console.log('Added to wishlist:', response.data);
+        ToastAndroid.showWithGravityAndOffset(
+          // response.data,
+          'Added to wishlist:',
+          ToastAndroid.LONG,
+          ToastAndroid.BOTTOM,
+          25,
+          50,
+        );
       })
       .catch(error => {
         console.error('Error adding to wishlist:', error);
+        // ToastAndroid.showWithGravityAndOffset(
+        //   'Error adding to wishlist:',
+        //   ToastAndroid.LONG,
+        //   ToastAndroid.BOTTOM,
+        //   25,
+        //   50,
+        // );
+        <Toast />;
       });
   };
 
@@ -87,7 +119,6 @@ const Custom_Wishist = ({index, category}) => {
       });
   };
 
- 
   const sendOtp = async () => {
     try {
       if (!mobile || mobile.length !== 10) {
@@ -188,9 +219,19 @@ const Custom_Wishist = ({index, category}) => {
         }}>
         <View>
           {isWishlisted(index) ? (
-            <AntDesign name="heart" style={{color: '#3184b6'}} size={20} />
+            <AntDesign
+              name="heart"
+              style={{color: '#3184b6'}}
+              size={20}
+              onPress={() => Vibration.vibrate(10 * ONE_SECOND_IN_MS)}
+            />
           ) : (
-            <AntDesign name="hearto" style={{color: '#3184b6'}} size={20} />
+            <AntDesign
+              name="hearto"
+              style={{color: '#3184b6'}}
+              size={20}
+              onPress={() => Vibration.vibrate(10 * ONE_SECOND_IN_MS)}
+            />
           )}
         </View>
       </TouchableOpacity>

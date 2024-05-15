@@ -28,6 +28,7 @@ import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Dropdown} from 'react-native-element-dropdown';
+import Custom_Wishist from '../../../components/Custom_Wishist';
 
 const HealthCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -632,30 +633,12 @@ const HealthCategory = ({item}) => {
                                   Verified
                                 </Text>
                               </View>
-                              <TouchableOpacity
-                                onPress={() => handleWishlist(index)}
-                                style={{
-                                  backgroundColor: 'white',
-                                  paddingHorizontal: 2,
-                                  paddingVertical: 2,
-                                  borderRadius: 5,
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
-                                {isWishlisted(index) ? (
-                                  <AntDesign
-                                    name="heart"
-                                    style={{color: '#3184b6'}}
-                                    size={20}
-                                  />
-                                ) : (
-                                  <AntDesign
-                                    name="hearto"
-                                    style={{color: '#3184b6'}}
-                                    size={20}
-                                  />
-                                )}
-                              </TouchableOpacity>
+                              <View>
+                                <Custom_Wishist
+                                  index={index}
+                                  category={item.category}
+                                />
+                              </View>
                             </View>
 
                             <View style={{marginTop: 10, marginLeft: 10}}>
@@ -888,30 +871,12 @@ const HealthCategory = ({item}) => {
                                   Verified
                                 </Text>
                               </View>
-                              <TouchableOpacity
-                                onPress={() => handleWishlist(index)}
-                                style={{
-                                  backgroundColor: 'white',
-                                  paddingHorizontal: 2,
-                                  paddingVertical: 2,
-                                  borderRadius: 5,
-                                  flexDirection: 'row',
-                                  alignItems: 'center',
-                                }}>
-                                {isWishlisted(index) ? (
-                                  <AntDesign
-                                    name="heart"
-                                    style={{color: '#3184b6'}}
-                                    size={20}
-                                  />
-                                ) : (
-                                  <AntDesign
-                                    name="hearto"
-                                    style={{color: '#3184b6'}}
-                                    size={20}
-                                  />
-                                )}
-                              </TouchableOpacity>
+                              <View>
+                                <Custom_Wishist
+                                  index={index}
+                                  category={item.category}
+                                />
+                              </View>
                             </View>
 
                             <View style={{marginTop: 10, marginLeft: 10}}>
