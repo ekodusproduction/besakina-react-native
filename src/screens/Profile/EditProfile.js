@@ -208,11 +208,8 @@ const EditProfile = () => {
 
   const handleprofile = () => {
     const missingFields = [];
-
+  
     switch (true) {
-      case !selectedImagesprofile:
-        missingFields.push('Profile picture');
-        break;
       case !fullname:
         missingFields.push('Full Name');
         break;
@@ -234,13 +231,10 @@ const EditProfile = () => {
       case !documentvalue:
         missingFields.push('documents');
         break;
-      // case selectedImagesfront.length === 0:
-      //   missingFields.push('Images');
-      //   break;
       default:
         break;
     }
-
+  
     if (missingFields.length > 0) {
       const errorMessage = `Please fill the ${missingFields[0]} field`;
       ToastAndroid.showWithGravityAndOffset(
@@ -252,7 +246,7 @@ const EditProfile = () => {
       );
       return;
     }
-
+  
     handleGetToken()
       .then(token => {
         if (token) {
@@ -268,29 +262,33 @@ const EditProfile = () => {
           formData.append('email', emailid);
           formData.append('doc_number', doc_number);
           formData.append('doc_type', documentvalueType);
-
-          selectedImagesfront.forEach((image, index) => {
+  
+          // Append profile picture if available
+          if (selectedImagesprofile.length > 0) {
+            const profilePic = selectedImagesprofile[0];
+            formData.append(`profile_pic`, {
+              uri: profilePic.uri,
+              type: profilePic.type == undefined ? 'image/jpeg' : profilePic.type,
+              name: profilePic.fileName == undefined ? '' : profilePic.fileName,
+            });
+          }
+  
+          // Append other images
+          selectedImagesfront.forEach(image => {
             formData.append(`doc_file`, {
               uri: image.uri,
               type: image.type == undefined ? 'image/jpeg' : image.type,
               name: image.fileName == undefined ? '' : image.fileName,
             });
           });
-          selectedImagesback.forEach((image, index) => {
+          selectedImagesback.forEach(image => {
             formData.append(`doc_file_back`, {
               uri: image.uri,
               type: image.type == undefined ? 'image/jpeg' : image.type,
               name: image.fileName == undefined ? '' : image.fileName,
             });
           });
-          selectedImagesprofile.forEach((image, index) => {
-            formData.append(`profile_pic`, {
-              uri: image.uri,
-              type: image.type == undefined ? 'image/jpeg' : image.type,
-              name: image.fileName == undefined ? '' : image.fileName,
-            });
-          });
-
+  
           formData.append('locality', locality);
           formData.append('city', city);
           formData.append('state', state);
@@ -308,6 +306,7 @@ const EditProfile = () => {
               console.log('response of the api--->', response);
               if (response.data.success == true) {
                 setLoading(false);
+                navigation.goBack();
               }
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
@@ -320,6 +319,13 @@ const EditProfile = () => {
             })
             .catch(error => {
               console.error('Catch Error :---->', error);
+              ToastAndroid.showWithGravityAndOffset(
+                `${error.response.data.message}`,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM,
+                25,
+                50,
+              );
               setLoading(false);
             });
         } else {
@@ -331,6 +337,7 @@ const EditProfile = () => {
         console.error('Error while handling post ad:', error);
       });
   };
+  
 
   const closeModal = () => {
     setShowTokenModal(false);
@@ -1046,6 +1053,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 60,
     paddingLeft: 20,
+    borderWidth:0.8
   },
   button: {
     backgroundColor: '#3184b6',

@@ -2,16 +2,11 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   Modal,
-  RefreshControl,
   ToastAndroid,
   TextInput,
   StyleSheet,
   ActivityIndicator,
-  Linking,
-  Vibration,
-  Platform,
 } from 'react-native';
 import React, {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -24,21 +19,6 @@ import Toast from './Toast';
 
 const Custom_Wishist = ({index, category}) => {
   const [wishlist, setWishlist] = useState([]);
-  console.log('wishlist---', wishlist);
-
-  const ONE_SECOND_IN_MS = 1000;
-
-  const PATTERN = [
-    1 * ONE_SECOND_IN_MS,
-    2 * ONE_SECOND_IN_MS,
-    3 * ONE_SECOND_IN_MS,
-  ];
-
-  const PATTERN_DESC =
-    Platform.OS === 'android'
-      ? 'wait 1s, vibrate 2s, wait 3s'
-      : 'wait 1s, vibrate, wait 2s, vibrate, wait 3s';
-
   const [loadingotp, setLoadingotp] = useState(false);
   const [loadingverifyotp, setLoadingverifyotp] = useState(false);
   const [showTokenModal, setShowTokenModal] = useState(false);
@@ -223,15 +203,13 @@ const Custom_Wishist = ({index, category}) => {
               name="heart"
               style={{color: '#3184b6'}}
               size={20}
-              onPress={() => Vibration.vibrate(10 * ONE_SECOND_IN_MS)}
-            />
+             />
           ) : (
             <AntDesign
               name="hearto"
               style={{color: '#3184b6'}}
               size={20}
-              onPress={() => Vibration.vibrate(10 * ONE_SECOND_IN_MS)}
-            />
+             />
           )}
         </View>
       </TouchableOpacity>

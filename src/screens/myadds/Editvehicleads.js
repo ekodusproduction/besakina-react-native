@@ -122,7 +122,7 @@ const FirstRoute = item => {
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
-            uri: `${Baseurl}/api/${imagePath}`,
+            uri: `${imagePath}`,
           })),
         );
       })
@@ -238,6 +238,7 @@ const FirstRoute = item => {
             )
             .then(response => {
               console.log('response of the api--->', response);
+              navigation.goBack();
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,
@@ -947,6 +948,7 @@ const SecondRoute = () => {
             })
             .then(response => {
               console.log('response of the api--->', response);
+              navigation.goBack();
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,

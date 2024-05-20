@@ -41,6 +41,7 @@ import Editdoctoradds from '../screens/myadds/Editdoctoradds';
 import Edithospitaladds from '../screens/myadds/Edithospitaladds';
 import Editvehicleads from '../screens/myadds/Editvehicleads';
 import AddPost from '../screens/categories/AddPost';
+import BusinessListing from '../screens/AddPostForms/BusinessListing';
 
 const Stack = createNativeStackNavigator();
 
@@ -94,6 +95,22 @@ const RootNavigator = () => {
       <Stack.Screen
         name="CategoryList"
         component={CategoryList}
+        options={{
+          headerShown: false,
+          headerStyle: {
+            backgroundColor: 'white',
+          },
+          headerTintColor: 'black',
+          animation: 'simple_push',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            textAlign: 'center',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="BusinessListing"
+        component={BusinessListing}
         options={{
           headerShown: false,
           headerStyle: {

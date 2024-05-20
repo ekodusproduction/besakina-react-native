@@ -196,6 +196,9 @@ const Hospitality = () => {
               if (error.response.data.message=='User Profile Incomplete') {
                 navigation.navigate('EditProfile');
               }
+              if (error.response.data.message == 'Mobile number not registered please login') {
+                setShowTokenModal(true);
+              }
               if (error.response.data.message=='No plans subscribed. Please subscribe to a plan.') {
                 navigation.navigate('MyPlans');
               }

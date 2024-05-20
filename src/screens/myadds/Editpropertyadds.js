@@ -87,7 +87,7 @@ const Editpropertyadds = item => {
         setHouseno(response.data.data?.house_no);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
-            uri: `${Baseurl}/api/${imagePath}`,
+            uri: `${imagePath}`,
           })),
         );
       })
@@ -254,6 +254,7 @@ const Editpropertyadds = item => {
             })
             .then(response => {
               console.log('response of the api--->', response);
+              navigation.goBack();
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,16 +12,16 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import style from '../../style';
-import { Baseurl } from '../../constant/globalparams';
+import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
-import { Button } from 'react-native-paper';
-import { useIsFocused } from '@react-navigation/native';
+import {Button} from 'react-native-paper';
+import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
-const OtpScreen = ({ route }) => {
+const OtpScreen = ({route}) => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [animatedloading, setAnimatedLoading] = useState(false);
@@ -51,18 +51,9 @@ const OtpScreen = ({ route }) => {
       return;
     }
     setLoading(true);
-
-    const formData = new FormData();
-    formData.append('mobile', mobile);
-
     axios
-      .post(`${Baseurl}/api/users/sendotp`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', 
-        },
-      })
+      .post(`${Baseurl}/api/users/sendotp`, {mobile})
       .then(response => {
-        console.log('response---', response);
         if (response.status !== 200) {
           console.log('response data--->', response.data);
         }
@@ -74,7 +65,7 @@ const OtpScreen = ({ route }) => {
         }
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.error('Error:', error.response.data);
         ToastAndroid.showWithGravityAndOffset(
           `${error.response.data.message}`,
           ToastAndroid.LONG,
@@ -87,13 +78,12 @@ const OtpScreen = ({ route }) => {
           return;
         }
       })
-      .finally(() => {
+      .finally(err => {
         setLoading(false);
       });
   };
-
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <Image
         source={require('../../../assets/login1.png')}
         style={{
@@ -115,15 +105,15 @@ const OtpScreen = ({ route }) => {
         <Text
           style={[
             style.subtitle,
-            { color: 'white', textAlign: 'center', marginTop: 30 },
+            {color: 'white', textAlign: 'center', marginTop: 30},
           ]}>
           Enter Your Mobile Number
         </Text>
         <Text
-          style={[style.subsubtitle, { color: 'white', textAlign: 'center' }]}>
+          style={[style.subsubtitle, {color: 'white', textAlign: 'center'}]}>
           We will send you the One Time Password (OTP)
         </Text>
-        <View style={{ marginTop: 50 }}>
+        <View style={{marginTop: 50}}>
           <TextInput
             placeholder="Enter here"
             placeholderTextColor="gray"
@@ -133,33 +123,33 @@ const OtpScreen = ({ route }) => {
             onChangeText={phone => setMobile(phone)}
             maxLength={10}
           />
-          <View style={{ display: errorMessage.length == 0 ? 'none' : 'flex' }}>
+          <View style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
             {!isValidNumber && (
-              <Text style={{ color: 'red' }}>{errorMessage}</Text>
+              <Text style={{color: 'red'}}>{errorMessage}</Text>
             )}
           </View>
         </View>
-        <View style={{ marginTop: 20 }}>
+        <View style={{marginTop: 20}}>
           <Button
             onPress={sendOtp}
-            style={[styles.button, { opacity: loading ? 0.5 : 1 }]}>
+            style={[styles.button, {opacity: loading ? 0.5 : 1}]}>
             {loading ? (
               <ActivityIndicator size="small" color="white" />
             ) : (
-              <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
+              <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
                 Send OTP
               </Text>
             )}
           </Button>
         </View>
-        <View style={{ marginTop: 10 }}>
+        <View style={{marginTop: 10}}>
           {animatedloading ? (
-            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{justifyContent: 'center', alignItems: 'center'}}>
               <LottieView
                 source={require('../../../assets/loading.json')}
                 autoPlay
                 loop
-                style={{ height: 60, width: 300 }}
+                style={{height: 60, width: 300}}
               />
             </View>
           ) : (
@@ -173,7 +163,7 @@ const OtpScreen = ({ route }) => {
               }}
               onPress={handleNavigation}
               disabled={animatedloading}>
-              <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
+              <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
                 Skip
               </Text>
             </TouchableOpacity>

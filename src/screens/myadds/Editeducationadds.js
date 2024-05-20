@@ -86,7 +86,7 @@ const Editeducationadds = item => {
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
-            uri: `${Baseurl}/api/${imagePath}`,
+            uri: `${imagePath}`,
           })),
         );
       })
@@ -197,6 +197,7 @@ const Editeducationadds = item => {
             )
             .then(response => {
               console.log('response of the api--->', response);
+              navigation.goBack();
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,

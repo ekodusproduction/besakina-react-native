@@ -29,6 +29,7 @@ import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
 import {Fueldata, modelData, Vehicledata} from '../../json/Vehicle';
 
 const FirstRoute = () => {
+  const navigation = useNavigation();
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
@@ -224,6 +225,12 @@ const FirstRoute = () => {
               console.log('error message--->', error.response.data.message);
               if (error.response.data.message == 'User Profile Incomplete') {
                 navigation.navigate('EditProfile');
+              }
+              if (
+                error.response.data.message ==
+                'Mobile number not registered please login'
+              ) {
+                setShowTokenModal(true);
               }
               if (
                 error.response.data.message ==
@@ -1232,6 +1239,12 @@ const SecondRoute = () => {
               console.log('error message--->', error.response.data.message);
               if (error.response.data.message == 'User Profile Incomplete') {
                 navigation.navigate('EditProfile');
+              }
+              if (
+                error.response.data.message ==
+                'Mobile number not registered please login'
+              ) {
+                setShowTokenModal(true);
               }
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,

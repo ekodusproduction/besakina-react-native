@@ -106,7 +106,7 @@ const FeaturedAds = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               renderItem={({item, index}) => {
-
+                console.log('item---',item)
                 return (
                   <View style={{width: 300, padding: 10}}>
                     <TouchableOpacity

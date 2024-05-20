@@ -217,6 +217,7 @@ const Property = () => {
             })
             .then(response => {
               console.log('response of the api--->', response);
+             
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,
@@ -240,6 +241,9 @@ const Property = () => {
               console.log('error message--->', error.response.data.message);
               if (error.response.data.message == 'User Profile Incomplete') {
                 navigation.navigate('EditProfile');
+              }
+              if (error.response.data.message == 'Mobile number not registered please login') {
+                setShowTokenModal(true);
               }
               if (
                 error.response.data.message ==
