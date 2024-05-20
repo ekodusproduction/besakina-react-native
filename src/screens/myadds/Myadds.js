@@ -448,15 +448,13 @@ const Myadds = () => {
                       justifyContent: 'space-between',
                     }}>
                     <View style={{marginTop: 10, marginLeft: 10}}>
-                      <Text variant="titleLarge" style={style.subsubtitle}>
-                        ₹ {item.price}
-                      </Text>
                       <Text
                         numberOfLines={2}
-                        style={{width: 250}}
+                        style={{width: 250, fontWeight: 'bold'}}
                         variant="bodyMedium">
                         {item.title}
                       </Text>
+                      <Text variant="titleLarge">₹ {item.price}</Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Switch

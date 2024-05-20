@@ -31,6 +31,7 @@ const FirstRoute = item => {
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
+  const navigation = useNavigation();
 
   const [loading, setLoading] = useState(false);
 
@@ -56,7 +57,7 @@ const FirstRoute = item => {
     {label: 'MotorCycle', value: '2'},
     {label: 'Scooty', value: '3'},
     {label: 'Bike', value: '4'},
-   ];
+  ];
   const Fueldata = [
     {label: 'Petrol', value: '1'},
     {label: 'Diesel', value: '2'},
@@ -90,21 +91,17 @@ const FirstRoute = item => {
       .then(response => {
         console.log('response----', response);
         setVehiclevalue(
-          Vehicledata.find(
-            item => item.label === response.data.data?.type,
-          )?.value || null,
+          Vehicledata.find(item => item.label === response.data.data?.type)
+            ?.value || null,
         );
         setModelValue(
           modelData.find(
-            item =>
-              item.label.toLowerCase() ===
-              response.data.data?.brand,
+            item => item.label.toLowerCase() === response.data.data?.brand,
           )?.value || null,
         );
         setFuelvalue(
-          Fueldata.find(
-            item => item.label === response.data.data?.fuel,
-          )?.value || null,
+          Fueldata.find(item => item.label === response.data.data?.fuel)
+            ?.value || null,
         );
 
         setVehiclemodel(response.data.data?.model);
@@ -797,7 +794,7 @@ const FirstRoute = item => {
   );
 };
 
-const SecondRoute = () => {
+const SecondRoute = item => {
   const navigation = useNavigation();
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
@@ -833,7 +830,7 @@ const SecondRoute = () => {
     {label: 'MotorCycle', value: '2'},
     {label: 'Scooty', value: '3'},
     {label: 'Bike', value: '4'},
-   ];
+  ];
   const Fueldata = [
     {label: 'Petrol', value: '1'},
     {label: 'Diesel', value: '2'},
@@ -862,6 +859,52 @@ const SecondRoute = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
 
+  const fetchproductApibyid = id => {
+    axios
+      .get(`${Baseurl}/api/vehicles/id/${id}`)
+      .then(response => {
+        console.log('response----', response);
+        setVehiclevalue(
+          Vehicledata.find(item => item.label === response.data.data?.type)
+            ?.value || null,
+        );
+        setModelValue(
+          modelData.find(
+            item => item.label.toLowerCase() === response.data.data?.brand,
+          )?.value || null,
+        );
+        setFuelvalue(
+          Fueldata.find(item => item.label === response.data.data?.fuel)
+            ?.value || null,
+        );
+
+        setVehiclemodel(response.data.data?.model);
+        setVehiclevariant(response.data.data?.variant);
+        seRegistrationyear(response.data.data?.registration_year);
+        setAdtitle(response.data.data?.title);
+        setKilometerdirven(response.data.data?.kilometer_driven);
+        setTransmission(response.data.data?.transmission);
+        setDescription(response.data.data?.description);
+        setPrice(response.data.data?.price);
+        setStreet(response.data.data?.street);
+        setLocality(response.data.data?.locality);
+        setCity(response.data.data?.city);
+        setstate(response.data.data?.state);
+        setPincode(response.data.data?.pincode);
+        setSelectedImages(
+          response.data.data?.images.map(imagePath => ({
+            uri: `${imagePath}`,
+          })),
+        );
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  };
+  useEffect(() => {
+    fetchproductApibyid(item.item.item.id);
+  }, []);
+
   const handleCameraLaunch = () => {
     const options = {
       mediaType: 'photo',
@@ -883,6 +926,43 @@ const SecondRoute = () => {
           fileName: response.assets?.[0]?.fileName,
         };
         setSelectedImages([...selectedImages, imageInfo]);
+        handleGetToken().then(token => {
+          if (token) {
+            const formData = new FormData();
+            formData.append('images', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(
+                `${Baseurl}/api/vehicles/images/id/${item.item.item.id}`,
+                formData,
+                {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+          }
+        });
       }
     });
   };
@@ -959,7 +1039,7 @@ const SecondRoute = () => {
               setShowTokenModal(false);
             })
             .catch(error => {
-              console.error('Catch Error :---->', error.response);
+              console.error('Catch Error :---->', error);
               console.log('error message--->', error.response.data.message);
               ToastAndroid.showWithGravityAndOffset(
                 `${error.response.data.message}`,
@@ -1701,7 +1781,7 @@ const SecondRoute = () => {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Post My Ad
+              Update My Ad
             </Text>
           )}
         </TouchableOpacity>
@@ -1725,7 +1805,7 @@ const Editvehicleads = item => {
     axios
       .get(`${Baseurl}/api/vehicles/id/${id}`)
       .then(response => {
-        console.log('response----', response);
+        console.log('response of second hand--->', response);
         setIndex(response.data.data.second_hand == 1 ? 0 : 1);
       })
       .catch(error => {

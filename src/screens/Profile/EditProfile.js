@@ -26,6 +26,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {useIsFocused} from '@react-navigation/native';
+import {States} from '../../json/States';
 
 const EditProfile = () => {
   const navigation = useNavigation();
@@ -56,6 +57,10 @@ const EditProfile = () => {
   const [doc_number, serDoc_number] = useState('');
   const [locality, setLocality] = useState('');
 
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
+
   const handleCameraLaunchfront = () => {
     const options = {
       mediaType: 'photo',
@@ -71,12 +76,46 @@ const EditProfile = () => {
       } else if (response.error) {
         console.log('Camera Error: ', response.error);
       } else {
-        const imageInfo = {
-          uri: response.assets?.[0]?.uri,
-          type: response.assets?.[0]?.type,
-          fileName: response.assets?.[0]?.fileName,
-        };
-        setSelectedImagesfront([...selectedImagesfront, imageInfo]);
+        handleGetToken().then(token => {
+          if (token) {
+            const imageInfo = {
+              uri: response.assets?.[0]?.uri,
+              type: response.assets?.[0]?.type,
+              fileName: response.assets?.[0]?.fileName,
+            };
+            setSelectedImagesfront([...selectedImagesfront, imageInfo]);
+            const formData = new FormData();
+            formData.append('doc_file', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(`${Baseurl}/api/users/doc`, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+            setShowTokenModal(true);
+          }
+        });
       }
     });
   };
@@ -95,12 +134,46 @@ const EditProfile = () => {
       } else if (response.error) {
         console.log('Camera Error: ', response.error);
       } else {
-        const imageInfo = {
-          uri: response.assets?.[0]?.uri,
-          type: response.assets?.[0]?.type,
-          fileName: response.assets?.[0]?.fileName,
-        };
-        setSelectedImagesback([...selectedImagesback, imageInfo]);
+        handleGetToken().then(token => {
+          if (token) {
+            const imageInfo = {
+              uri: response.assets?.[0]?.uri,
+              type: response.assets?.[0]?.type,
+              fileName: response.assets?.[0]?.fileName,
+            };
+            setSelectedImagesback([...selectedImagesback, imageInfo]);
+            const formData = new FormData();
+            formData.append('doc_file_back', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(`${Baseurl}/api/users/doc`, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+            setShowTokenModal(true);
+          }
+        });
       }
     });
   };
@@ -119,12 +192,46 @@ const EditProfile = () => {
       } else if (response.error) {
         console.log('Camera Error: ', response.error);
       } else {
-        const imageInfo = {
-          uri: response.assets?.[0]?.uri,
-          type: response.assets?.[0]?.type,
-          fileName: response.assets?.[0]?.fileName,
-        };
-        setSelectedImagesprofile([...selectedImagesprofile, imageInfo]);
+        handleGetToken().then(token => {
+          if (token) {
+            const imageInfo = {
+              uri: response.assets?.[0]?.uri,
+              type: response.assets?.[0]?.type,
+              fileName: response.assets?.[0]?.fileName,
+            };
+            setSelectedImagesprofile([...selectedImagesprofile, imageInfo]);
+            const formData = new FormData();
+            formData.append('profile_pic', {
+              uri: imageInfo.uri,
+              type: imageInfo.type,
+              name: imageInfo.fileName,
+            });
+
+            axios
+              .post(`${Baseurl}/api/users/doc`, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then(response => {
+                console.log('Image saved successfully:', response.data);
+                ToastAndroid.showWithGravityAndOffset(
+                  `${response.data.message}`,
+                  ToastAndroid.LONG,
+                  ToastAndroid.BOTTOM,
+                  25,
+                  50,
+                );
+              })
+              .catch(error => {
+                console.error('Error saving image:', error);
+              });
+          } else {
+            console.log('Token not retrieved');
+            setShowTokenModal(true);
+          }
+        });
       }
     });
   };
@@ -152,10 +259,10 @@ const EditProfile = () => {
             ? ''
             : response.data.data?.alternate_mobile.toString(),
         );
-        setstate(
+        setSelectedState(
           response.data.data?.state == null ? '' : response.data.data?.state,
         );
-        setCity(
+        setSelectedCity(
           response.data.data?.city == null ? '' : response.data.data?.city,
         );
         setLocality(
@@ -208,7 +315,7 @@ const EditProfile = () => {
 
   const handleprofile = () => {
     const missingFields = [];
-  
+
     switch (true) {
       case !fullname:
         missingFields.push('Full Name');
@@ -219,22 +326,20 @@ const EditProfile = () => {
       case !phone:
         missingFields.push('Alternate phone number');
         break;
-      case !city:
+      case !selectedCity:
         missingFields.push('City');
         break;
-      case !state:
+      case !selectedState:
         missingFields.push('State');
         break;
       case !pincode:
         missingFields.push('Zip code');
         break;
-      case !documentvalue:
-        missingFields.push('documents');
-        break;
+
       default:
         break;
     }
-  
+
     if (missingFields.length > 0) {
       const errorMessage = `Please fill the ${missingFields[0]} field`;
       ToastAndroid.showWithGravityAndOffset(
@@ -246,59 +351,35 @@ const EditProfile = () => {
       );
       return;
     }
-  
+
     handleGetToken()
       .then(token => {
         if (token) {
           setLoading(true);
-          const formData = new FormData();
           const documentvalueType = DocumentData.filter(
             item => item.value === documentvalue,
           )
             .map(i => i.label)
             .toString();
-          formData.append('fullname', fullname);
-          formData.append('alternate_mobile', phone);
-          formData.append('email', emailid);
-          formData.append('doc_number', doc_number);
-          formData.append('doc_type', documentvalueType);
-  
-          // Append profile picture if available
-          if (selectedImagesprofile.length > 0) {
-            const profilePic = selectedImagesprofile[0];
-            formData.append(`profile_pic`, {
-              uri: profilePic.uri,
-              type: profilePic.type == undefined ? 'image/jpeg' : profilePic.type,
-              name: profilePic.fileName == undefined ? '' : profilePic.fileName,
-            });
-          }
-  
-          // Append other images
-          selectedImagesfront.forEach(image => {
-            formData.append(`doc_file`, {
-              uri: image.uri,
-              type: image.type == undefined ? 'image/jpeg' : image.type,
-              name: image.fileName == undefined ? '' : image.fileName,
-            });
-          });
-          selectedImagesback.forEach(image => {
-            formData.append(`doc_file_back`, {
-              uri: image.uri,
-              type: image.type == undefined ? 'image/jpeg' : image.type,
-              name: image.fileName == undefined ? '' : image.fileName,
-            });
-          });
-  
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-          formData.append('about', pincode);
-          console.log('formData--->', formData);
+          const requestData = {
+            fullname: fullname,
+            alternate_mobile: phone,
+            email: emailid,
+            doc_number: doc_number,
+            doc_type: documentvalueType,
+            locality: locality,
+            city: selectedCity,
+            state: selectedState,
+            pincode: pincode,
+            about: pincode,
+          };
+
+          console.log('requestData--->', requestData);
+
           axios
-            .post(`${Baseurl}/api/users/details`, formData, {
+            .post(`${Baseurl}/api/users/details`, requestData, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'application/json',
                 Authorization: `Bearer ${token}`,
               },
             })
@@ -337,7 +418,6 @@ const EditProfile = () => {
         console.error('Error while handling post ad:', error);
       });
   };
-  
 
   const closeModal = () => {
     setShowTokenModal(false);
@@ -442,8 +522,28 @@ const EditProfile = () => {
     if (isfocused == true) {
       setErrorMessage('');
       fetchuserapi();
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
     }
   }, [isfocused]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    setCityData(
+      selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [],
+    );
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -561,38 +661,46 @@ const EditProfile = () => {
                     maxLength={10}
                   />
                 </View>
+
                 <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
-                  />
-                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Locality</Text>
                   <TextInput
@@ -1053,7 +1161,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     height: 60,
     paddingLeft: 20,
-    borderWidth:0.8
+    borderWidth: 0.8,
   },
   button: {
     backgroundColor: '#3184b6',

@@ -25,6 +25,7 @@ import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useIsFocused} from '@react-navigation/native';
+import {States} from '../../json/States';
 
 const HospitalorClinic = () => {
   const navigation = useNavigation();
@@ -56,6 +57,10 @@ const HospitalorClinic = () => {
   const [priceperregistration, setPriceperregistration] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
+
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -110,12 +115,12 @@ const HospitalorClinic = () => {
       case !locality:
         missingFields.push('Locality');
         break;
-      case !city:
-        missingFields.push('City');
-        break;
-      case !state:
-        missingFields.push('State');
-        break;
+        case !selectedCity:
+          missingFields.push('City');
+          break;
+        case !selectedState:
+          missingFields.push('State');
+          break;
       case !pincode:
         missingFields.push('Pincode');
         break;
@@ -170,8 +175,8 @@ const HospitalorClinic = () => {
 
           formData.append('street', street);
           formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
+          formData.append('city', selectedCity);
+          formData.append('state', selectedState);
           formData.append('pincode', pincode);
 
           console.log('formData===', formData);
@@ -346,7 +351,21 @@ const HospitalorClinic = () => {
     newImages.splice(index, 1);
     setSelectedImages(newImages);
   };
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
 
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    setCityData(
+      selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [],
+    );
+    setSelectedCity(null);
+  };
   
   return (
     <View style={{flex: 1}}>
@@ -476,6 +495,47 @@ const HospitalorClinic = () => {
                     onChangeText={reg => setPriceperregistration(reg)}
                   />
                 </View>
+
+                <View style={{marginTop: 10}}>
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
+                  />
+                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
+                
                 <View style={{marginTop: 10}}>
                   <Text>Street</Text>
                   <TextInput
@@ -508,38 +568,8 @@ const HospitalorClinic = () => {
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
-                  />
-                </View>
-                <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
-                  />
-                </View>
+              
+              
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput

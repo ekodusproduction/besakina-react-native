@@ -62,7 +62,7 @@ const HomeScreen = () => {
     axios
       .get(`${Baseurl}/api/home/latest`)
       .then(response => {
-        console.log('response--->', response);
+        console.log('response of latest ads--->', response);
         setData(response.data.data.advertisements);
         setLoading(false);
       })
