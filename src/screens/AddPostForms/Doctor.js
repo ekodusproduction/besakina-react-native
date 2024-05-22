@@ -126,9 +126,9 @@ const Doctor = () => {
       case !pincode:
         missingFields.push('Pincode');
         break;
-      case !price:
-        missingFields.push('Fees per visit');
-        break;
+      // case !price:
+      //   missingFields.push('Fees per visit');
+      //   break;
       case selectedImages.length === 0:
         missingFields.push('Images');
         break;

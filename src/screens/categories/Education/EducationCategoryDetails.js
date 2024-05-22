@@ -19,6 +19,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
+import formatIndianCurrency, { formatINR } from '../../../components/formatINR';
 
 const EducationCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -38,11 +39,11 @@ const EducationCategoryDetails = ({route}) => {
 
   const headers = ['Property Type', '', '', `${info?.type}`];
   const rows = [
-    ['Institute Name', '', '', `${info?.institution_name}`],
-    ['Domain', '', '', `${info?.domain}`],
-    ['Location', '', '', `${info?.city}`],
-    ['Course Duration', '', '', `${info?.course_duration}years`],
-    ['Price', '', '', `₹ ${info?.price}`],
+    ['Institute Name', '', '', `${info?.institution_name.charAt(0).toUpperCase()}${info?.institution_name.slice(1).toLowerCase()}`],
+    ['Domain', '', '', `${info?.domain.charAt(0).toUpperCase()}${info?.domain.slice(1).toLowerCase()}`],
+    ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
+    ['Course Duration', '', '', `${info?.course_duration} months`],
+    ['Price', '', '', `₹ ${formatIndianCurrency(parseFloat(data?.price).toFixed(2))}`],
   ];
 
   const fetchproductApibyid = id => {
@@ -291,7 +292,7 @@ const EducationCategoryDetails = ({route}) => {
                 borderRadius: 12,
                 marginTop: 10,
               }}>
-              <Text style={{marginLeft: 10, width: 300}} numberOfLines={1}>
+              <Text style={{marginLeft: 10, width: 300, fontWeight:"bold"}} numberOfLines={1}>
                 {info?.title}
               </Text>
               <View
@@ -301,10 +302,13 @@ const EducationCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 10,
                 }}>
-                <Text style={style.subsubtitle}>
-                  ₹{' '}
-                  {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </Text>
+                 
+                 <Text variant="titleLarge">
+                            ₹{' '}
+                            {formatIndianCurrency(
+                              parseFloat(info?.price).toFixed(2),
+                            )}
+                          </Text>
                 {/* <AntDesign name="hearto" size={25} /> */}
               </View>
 

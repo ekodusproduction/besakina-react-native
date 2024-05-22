@@ -27,6 +27,7 @@ import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Dropdown} from 'react-native-element-dropdown';
 import Custom_Wishist from '../../../components/Custom_Wishist';
+import formatIndianCurrency from '../../../components/formatINR';
 
 const PropertyCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -565,12 +566,12 @@ const PropertyCategory = ({item}) => {
                           <Text numberOfLines={1} style={[style.subsubtitle,{width:150}]}>
                             {item.title}
                           </Text>
-                          <Text>
-                            ₹{' '}
-                            {item.price
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          </Text>
+                           <Text variant="titleLarge">
+                          ₹{' '}
+                          {formatIndianCurrency(
+                            parseFloat(item?.price).toFixed(2),
+                          )}
+                        </Text>
                         </View>
 
                         <View

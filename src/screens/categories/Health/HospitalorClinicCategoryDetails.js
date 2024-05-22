@@ -3,13 +3,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Modal,
   RefreshControl,
-  ToastAndroid,
-  TextInput,
-  StyleSheet,
-  ActivityIndicator,
-  Linking,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Appbar, Divider} from 'react-native-paper';
@@ -24,9 +18,8 @@ import {Baseurl} from '../../../constant/globalparams';
 import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {handleGetToken} from '../../../constant/tokenUtils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
+import formatIndianCurrency from '../../../components/formatINR';
 
 const HospitalorClinicCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -35,38 +28,38 @@ const HospitalorClinicCategoryDetails = ({route}) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [createdAtLabel, setCreatedAtLabel] = useState('');
-
-  const [loadingotp, setLoadingotp] = useState(false);
-  const [loadingverifyotp, setLoadingverifyotp] = useState(false);
-  const [showTokenModal, setShowTokenModal] = useState(false);
-  const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
-
-  const [mobile, setMobile] = useState('');
-  const [showNestedModal, setShowNestedModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isValidNumber, setIsValidNumber] = useState(true);
-  const [contactsellerphone, setcontactsellerphone] = useState('');
-
   let imageUrls =
     info && info?.images && info?.images.length > 0
       ? info?.images.map(url => `${url.trim()}`)
       : [];
 
-  let image =
-    imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
+  let image = imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
   const headers = ['Property Type', '', '', `${info?.type}`];
   const rows = [
-    ['Name', '', '', `${info?.name}`],
+    [
+      'Name',
+      '',
+      '',
+      `${info?.name.charAt(0).toUpperCase()}${info?.name
+        .slice(1)
+        .toLowerCase()}`,
+    ],
     [
       'Price per registration',
       '',
       '',
-      `₹${info?.price_registration
-        .toString()
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+      `₹ ${formatIndianCurrency(parseFloat(info?.price_registration).toFixed(2))}`,
     ],
-    ['Location', '', '', `${info?.city}`],
+    // formatIndianCurrency(parseFloat(info?.price_registration?.price).toFixed(2))
+    [
+      'Location',
+      '',
+      '',
+      `${info?.city.charAt(0).toUpperCase()}${info?.city
+        .slice(1)
+        .toLowerCase()}`,
+    ],
   ];
 
   const fetchproductApibyid = id => {
@@ -310,12 +303,14 @@ const HospitalorClinicCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 10,
                 }}>
-                <Text>
-                  ₹{' '}
-                  {info?.price_registration
-                    .toString()
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </Text>
+             
+                
+                <Text variant="titleLarge">
+                            ₹{' '}
+                            {formatIndianCurrency(
+                              parseFloat(info?.price_registration).toFixed(2),
+                            )}
+                          </Text>
                 {/* <AntDesign name="hearto" size={25} /> */}
               </View>
 
@@ -467,4 +462,3 @@ const HospitalorClinicCategoryDetails = ({route}) => {
 };
 
 export default HospitalorClinicCategoryDetails;
-

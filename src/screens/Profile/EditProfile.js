@@ -527,7 +527,15 @@ const EditProfile = () => {
         setSelectedCity(city);
       }
     }
-  }, [isfocused]);
+    if (selectedState) {
+      const selectedStateObj = States.states.find(s => s.name === selectedState);
+      const cities = selectedStateObj ? selectedStateObj.cities.map(city => ({ label: city, value: city })) : [];
+      setCityData(cities);
+      if (selectedCity) {
+        setSelectedCity(selectedCity);
+      }
+    }
+  }, [isfocused,selectedState]);
 
   const stateData = States.states.map(state => ({
     label: state.name,
@@ -536,14 +544,9 @@ const EditProfile = () => {
 
   const handleStateChange = item => {
     setSelectedState(item.value);
-    setSelectedCity(null);
-    const selectedStateObj = States.states.find(s => s.name === item.value);
-    setCityData(
-      selectedStateObj
-        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
-        : [],
-    );
+    setSelectedCity(null);  
   };
+
 
   return (
     <View style={{flex: 1}}>

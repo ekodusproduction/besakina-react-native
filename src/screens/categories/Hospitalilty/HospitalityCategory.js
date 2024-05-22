@@ -26,6 +26,7 @@ import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import Custom_Wishist from '../../../components/Custom_Wishist';
+import formatIndianCurrency, { formatINR } from '../../../components/formatINR';
 
 const HospitalityCategory = ({item}) => {
   const isFocused = useIsFocused();
@@ -657,12 +658,13 @@ const HospitalityCategory = ({item}) => {
                           <Text numberOfLines={1} style={[style.subsubtitle,{width:150}]}>
                             {item.title}
                           </Text>
-                          <Text>
-                            ₹{' '}
-                            {item.price
-                              .toString()
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                          </Text>
+                          <Text variant="titleLarge">
+                          ₹{' '}
+                          {formatIndianCurrency(
+                            parseFloat(data.price).toFixed(2),
+                          )}
+                        </Text>
+
                         </View>
 
                         <View

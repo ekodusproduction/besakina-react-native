@@ -103,12 +103,12 @@ const HospitalorClinic = () => {
       case !description:
         missingFields.push('Description');
         break;
-      case !price:
-        missingFields.push('Price (per visit)');
-        break;
-      case !priceperregistration:
-        missingFields.push('Price (per Registration)');
-        break;
+      // case !price:
+      //   missingFields.push('Price (per visit)');
+      //   break;
+      // case !priceperregistration:
+      //   missingFields.push('Price (per Registration)');
+      //   break;
       case !street:
         missingFields.push('Street');
         break;

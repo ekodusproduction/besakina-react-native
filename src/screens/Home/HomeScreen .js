@@ -33,6 +33,7 @@ import FeaturedAds from '../FeaturedAds/FeaturedAds';
 import AllAds from '../AllAds/AllAds';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import Custom_Wishist from '../../components/Custom_Wishist';
+import formatIndianCurrency from '../../components/formatINR';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -545,18 +546,16 @@ const HomeScreen = () => {
 
                           <View style={{marginTop: 10, marginLeft: 10}}>
                             <Text
-                              variant="titleLarge"
-                              style={style.subsubtitle}>
-                              ₹{' '}
-                              {item.price
-                                .toString()
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                            </Text>
-                            <Text
                               numberOfLines={2}
-                              style={{width: 250}}
+                              style={{width: 250, fontWeight: 'bold'}}
                               variant="bodyMedium">
                               {item.title}
+                            </Text>
+                            <Text variant="titleLarge">
+                              ₹{' '}
+                              {formatIndianCurrency(
+                                parseFloat(item.price).toFixed(2),
+                              )}
                             </Text>
                           </View>
                           <View
@@ -691,14 +690,16 @@ const HomeScreen = () => {
                       </View>
 
                       <View style={{marginTop: 10, marginLeft: 10}}>
-                        <Text style={style.subsubtitle}>
-                          ${' '}
-                          {item.price
-                            .toString()
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        </Text>
-                        <Text numberOfLines={1} style={{width: 150}}>
+                        <Text
+                          numberOfLines={1}
+                          style={{width: 150, fontWeight: 'bold'}}>
                           {item.title}
+                        </Text>
+                        <Text variant="titleLarge">
+                          ₹{' '}
+                          {formatIndianCurrency(
+                            parseFloat(item.price).toFixed(2),
+                          )}
                         </Text>
                       </View>
 

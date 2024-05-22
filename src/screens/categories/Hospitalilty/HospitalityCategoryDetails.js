@@ -20,27 +20,46 @@ import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
+import {formatINR} from '../../../components/formatINR';
 
 const HospitalityCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
   const navigation = useNavigation();
   const [info, setInfo] = useState(null);
-   const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [createdAtLabel, setCreatedAtLabel] = useState(''); 
+  const [createdAtLabel, setCreatedAtLabel] = useState('');
 
   let imageUrls =
     info && info?.images && info?.images.length > 0
       ? info?.images.map(url => `${url.trim()}`)
       : [];
 
-  let image =
-    imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
+  let image = imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type}`];
+  const headers = [
+    'Property Type',
+    '',
+    '',
+    `${info?.type.charAt(0).toUpperCase()}${info?.type.slice(1).toLowerCase()}`,
+  ];
   const rows = [
-    ['Locality', '', '', `${info?.locality}`],
-    ['Location', '', '', `${info?.city}`],
+    [
+      'Locality',
+      '',
+      '',
+      `${info?.locality.charAt(0).toUpperCase()}${info?.locality
+        .slice(1)
+        .toLowerCase()}`,
+    ],
+    [
+      'Location',
+      '',
+      '',
+      `${info?.city.charAt(0).toUpperCase()}${info?.city
+        .slice(1)
+        .toLowerCase()}`,
+    ],
   ];
 
   const fetchproductApibyid = id => {
@@ -225,7 +244,6 @@ const HospitalityCategoryDetails = ({route}) => {
     );
   }
 
-  
   return (
     <View style={{flex: 1}}>
       <Appbar.Header>
@@ -290,7 +308,9 @@ const HospitalityCategoryDetails = ({route}) => {
                 borderRadius: 12,
                 marginTop: 10,
               }}>
-              <Text style={{marginLeft: 10, width: 300, fontWeight:"bold"}} numberOfLines={1}>
+              <Text
+                style={{marginLeft: 10, width: 300, fontWeight: 'bold'}}
+                numberOfLines={1}>
                 {info?.title}
               </Text>
               <View
@@ -300,10 +320,12 @@ const HospitalityCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 5,
                 }}>
-                <Text>
-                  ₹{' '}
-                  {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </Text>
+               <Text variant="titleLarge">
+                            ₹{' '}
+                            {formatIndianCurrency(
+                              parseFloat(info?.price).toFixed(2),
+                            )}
+                          </Text>
                 {/* <AntDesign name="hearto" size={25} /> */}
               </View>
 
@@ -440,7 +462,6 @@ const HospitalityCategoryDetails = ({route}) => {
               />
               <Text>Member Since : {getCreatedAtLabel(info?.created_at)}</Text>
             </View>
-           
           </View>
         </View>
       </ScrollView>
@@ -448,7 +469,7 @@ const HospitalityCategoryDetails = ({route}) => {
         <View></View>
       ) : (
         <View style={{marginTop: 0}}>
-          <AuthenticationModal_ContactSeller info={info}/>
+          <AuthenticationModal_ContactSeller info={info} />
         </View>
       )}
     </View>

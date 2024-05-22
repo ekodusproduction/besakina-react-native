@@ -27,6 +27,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {handleGetToken} from '../../../constant/tokenUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
+import formatIndianCurrency, { formatINR } from '../../../components/formatINR';
 
 const PropertyCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -56,13 +57,14 @@ const PropertyCategoryDetails = ({route}) => {
   let image =
     imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type}`];
+  const headers = ['Property Type', '', '', `${info?.type.charAt(0).toUpperCase()}${info?.type.slice(1).toLowerCase()}`];
+  // `${info?.construction_status.charAt(0).toUpperCase()}${info?.construction_status.slice(1).toLowerCase()}`
   const rows = [
-    ['Listed By', '', '', `${info?.listed_by}`],
+    ['Listed By', '', '', `${info?.listed_by.charAt(0).toUpperCase()}${info?.listed_by.slice(1).toLowerCase()}`],
     ['Plot Area', '', '', `${info?.carpet_area}sqft`],
-    ['Construction status', '', '', `${info?.construction_status}`],
-    ['Category', '', '', `${info?.category}`],
-    ['Location', '', '', `${info?.city}`],
+    ['Construction status', '', '', `${info?.construction_status.charAt(0).toUpperCase()}${info?.construction_status.slice(1).toLowerCase()}`],
+    ['Category', '', '', `${info?.category.charAt(0).toUpperCase()}${info?.category.slice(1).toLowerCase()}`],
+    ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
   ];
 
   const fetchproductApibyid = id => {
@@ -324,10 +326,12 @@ const PropertyCategoryDetails = ({route}) => {
                   marginHorizontal: 10,
                   marginTop: 5,
                 }}>
-                <Text style={style.subsubtitle}>
-                  ₹{' '}
-                  {info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                </Text>
+                <Text variant="titleLarge">
+                            ₹{' '}
+                            {formatIndianCurrency(
+                              parseFloat(info?.price).toFixed(2),
+                            )}
+                          </Text>
                 {/* <AntDesign name="hearto" size={25} /> */}
               </View>
 

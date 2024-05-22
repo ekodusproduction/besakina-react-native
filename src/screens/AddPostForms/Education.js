@@ -134,9 +134,9 @@ const Education = () => {
       case !pincode:
         missingFields.push('Pincode');
         break;
-      case !price:
-        missingFields.push('Price');
-        break;
+      // case !price:
+      //   missingFields.push('Price');
+      //   break;
       case selectedImages.length === 0:
         missingFields.push('Images');
         break;

@@ -19,6 +19,7 @@ import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
+import formatIndianCurrency, { formatINR } from '../../../components/formatINR';
 
 const DoctorCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -43,14 +44,15 @@ const DoctorCategoryDetails = ({route}) => {
     `₹${
       info?.price_per_visit == null
         ? 'N/A'
-        : info?.price_per_visit.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        : formatIndianCurrency(parseFloat(info?.price_per_visit).toFixed(2))
     }`,
+    // formatIndianCurrency(parseFloat(info?.price_per_visit).toFixed(2))
   ];
   const rows = [
-    ['Name', '', '', `${info?.name}`],
-    ['Expertise', '', '', `${info?.expertise}`],
-    ['Experiance', '', '', `${info?.total_experience}years`],
-    ['Location', '', '', `${info?.city}`],
+    ['Name', '', '', `${info?.name.charAt(0).toUpperCase()}${info?.name.slice(1).toLowerCase()}`],
+    ['Expertise', '', '', `${info?.expertise.charAt(0).toUpperCase()}${info?.expertise.slice(1).toLowerCase()}`],
+    ['Experience', '', '', `${info?.total_experience}years`],
+    ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
   ];
 
   const fetchdoctorApibyid = id => {

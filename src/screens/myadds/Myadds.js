@@ -21,6 +21,7 @@ import {SvgXml} from 'react-native-svg';
 import {location} from '../../svg/svg';
 import style from '../../style';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import formatIndianCurrency from '../../components/formatINR';
 
 const Myadds = () => {
   const navigation = useNavigation();
@@ -454,7 +455,12 @@ const Myadds = () => {
                         variant="bodyMedium">
                         {item.title}
                       </Text>
-                      <Text variant="titleLarge">₹ {item.price}</Text>
+                       <Text variant="titleLarge">
+                            ₹{' '}
+                            {formatIndianCurrency(
+                              parseFloat(item.price).toFixed(2),
+                            )}
+                          </Text>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Switch

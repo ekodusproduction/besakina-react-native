@@ -26,6 +26,7 @@ import {location} from '../../../svg/svg';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {handleGetToken} from '../../../constant/tokenUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import formatIndianCurrency, { formatINR } from '../../../components/formatINR';
 
 const VehicleCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -53,18 +54,18 @@ const VehicleCategoryDetails = ({route}) => {
 
   let image = imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Vehicle Type', '', '', `${info?.type}`];
+  const headers = ['Vehicle Type', '', '', `${info?.type.charAt(0).toUpperCase()}${info?.type.slice(1).toLowerCase()}`];
   const rows = [
-    ['Brand', '', '', `${info?.brand}`],
+    ['Brand', '', '', `${info?.brand.charAt(0).toUpperCase()}${info?.brand.slice(1).toLowerCase()}`],
     [
       'Price',
       '',
       '',
-      `₹ ${info?.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`,
+      `₹ ${formatIndianCurrency(parseFloat(info?.price).toFixed(2))}`,
     ],
     ['Registration Years', '', '', `${info?.registration_year}`],
     ['Kilometer Driven', '', '', `${info?.kilometer_driven}`],
-    ['Location', '', '', `${info?.city}`],
+    ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
   ];
 
   const fetchvehicleApibyid = id => {

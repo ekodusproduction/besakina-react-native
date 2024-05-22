@@ -95,21 +95,21 @@ const FirstRoute = () => {
     const missingFields = [];
 
     switch (true) {
-      // case !vehiclemodel:
-      //   missingFields.push('vehiclemodel');
-      //   break;
+      case !vehiclemodel:
+        missingFields.push('vehiclemodel');
+        break;
       // case !vehiclevariant:
       //   missingFields.push('vehiclevariant');
       //   break;
-      // case !registrationyear:
-      //   missingFields.push('registrationyear');
-      //   break;
-      // case !transmission:
-      //   missingFields.push('transmission');
-      //   break;
-      // case !kilometerdriven:
-      //   missingFields.push('kilometerdriven');
-      //   break;
+      case !registrationyear:
+        missingFields.push('registrationyear');
+        break;
+      case !transmission:
+        missingFields.push('transmission');
+        break;
+      case !kilometerdriven:
+        missingFields.push('kilometerdriven');
+        break;
       case !adtitle:
         missingFields.push('adtitle');
         break;
@@ -121,18 +121,15 @@ const FirstRoute = () => {
         break;
       case !selectedState:
         missingFields.push('State');
-        break;
-        missingFields.push('State');
-        break;
       case !pincode:
         missingFields.push('Pincode');
         break;
       case !price:
         missingFields.push('price');
         break;
-      // case selectedImages.length === 0:
-      //   missingFields.push('Images');
-      //   break;
+      case selectedImages.length === 0:
+        missingFields.push('Images');
+        break;
       default:
         break;
     }
@@ -1171,9 +1168,9 @@ const SecondRoute = () => {
       case !price:
         missingFields.push('price');
         break;
-      // case selectedImages.length === 0:
-      //   missingFields.push('Images');
-      //   break;
+      case selectedImages.length === 0:
+        missingFields.push('Images');
+        break;
       default:
         break;
     }
