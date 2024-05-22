@@ -35,7 +35,9 @@ const HospitalorClinicCategoryDetails = ({route}) => {
 
   let image = imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type}`];
+  const headers = ['Property Type', '', '', `${info?.type.replace(/_/g, ' ').charAt(0).toUpperCase()}${info?.type.replace(/_/g, ' ')
+    .slice(1)
+    .toLowerCase()}`];
   const rows = [
     [
       'Name',

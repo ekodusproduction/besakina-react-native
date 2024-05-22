@@ -661,7 +661,7 @@ const HospitalityCategory = ({item}) => {
                           <Text variant="titleLarge">
                           ₹{' '}
                           {formatIndianCurrency(
-                            parseFloat(data.price).toFixed(2),
+                            parseFloat(item.price).toFixed(2),
                           )}
                         </Text>
 

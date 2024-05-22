@@ -546,11 +546,12 @@ const HomeScreen = () => {
 
                           <View style={{marginTop: 10, marginLeft: 10}}>
                             <Text
-                              numberOfLines={2}
+                              numberOfLines={1}
                               style={{width: 250, fontWeight: 'bold'}}
                               variant="bodyMedium">
                               {item.title}
                             </Text>
+                            
                             <Text variant="titleLarge">
                               ₹{' '}
                               {formatIndianCurrency(

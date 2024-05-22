@@ -477,7 +477,7 @@ import {
                       }}
                       value={description}
                       onChangeText={reg => setDescription(reg)}
-                      numberOfLines={3}
+                      numberOfLines={5}
                       multiline={true}
                       textAlignVertical="top"
                     />

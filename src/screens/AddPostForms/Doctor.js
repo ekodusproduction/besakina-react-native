@@ -406,7 +406,7 @@ const Doctor = () => {
               }}>
               <View style={{padding: 5}}>
                 <View style={{marginTop: 10}}>
-                  <Text>Full Name*</Text>
+                  <Text>Full Name</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -444,7 +444,7 @@ const Doctor = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Total Experiance (years)*</Text>
+                  <Text>Total Experiance (years)</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -461,7 +461,7 @@ const Doctor = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Fees (per visit)*</Text>
+                  <Text>Fees (per visit)</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -478,7 +478,7 @@ const Doctor = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Title*</Text>
+                  <Text>Title</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -505,7 +505,7 @@ const Doctor = () => {
                     }}
                     value={description}
                     onChangeText={reg => setDescription(reg)}
-                    numberOfLines={3}
+                    numberOfLines={5}
                     multiline={true}
                     textAlignVertical="top"
                   />

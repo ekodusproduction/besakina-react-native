@@ -517,7 +517,7 @@ const FirstRoute = () => {
                   />
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Registration Year*</Text>
+                  <Text>Registration Year</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -585,7 +585,7 @@ const FirstRoute = () => {
                 )}
 
                 <View style={{marginTop: 10}}>
-                  <Text>Kilometer Driven*</Text>
+                  <Text>Kilometer Driven</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -602,7 +602,7 @@ const FirstRoute = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Ad Title*</Text>
+                  <Text>Ad Title</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -715,7 +715,7 @@ const FirstRoute = () => {
                   <TextInput
                     placeholderTextColor="black"
                     multiline={true}
-                    numberOfLines={3}
+                    numberOfLines={5}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
@@ -731,7 +731,7 @@ const FirstRoute = () => {
                   </Text>
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Address*</Text>
+                  <Text>Address</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -1573,7 +1573,7 @@ const SecondRoute = () => {
                   </View>
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Ad Title*</Text>
+                  <Text>Ad Title</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -1687,7 +1687,7 @@ const SecondRoute = () => {
                   <TextInput
                     placeholderTextColor="black"
                     multiline={true}
-                    numberOfLines={3}
+                    numberOfLines={5}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
@@ -1703,7 +1703,7 @@ const SecondRoute = () => {
                   </Text>
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Address*</Text>
+                  <Text>Address</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{

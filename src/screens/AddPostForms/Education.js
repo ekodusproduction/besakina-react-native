@@ -26,6 +26,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {useIsFocused} from '@react-navigation/native';
 import {States} from '../../json/States';
+import AuthenticationModal_PostAdd from '../../components/AuthenticationModal_PostAdd';
 
 const Education = () => {
   const navigation = useNavigation();
@@ -224,7 +225,10 @@ const Education = () => {
               if (error.response.data.message == 'User Profile Incomplete') {
                 navigation.navigate('EditProfile');
               }
-              if (error.response.data.message == 'Mobile number not registered please login') {
+              if (
+                error.response.data.message ==
+                'Mobile number not registered please login'
+              ) {
                 setShowTokenModal(true);
               }
               if (
@@ -449,7 +453,7 @@ const Education = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Course Duration (in months)*</Text>
+                  <Text>Course Duration (in months)</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -466,7 +470,7 @@ const Education = () => {
                 </View>
 
                 <View style={{marginTop: 10}}>
-                  <Text>Name of Institution*</Text>
+                  <Text>Name of Institution</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -482,7 +486,7 @@ const Education = () => {
                   />
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Ad Title*</Text>
+                  <Text>Ad Title</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -509,7 +513,7 @@ const Education = () => {
                     }}
                     value={description}
                     onChangeText={reg => setDescription(reg)}
-                    numberOfLines={3}
+                    numberOfLines={5}
                     multiline={true}
                     textAlignVertical="top"
                   />
@@ -536,7 +540,7 @@ const Education = () => {
 
                 {selectedState && (
                   <View style={{marginTop: 10}}>
-                     <Dropdown
+                    <Dropdown
                       style={style.dropdown}
                       placeholderStyle={style.placeholderStyle}
                       selectedTextStyle={style.selectedTextStyle}
@@ -554,7 +558,6 @@ const Education = () => {
                     />
                   </View>
                 )}
-
 
                 <View style={{marginTop: 10}}>
                   <Text>Street</Text>
@@ -588,8 +591,7 @@ const Education = () => {
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
-                 
-                 
+
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
@@ -608,7 +610,7 @@ const Education = () => {
                   />
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>Price*</Text>
+                  <Text>Price</Text>
                   <TextInput
                     placeholderTextColor="black"
                     style={{
@@ -705,214 +707,24 @@ const Education = () => {
         </KeyboardAvoidingView>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showTokenModal}
-        onRequestClose={closeModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 10}}>
-              {/* <View style={{ marginTop: 10 }}>
-                <Text style={styles.header}>Welcome</Text>
-                <Text style={[styles.header, { marginTop: -10 }]}>back</Text>
-              </View> */}
-              <View style={{marginTop: 25}}>
-                <Text style={style.title}>Enter Mobile Number</Text>
-              </View>
-              <View style={{marginTop: 20}}>
-                <TextInput
-                  placeholder="Enter here"
-                  placeholderTextColor="black"
-                  style={styles.textinput}
-                  inputMode="numeric"
-                  value={mobile}
-                  onChangeText={phone => setMobile(phone)}
-                  maxLength={10}
-                />
-                <View
-                  style={{display: errorMessage.length == 0 ? 'none' : 'flex'}}>
-                  {!isValidNumber && (
-                    <Text style={{color: 'red'}}>{errorMessage}</Text>
-                  )}
-                </View>
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={sendOtp}
-                  style={[styles.button, {opacity: loadingotp ? 0.5 : 1}]}
-                  disabled={loadingotp}>
-                  {loadingotp ? (
-                    <ActivityIndicator size="small" color="white" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Send OTP
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showNestedModal}
-        onRequestClose={closeNestedModal}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          }}>
-          <View
-            style={{
-              backgroundColor: 'white',
-              padding: 10,
-              width: '100%',
-              height: '100%',
-            }}>
-            <TouchableOpacity
-              onPress={closeModal}
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-              }}>
-              <AntDesign name="close" size={30} />
-            </TouchableOpacity>
-
-            <View style={{padding: 20}}>
-              <View>
-                <Text style={style.title}>
-                  We've sent your verification code to +91 {mobile}
-                </Text>
-              </View>
-
-              <View style={{marginTop: 50}}>
-                <TextInput
-                  // placeholder='Enter Code'
-                  placeholderTextColor="black"
-                  style={style.inputfield}
-                  inputMode="numeric"
-                  value={verifyotpvalue}
-                  onChangeText={verifyotp => setVerifyOtpvalue(verifyotp)}
-                />
-              </View>
-
-              <View style={{marginTop: 20}}>
-                <TouchableOpacity
-                  onPress={verifyOtp}
-                  style={[style.button, {opacity: loadingverifyotp ? 0.5 : 1}]}
-                  disabled={loadingverifyotp}>
-                  {loadingverifyotp ? (
-                    <ActivityIndicator size="small" color="black" />
-                  ) : (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'white',
-                      }}>
-                      Verify Otp
-                    </Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 18,
-                        color: 'black',
-                      }}>
-                      Resend Code
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    style={{
-                      borderRadius: 12,
-                      height: 60,
-                      justifyContent: 'center',
-                    }}>
-                    <Text style={{textAlign: 'center', fontSize: 18}}>
-                      1:20 min left
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <View style={{marginTop: 0}}>
-        <TouchableOpacity
-          style={{
-            backgroundColor: style.button.backgroundColor,
-            borderRadius: 0,
-            height: 60,
-            justifyContent: 'center',
-            borderColor: 'gray',
-            borderWidth: 0.5,
-          }}
-          onPress={handlePostAd}
-          disabled={loading ? true : false}>
-          {loading ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Post My Ad
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      <AuthenticationModal_PostAdd
+        coursevalue={coursevalue}
+        domainvalue={domainvalue}
+        duration={duration}
+        instituname={instituname}
+        title={title}
+        description={description}
+        street={street}
+        locality={locality}
+        selectedCity={selectedCity}
+        selectedState={selectedState}
+        pincode={pincode}
+        selectedImages={selectedImages}
+        price={price}
+        Coursedata={Coursedata}
+        Domaindata={Domaindata}
+        navigation={navigation}
+      />
     </View>
   );
 };

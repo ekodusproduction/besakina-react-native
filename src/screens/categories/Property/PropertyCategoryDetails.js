@@ -49,6 +49,11 @@ const PropertyCategoryDetails = ({route}) => {
   const [isValidNumber, setIsValidNumber] = useState(true);
   const [contactsellerphone, setcontactsellerphone] = useState('');
 
+  function convertString(str) {
+    // Replace underscores with spaces
+    return str.replace(/_/g, ' ');
+  }
+  
   let imageUrls =
     info && info?.images && info?.images.length > 0
       ? info?.images.map(url => `${url.trim()}`)
@@ -57,12 +62,11 @@ const PropertyCategoryDetails = ({route}) => {
   let image =
     imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type.charAt(0).toUpperCase()}${info?.type.slice(1).toLowerCase()}`];
-  // `${info?.construction_status.charAt(0).toUpperCase()}${info?.construction_status.slice(1).toLowerCase()}`
+  const headers = ['Property Type', '', '', `${info?.type.replace(/_/g, ' ').charAt(0).toUpperCase()}${info?.type.replace(/_/g, ' ').slice(1).toLowerCase()}`];
   const rows = [
     ['Listed By', '', '', `${info?.listed_by.charAt(0).toUpperCase()}${info?.listed_by.slice(1).toLowerCase()}`],
     ['Plot Area', '', '', `${info?.carpet_area}sqft`],
-    ['Construction status', '', '', `${info?.construction_status.charAt(0).toUpperCase()}${info?.construction_status.slice(1).toLowerCase()}`],
+    ['Construction status', '', '', `${info?.construction_status.replace(/_/g, ' ').charAt(0).toUpperCase()}${info?.construction_status.replace(/_/g, ' ').slice(1).toLowerCase()}`],
     ['Category', '', '', `${info?.category.charAt(0).toUpperCase()}${info?.category.slice(1).toLowerCase()}`],
     ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
   ];

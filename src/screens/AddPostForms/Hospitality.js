@@ -536,17 +536,17 @@ const Hospitality = () => {
                   <Text>Write some description</Text>
                   <TextInput
                     placeholderTextColor="black"
-                    multiline={true}
                     style={{
                       backgroundColor: 'white',
                       borderRadius: 5,
                       paddingLeft: 20,
                       borderWidth: 0.5,
-                      height: 60,
                     }}
-                    // inputMode="numeric"
                     value={description}
                     onChangeText={reg => setDescription(reg)}
+                    numberOfLines={5}
+                    multiline={true}
+                    textAlignVertical="top"
                   />
                 </View>
                 <View style={{marginTop: 10}}>

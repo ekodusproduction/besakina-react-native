@@ -527,15 +527,19 @@ const EditProfile = () => {
         setSelectedCity(city);
       }
     }
+  }, [isfocused]);
+
+  useEffect(() => {
     if (selectedState) {
-      const selectedStateObj = States.states.find(s => s.name === selectedState);
-      const cities = selectedStateObj ? selectedStateObj.cities.map(city => ({ label: city, value: city })) : [];
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
       setCityData(cities);
-      if (selectedCity) {
-        setSelectedCity(selectedCity);
-      }
     }
-  }, [isfocused,selectedState]);
+  }, [selectedState]);
 
   const stateData = States.states.map(state => ({
     label: state.name,
@@ -544,9 +548,13 @@ const EditProfile = () => {
 
   const handleStateChange = item => {
     setSelectedState(item.value);
-    setSelectedCity(null);  
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
   };
-
 
   return (
     <View style={{flex: 1}}>

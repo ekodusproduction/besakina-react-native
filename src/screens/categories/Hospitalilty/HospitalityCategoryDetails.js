@@ -20,7 +20,7 @@ import {SvgXml} from 'react-native-svg';
 import {location} from '../../../svg/svg';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import AuthenticationModal_ContactSeller from '../../../components/AuthenticationModal_ContactSeller';
-import {formatINR} from '../../../components/formatINR';
+import formatIndianCurrency, {formatINR} from '../../../components/formatINR';
 
 const HospitalityCategoryDetails = ({route}) => {
   const {data, edit} = route.params;
@@ -41,7 +41,7 @@ const HospitalityCategoryDetails = ({route}) => {
     'Property Type',
     '',
     '',
-    `${info?.type.charAt(0).toUpperCase()}${info?.type.slice(1).toLowerCase()}`,
+    `${info?.type.replace(/_/g, ' ').charAt(0).toUpperCase()}${info?.type.replace(/_/g, ' ').slice(1).toLowerCase()}`,
   ];
   const rows = [
     [

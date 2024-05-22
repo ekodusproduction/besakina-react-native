@@ -37,10 +37,10 @@ const EducationCategoryDetails = ({route}) => {
   let image =
     imageUrls.length > 0 ? imageUrls : [`${info?.images}`];
 
-  const headers = ['Property Type', '', '', `${info?.type}`];
+  const headers = ['Property Type', '', '', `${info?.type.replace(/_/g, ' ')}`];
   const rows = [
     ['Institute Name', '', '', `${info?.institution_name.charAt(0).toUpperCase()}${info?.institution_name.slice(1).toLowerCase()}`],
-    ['Domain', '', '', `${info?.domain.charAt(0).toUpperCase()}${info?.domain.slice(1).toLowerCase()}`],
+    ['Domain', '', '', `${info?.domain.replace(/_/g, ' ').charAt(0).toUpperCase()}${info?.domain.replace(/_/g, ' ').slice(1).toLowerCase()}`],
     ['Location', '', '', `${info?.city.charAt(0).toUpperCase()}${info?.city.slice(1).toLowerCase()}`],
     ['Course Duration', '', '', `${info?.course_duration} months`],
     ['Price', '', '', `₹ ${formatIndianCurrency(parseFloat(data?.price).toFixed(2))}`],
