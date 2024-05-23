@@ -44,21 +44,6 @@ const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const handleWishlist = id => {
-    const updatedWishlist = [...wishlist];
-    const index = updatedWishlist.indexOf(id);
-    if (index === -1) {
-      updatedWishlist.push(id);
-    } else {
-      updatedWishlist.splice(index, 1);
-    }
-    setWishlist(updatedWishlist);
-  };
-
-  const isWishlisted = id => {
-    return wishlist.includes(id);
-  };
-
   const fetchproductApi = () => {
     axios
       .get(`${Baseurl}/api/home/latest`)
@@ -372,42 +357,40 @@ const HomeScreen = () => {
           />
         </View>
 
-        <View style={style.sliderContainer}>
+        <View style={{flex: 1, marginLeft: -5}}>
           <SliderBox
             images={image}
-            dotStyle={{height: 10, width: 10, borderRadius: 5}}
+            dotStyle={{height: 10, width: 10, borderRadius: 5, bottom: 10}}
             dotColor="#3184b6"
             inactiveDotColor="white"
-            // imageLoadingColor="white"
             autoplay={true}
             circleLoop={true}
             resizeMode="contain"
             autoplayInterval={5000}
             onCurrentImagePressed={index =>
-              index == 0
+              index === 0
                 ? navigation.navigate('AuthNavigator')
-                : index == 1
+                : index === 1
                 ? navigation.navigate('AddPost')
-                : index == 2
+                : index === 2
                 ? navigation.navigate('AuthNavigator')
-                : index == 3
+                : index === 3
                 ? navigation.navigate('AddPost')
                 : null
             }
-            paginationBoxVerticalPadding={20}
-            paginationBoxStyle={{
-              position: 'absolute',
-              bottom: 0,
-              padding: 0,
-              alignItems: 'center',
-              alignSelf: 'center',
-              justifyContent: 'center',
-              paddingVertical: 10,
-            }}
+            ImageComponent={imageProps => (
+              <Image
+                {...imageProps}
+                style={[
+                  imageProps.style,
+                  {width: '95%'},
+                ]}
+              />
+            )}
           />
         </View>
 
-        <View style={{marginTop: 10}}>
+        <View style={{marginTop: 0}}>
           <FlatList
             data={[
               {id: 1, img: require('../../../assets/banner1.png')},
@@ -551,7 +534,7 @@ const HomeScreen = () => {
                               variant="bodyMedium">
                               {item.title}
                             </Text>
-                            
+
                             <Text variant="titleLarge">
                               ₹{' '}
                               {formatIndianCurrency(

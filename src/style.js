@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 
 export default StyleSheet.create({
   title: {
@@ -45,7 +45,7 @@ export default StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-  },
+   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
