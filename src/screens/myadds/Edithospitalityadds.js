@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {Appbar} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
@@ -21,6 +21,7 @@ import {Dimensions} from 'react-native';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
+import { States } from '../../json/States';
 
 const Edithospitalityadds = item => {
   const navigation = useNavigation();
@@ -32,7 +33,7 @@ const Edithospitalityadds = item => {
         console.log('response----', response.data.data);
         setHospitalityvalue(
           Hospitalitydata.find(
-            item => item.label === response.data.data?.type,
+            item => item.value === response.data.data?.type?.toString(),
           )?.value || null,
         );
         setName(response.data.data?.name);
@@ -41,8 +42,12 @@ const Edithospitalityadds = item => {
         setPrice(response.data.data?.price);
         setStreet(response.data.data?.street);
         setLocality(response.data.data?.locality);
-        setCity(response.data.data?.city);
-        setstate(response.data.data?.state);
+        setSelectedState(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setSelectedCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
@@ -53,10 +58,7 @@ const Edithospitalityadds = item => {
       .catch(error => {
         console.error('Error fetching data: ', error);
       });
-  };
-  useEffect(() => {
-    fetchproductApibyid(newdata?.item.id);
-  }, []);
+  }; 
 
   const [hospitalityvalue, setHospitalityvalue] = useState(null);
   const [selectedImages, setSelectedImages] = useState([]);
@@ -74,12 +76,16 @@ const Edithospitalityadds = item => {
   const [state, setstate] = useState('');
   const [pincode, setPincode] = useState('');
 
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
+
   const Hospitalitydata = [
-    {label: 'Hotel', value: '1'},
-    {label: 'Guest House', value: '2'},
-    {label: 'Homestay', value: '3'},
-    {label: 'Resort', value: '4'},
-    {label: 'Paying Guest', value: '5'},
+    {label: 'Hotel', value: 'hotel'},
+    {label: 'Guest House', value: 'guest_house'},
+    {label: 'Homestay', value: 'homestay'},
+    {label: 'Resort', value: 'resort'},
+    {label: 'Paying Guest', value: 'paying_guest'},
   ];
 
   const handleCameraLaunch = () => {
@@ -156,14 +162,14 @@ const Edithospitalityadds = item => {
           const requestBody = {
             title: adtitle,
             type: Hospitalitydata.find(item => item.value === hospitalityvalue)
-              ?.label,
+              ?.value,
             description: description,
             name: name,
             price: price,
             street: street,
             locality: locality,
-            city: city,
-            state: state,
+            city: selectedCity,
+            state: selectedState,
             pincode: pincode,
           };
 
@@ -287,6 +293,47 @@ const Edithospitalityadds = item => {
       });
   };
 
+
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      fetchproductApibyid(newdata?.item.id);
+
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
+    }
+  }, [isfocused]);
+
+  useEffect(() => {
+    if (selectedState) {
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
+      setCityData(cities);
+    }
+  }, [selectedState]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
+  };
+
   return (
     <View style={{flex: 1}}>
       <Appbar.Header>
@@ -399,37 +446,44 @@ const Edithospitalityadds = item => {
                   />
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
-                  />
-                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput

@@ -31,11 +31,11 @@ const HospitalorClinic = () => {
   const navigation = useNavigation();
   const [hospitalorclinicvalue, setHospitalorclinicvalue] = useState(null);
   const HospitalData = [
-    {label: 'Hospital', value: '1'},
-    {label: 'Clinic', value: '2'},
-    {label: 'Laboratoy', value: '3'},
-    {label: 'Nurshing Home', value: '4'},
-    {label: 'Care Giving Service', value: '5'},
+    {label: 'Hospital', value: 'hospital'},
+    {label: 'Clinic', value: 'clinic'},
+    {label: 'Laboratoy', value: 'loboratory'},
+    {label: 'Nurshing Home', value: 'nurshing_home'},
+    {label: 'Care Giving Service', value: 'care_giving_service'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -159,7 +159,7 @@ const HospitalorClinic = () => {
             .map(i => i.label)
             .toString();
 
-          formData.append('type', hospitaltype);
+          formData.append('type', hospitalorclinicvalue);
           formData.append('description', description);
           formData.append('name', name);
           formData.append('price_registration', priceperregistration);

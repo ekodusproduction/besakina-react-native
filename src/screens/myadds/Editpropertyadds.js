@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Appbar} from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import style from '../../style';
@@ -21,6 +21,7 @@ import {Dimensions} from 'react-native';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
+import {States} from '../../json/States';
 
 const Editpropertyadds = item => {
   const navigation = useNavigation();
@@ -32,97 +33,120 @@ const Editpropertyadds = item => {
         console.log('response ---', response);
 
         setSelectedCategory(
-          data.find(item => item.label === response.data.data?.category)
+          data.find(item => item.value === response.data.data?.category)
             ?.value || null,
         );
         setSelectedType(
-          TypesData.find(item => item.value === response.data.data?.type)?.value || null
+          TypesData.find(
+            item => item.value === response.data.data?.type?.toString(),
+          )?.value || null,
         );
-        
         setSelectedbedrooms(
           BedroomsData.find(
-            item => item === response.data.data?.bedrooms.toString(),
-          ) || null,
-        );
-        setSelectedbathrooms(
-          BathroomData.find(
-            item => item === response.data.data?.bathrooms.toString(),
-          ) || null,
-        );
-        setFurnishing(
-          FurnishingData.find(
-            item => item === response.data.data?.furnishing.toString(),
-          ) || null,
-        );
-        setConstructionstatus(
-          ConstructionData.find(
-            item => item === response.data.data?.construction_status.toString(),
-          ) || null,
-        );
-        setListedby(
-          ListedData.find(
-            item => item === response.data.data?.listed_by.toString(),
+            item => item === response.data.data?.bedrooms?.toString(),
           ) || null,
         );
         setCarparking(
           ParkingData.find(
-            item => item === response.data.data?.car_parking.toString(),
+            item => item === response.data.data?.car_parking?.toString(),
           ) || null,
         );
+        setSelectedbathrooms(
+          BathroomData.find(
+            item => item === response.data.data?.bathrooms?.toString(),
+          ) || null,
+        );
+        setFurnishing(
+          FurnishingData.find(
+            item => item.value === response.data.data?.furnishing?.toString(),
+          ).value || null,
+        );
+        setConstructionstatus(
+          ConstructionData.find(
+            item =>
+              item.value ===
+              response.data.data?.construction_status?.toString(),
+          ).value || null,
+        );
+        setListedby(
+          ListedData.find(
+            item => item.value === response.data.data?.listed_by?.toString(),
+          ).value || null,
+        );
 
-        setBuiltuparea(response.data.data?.super_builtup_area.toString());
-        setCarpetarea(response.data.data?.carpet_area.toString());
-        setMaintenance(response.data.data?.maintenance.toString());
-        setTotalrooms(response.data.data?.total_rooms.toString());
-        setFloorno(response.data.data?.floor_no?.toString());
+        setBuiltuparea(
+          response.data.data?.super_builtup_area?.toString() || '',
+        );
+        setCarpetarea(response.data.data?.carpet_area?.toString() || '');
+        setMaintenance(response.data.data?.maintenance?.toString() || '');
+        setTotalrooms(response.data.data?.total_rooms?.toString() || '');
+        setFloorno(response.data.data?.floor_no?.toString() || '');
 
-        setAdtitle(response.data.data?.title);
-        setDescription(response.data.data?.description);
-        setPrice(response.data.data?.price);
-        setStreet(response.data.data?.street);
-        setCity(response.data.data?.city);
-        setstate(response.data.data?.state);
-        setPincode(response.data.data?.pincode);
-        setLandmark(response.data.data?.landmark);
-        setHouseno(response.data.data?.house_no);
+        setAdtitle(response.data.data?.title || '');
+        setDescription(response.data.data?.description || '');
+        setPrice(response.data.data?.price || '');
+        setStreet(response.data.data?.street || '');
+        setSelectedState(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setSelectedCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
+        setPincode(response.data.data?.pincode || '');
+        setLandmark(response.data.data?.landmark || '');
+        setHouseno(response.data.data?.house_no || '');
         setSelectedImages(
-          response.data.data?.images.map(imagePath => ({
+          response.data.data?.images?.map(imagePath => ({
             uri: `${imagePath}`,
-          })),
+          })) || [],
         );
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
       });
   };
-  useEffect(() => {
-    fetchproductApibyid(newdata?.item.id);
-  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(false);
   const TypesData = [
     {label: 'Apartments', value: 'apartments'},
     {label: 'Builder Floors', value: 'builder_floors'},
     {label: 'Farm Houses', value: 'farm_houses'},
-    {label: 'Houses and Villas', value: 'houses_and_villas'},
+    {label: 'Houses and Villas', value: 'houses_villas'},
   ];
   const BedroomsData = ['1', '2', '3', '4', '5'];
   const BathroomData = ['1', '2', '3', '4', '5'];
   const ParkingData = ['0', '1', '2', '3', '4'];
-  const FurnishingData = ['Furnished', 'semi-Furnished', 'UnFurnished'];
-  const ConstructionData = [
-    'New Launch',
-    'Ready to move',
-    'Under Construction',
+  const FurnishingData = [
+    {label: 'Furnished', value: 'furnished'},
+    {label: 'Semi-Furnished', value: 'semi-furnished'},
+    {label: 'Unfurnished', value: 'unfurnished'},
   ];
-  const ListedData = ['Builder', 'Dealer', 'Owner'];
+
+  const ConstructionData = [
+    {label: 'New Launch', value: 'new_launch'},
+    {label: 'Ready to Move', value: 'ready_to_move'},
+    {label: 'Under Construction', value: 'under_construction'},
+  ];
+
+  const ListedData = [
+    {label: 'Builder', value: 'builder'},
+    {label: 'Dealer', value: 'dealer'},
+    {label: 'Owner', value: 'owner'},
+  ];
   const data = [
-    {label: 'For Sale: Houses and Apartments', value: '1'},
-    {label: 'For Rent: Houses and Apartments', value: '2'},
-    {label: 'Lands and Plots', value: '3'},
-    {label: 'For Sale: Shops and Offices', value: '4'},
-    {label: 'For Rent: Shops and Offices', value: '5'},
-    {label: 'PG and Guest Houses', value: '6'},
+    {
+      label: 'For Sale: Houses and Apartments',
+      value: 'for_sale_houses_and_apartments',
+    },
+    {
+      label: 'For Rent: Houses and Apartments',
+      value: 'for_rent_houses_and_apartments',
+    },
+    {label: 'Lands and Plots', value: 'lands_and_plots'},
+    {label: 'For Sale: Shops and Offices', value: 'for_sale_shops_and_offices'},
+    {label: 'For Rent: Shops and Offices', value: 'for_rent_shops_and_offices'},
+    {label: 'PG and Guest Houses', value: 'pg_and_guest_houses'},
   ];
   const [selectedType, setSelectedType] = useState(null);
   const [selectedbedrooms, setSelectedbedrooms] = useState(null);
@@ -149,6 +173,10 @@ const Editpropertyadds = item => {
   const itemWidth = (screenWidth - 20) / 4.7;
   const [houseno, setHouseno] = useState('');
   const [landmark, setLandmark] = useState('');
+
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -234,14 +262,14 @@ const Editpropertyadds = item => {
             floor_no: floorno,
             car_parking: carparking,
             title: adtitle,
-            category: data.find(item => item.value === selectedCategory)?.label,
+            category: data.find(item => item.value === selectedCategory)?.value,
             description: description,
             price: price,
             street: street,
             house_no: houseno,
             landmark: landmark,
-            city: city,
-            state: state,
+            city: selectedCity,
+            state: selectedState,
             pincode: pincode,
           };
 
@@ -361,6 +389,45 @@ const Editpropertyadds = item => {
       });
   };
 
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      fetchproductApibyid(newdata?.item.id);
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
+    }
+  }, [isfocused]);
+
+  useEffect(() => {
+    if (selectedState) {
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
+      setCityData(cities);
+    }
+  }, [selectedState]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
+  };
+
   return (
     <View style={{flex: 1}}>
       <Appbar.Header>
@@ -385,12 +452,10 @@ const Editpropertyadds = item => {
                 inputSearchStyle={style.inputSearchStyle}
                 iconStyle={style.iconStyle}
                 data={data}
-                // search
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="Select Properties"
-                // searchPlaceholder="Search..."
                 value={selectedCategory}
                 onChange={item => {
                   setSelectedCategory(item.value);
@@ -532,16 +597,19 @@ const Editpropertyadds = item => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            furnishing === item ? '#3184b6' : 'transparent',
+                            furnishing === item.value
+                              ? '#3184b6'
+                              : 'transparent',
                         }}
-                        onPress={() => setFurnishing(item)}>
+                        onPress={() => setFurnishing(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: furnishing === item ? 'white' : 'black',
+                            color:
+                              furnishing === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -564,19 +632,21 @@ const Editpropertyadds = item => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            constructionstatus === item
+                            constructionstatus === item.value
                               ? '#3184b6'
                               : 'transparent',
                         }}
-                        onPress={() => setConstructionstatus(item)}>
+                        onPress={() => setConstructionstatus(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
                             color:
-                              constructionstatus === item ? 'white' : 'black',
+                              constructionstatus === item.value
+                                ? 'white'
+                                : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -599,16 +669,16 @@ const Editpropertyadds = item => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            listedby === item ? '#3184b6' : 'transparent',
+                            listedby === item.value ? '#3184b6' : 'transparent',
                         }}
-                        onPress={() => setListedby(item)}>
+                        onPress={() => setListedby(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: listedby === item ? 'white' : 'black',
+                            color: listedby === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -740,14 +810,14 @@ const Editpropertyadds = item => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            carparking === index ? '#3184b6' : 'transparent', // Set background color based on selection
+                            carparking === item ? '#3184b6' : 'transparent', // Set background color based on selection
                         }}
-                        onPress={() => setCarparking(index)}>
+                        onPress={() => setCarparking(item)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: carparking === index ? 'white' : 'black',
+                            color: carparking === item ? 'white' : 'black',
                           }}>
                           {item}
                         </Text>
@@ -776,7 +846,7 @@ const Editpropertyadds = item => {
                   // }}
                   />
                 </View> */}
-                <View style={{marginTop: 10}}>
+                {/* <View style={{marginTop: 10}}>
                   <Text> Project Name</Text>
                   <TextInput
                     placeholderTextColor="black"
@@ -791,7 +861,7 @@ const Editpropertyadds = item => {
                     value={projectname}
                     onChangeText={built => setProjectname(built)}
                   />
-                </View>
+                </View> */}
                 <View style={{marginTop: 10}}>
                   <Text>Ad Title*</Text>
                   <TextInput
@@ -830,22 +900,7 @@ const Editpropertyadds = item => {
                   />
                 </View>
 
-                <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
-                  />
-                </View>
+              
                 <View style={{marginTop: 10}}>
                   <Text>house no.</Text>
                   <TextInput
@@ -879,21 +934,44 @@ const Editpropertyadds = item => {
                   />
                 </View>
                 <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
@@ -1041,7 +1119,7 @@ const Editpropertyadds = item => {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <Text style={{textAlign: 'center', fontSize: 18, color: 'white'}}>
-              Post My Ad
+              Update My Ad
             </Text>
           )}
         </TouchableOpacity>

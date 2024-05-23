@@ -34,17 +34,18 @@ const Education = () => {
   const [domainvalue, setDomainvalue] = useState(null);
   const [loading, setLoading] = useState(false);
   const Coursedata = [
-    {label: 'Graduation', value: '1'},
-    {label: 'Diploma', value: '2'},
-    {label: 'Certification', value: '3'},
+    {label: 'Graduation', value: 'graduation'},
+    {label: 'Diploma', value: 'diploma'},
+    {label: 'Post Graduation', value: 'post_graduation'},
+    {label: 'Phd', value: 'phd'},
   ];
   const Domaindata = [
-    {label: 'Science', value: '1'},
-    {label: 'Arts', value: '2'},
-    {label: 'Commerce', value: '3'},
-    {label: 'Computer Science', value: '4'},
-    {label: 'Cooking', value: '5'},
-    {label: 'Electronics', value: '6'},
+    {label: 'Science', value: 'science'},
+    {label: 'Arts', value: 'arts'},
+    {label: 'Commerce', value: 'commerce'},
+    {label: 'Computer Science', value: 'computer_science'},
+    {label: 'Cooking', value: 'cooking'},
+    {label: 'Electronics', value: 'electronics'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;

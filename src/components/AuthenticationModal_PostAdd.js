@@ -130,8 +130,8 @@ const AuthenticationModal_PostAdd = ({
             .map(i => i.label)
             .toString();
 
-          formData.append('type', courseType);
-          formData.append('domain', domainType);
+          formData.append('type', coursevalue);
+          formData.append('domain', domainvalue);
           formData.append('institution_name', instituname);
           formData.append('course_duration', duration);
           formData.append('title', title);

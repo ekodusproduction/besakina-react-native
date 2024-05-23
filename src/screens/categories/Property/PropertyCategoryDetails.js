@@ -312,7 +312,7 @@ const PropertyCategoryDetails = ({route}) => {
           <View>
             <View
               style={{
-                height: 100,
+                height: 80,
                 borderWidth: 1,
                 borderColor: 'gray',
                 borderRadius: 12,

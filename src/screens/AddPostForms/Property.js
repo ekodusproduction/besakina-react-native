@@ -35,26 +35,43 @@ const Property = () => {
     {label: 'Apartments', value: 'apartments'},
     {label: 'Builder Floors', value: 'builder_floors'},
     {label: 'Farm Houses', value: 'farm_houses'},
-    {label: 'Houses and Villas', value: 'houses_and_villas'},
+    {label: 'Houses and Villas', value: 'houses_villas'},
   ];
 
   const BedroomsData = ['1', '2', '3', '4', '5'];
   const BathroomData = ['1', '2', '3', '4', '5'];
   const ParkingData = ['0', '1', '2', '3', '4'];
-  const FurnishingData = ['Furnished', 'semi-Furnished', 'UnFurnished'];
-  const ConstructionData = [
-    'New Launch',
-    'Ready to move',
-    'Under Construction',
+  const FurnishingData = [
+    {label: 'Furnished', value: 'furnished'},
+    {label: 'Semi-Furnished', value: 'semi-furnished'},
+    {label: 'Unfurnished', value: 'unfurnished'},
   ];
-  const ListedData = ['Builder', 'Dealer', 'Owner'];
+
+  const ConstructionData = [
+    {label: 'New Launch', value: 'new_launch'},
+    {label: 'Ready to Move', value: 'ready_to_move'},
+    {label: 'Under Construction', value: 'under_construction'},
+  ];
+
+  const ListedData = [
+    {label: 'Builder', value: 'builder'},
+    {label: 'Dealer', value: 'dealer'},
+    {label: 'Owner', value: 'owner'},
+  ];
+
   const data = [
-    {label: 'For Sale: Houses and Apartments', value: '1'},
-    {label: 'For Rent: Houses and Apartments', value: '2'},
-    {label: 'Lands and Plots', value: '3'},
-    {label: 'For Sale: Shops and Offices', value: '4'},
-    {label: 'For Rent: Shops and Offices', value: '5'},
-    {label: 'PG and Guest Houses', value: '6'},
+    {
+      label: 'For Sale: Houses and Apartments',
+      value: 'for_sale_houses_and_apartments',
+    },
+    {
+      label: 'For Rent: Houses and Apartments',
+      value: 'for_rent_houses_and_apartments',
+    },
+    {label: 'Lands and Plots', value: 'lands_and_plots'},
+    {label: 'For Sale: Shops and Offices', value: 'for_sale_shops_and_offices'},
+    {label: 'For Rent: Shops and Offices', value: 'for_rent_shops_and_offices'},
+    {label: 'PG and Guest Houses', value: 'pg_and_guest_houses'},
   ];
   const [selectedType, setSelectedType] = useState(null);
   const [selectedbedrooms, setSelectedbedrooms] = useState(null);
@@ -222,7 +239,7 @@ const Property = () => {
             })
             .then(response => {
               console.log('response of the api--->', response);
-             
+
               ToastAndroid.showWithGravityAndOffset(
                 `${response.data.message}`,
                 ToastAndroid.LONG,
@@ -247,7 +264,10 @@ const Property = () => {
               if (error.response.data.message == 'User Profile Incomplete') {
                 navigation.navigate('EditProfile');
               }
-              if (error.response.data.message == 'Mobile number not registered please login') {
+              if (
+                error.response.data.message ==
+                'Mobile number not registered please login'
+              ) {
                 setShowTokenModal(true);
               }
               if (
@@ -433,12 +453,10 @@ const Property = () => {
                 inputSearchStyle={style.inputSearchStyle}
                 iconStyle={style.iconStyle}
                 data={data}
-                // search
                 maxHeight={300}
                 labelField="label"
                 valueField="value"
                 placeholder="Select Properties"
-                // searchPlaceholder="Search..."
                 value={selectedCategory}
                 onChange={item => {
                   setSelectedCategory(item.value);
@@ -580,16 +598,19 @@ const Property = () => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            furnishing === item ? '#3184b6' : 'transparent',
+                            furnishing === item.value
+                              ? '#3184b6'
+                              : 'transparent',
                         }}
-                        onPress={() => setFurnishing(item)}>
+                        onPress={() => setFurnishing(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: furnishing === item ? 'white' : 'black',
+                            color:
+                              furnishing === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -612,19 +633,21 @@ const Property = () => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            constructionstatus === item
+                            constructionstatus === item.value
                               ? '#3184b6'
                               : 'transparent',
                         }}
-                        onPress={() => setConstructionstatus(item)}>
+                        onPress={() => setConstructionstatus(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
                             color:
-                              constructionstatus === item ? 'white' : 'black',
+                              constructionstatus === item.value
+                                ? 'white'
+                                : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -647,16 +670,16 @@ const Property = () => {
                           margin: 5,
                           flexDirection: 'row',
                           backgroundColor:
-                            listedby === item ? '#3184b6' : 'transparent',
+                            listedby === item.value ? '#3184b6' : 'transparent',
                         }}
-                        onPress={() => setListedby(item)}>
+                        onPress={() => setListedby(item.value)}>
                         <Text
                           style={{
                             fontSize: 12,
                             fontWeight: '500',
-                            color: listedby === item ? 'white' : 'black',
+                            color: listedby === item.value ? 'white' : 'black',
                           }}>
-                          {item}
+                          {item.label}
                         </Text>
                       </TouchableOpacity>
                     ))}
@@ -824,7 +847,7 @@ const Property = () => {
                   // }}
                   />
                 </View> */}
-                <View style={{marginTop: 10}}>
+                {/* <View style={{marginTop: 10}}>
                   <Text> Project Name</Text>
                   <TextInput
                     placeholderTextColor="black"
@@ -839,7 +862,7 @@ const Property = () => {
                     value={projectname}
                     onChangeText={built => setProjectname(built)}
                   />
-                </View>
+                </View> */}
                 <View style={{marginTop: 10}}>
                   <Text>Ad Title*</Text>
                   <TextInput
@@ -878,7 +901,6 @@ const Property = () => {
                   />
                 </View>
 
-                 
                 <View style={{marginTop: 10}}>
                   <Text>house no.</Text>
                   <TextInput
@@ -932,7 +954,7 @@ const Property = () => {
 
                 {selectedState && (
                   <View style={{marginTop: 10}}>
-                     <Dropdown
+                    <Dropdown
                       style={style.dropdown}
                       placeholderStyle={style.placeholderStyle}
                       selectedTextStyle={style.selectedTextStyle}

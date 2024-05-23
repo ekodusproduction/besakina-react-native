@@ -31,15 +31,15 @@ const Doctor = () => {
   const navigation = useNavigation();
   const [expertisevalue, setExpertiseValue] = useState(null);
   const Expertisedata = [
-    {label: 'Child', value: '1'},
-    {label: 'Gastro intestine', value: '2'},
-    {label: 'Cardiology', value: '3'},
-    {label: 'Ophthalmology', value: '4'},
-    {label: 'Orthopaedic', value: '5'},
-    {label: 'Gynecology', value: '6'},
-    {label: 'Emergency Medicine', value: '7'},
-    {label: 'Physician', value: '8'},
-    {label: 'Other', value: '9'},
+    {label: 'Child', value: 'child'},
+    {label: 'Gastro intestine', value: 'gastro_intestine'},
+    {label: 'Cardiology', value: 'cardiology'},
+    {label: 'Ophthalmology', value: 'ophthalmology'},
+    {label: 'Orthopaedic', value: 'orthopaedic'},
+    {label: 'Gynecology', value: 'gynecology'},
+    {label: 'Emergency Medicine', value: 'emergency_medicine'},
+    {label: 'Physician', value: 'physician'},
+    {label: 'Other', value: 'other'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -164,7 +164,7 @@ const Doctor = () => {
             .map(i => i.label)
             .toString();
 
-          formData.append('expertise', expertisetype);
+          formData.append('expertise', expertisevalue);
           formData.append('description', description);
           formData.append('name', name);
           formData.append('total_experience', experiance);

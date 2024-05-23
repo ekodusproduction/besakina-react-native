@@ -56,11 +56,11 @@ const Hospitality = () => {
   const [cityData, setCityData] = useState([]);
 
   const Hospitalitydata = [
-    {label: 'Hotel', value: '1'},
-    {label: 'Guest House', value: '2'},
-    {label: 'Homestay', value: '3'},
-    {label: 'Resort', value: '4'},
-    {label: 'Paying Guest', value: '5'},
+    {label: 'Hotel', value: 'hotel'},
+    {label: 'Guest House', value: 'guest_house'},
+    {label: 'Homestay', value: 'homestay'},
+    {label: 'Resort', value: 'resort'},
+    {label: 'Paying Guest', value: 'paying_guest'},
   ];
 
   const handleCameraLaunch = () => {
@@ -142,13 +142,13 @@ const Hospitality = () => {
 
           // formData.append("plan_id", "1");
           formData.append('title', adtitle);
-          const hospitalitytype = Hospitalitydata.filter(
-            item => item.value === hospitalityvalue,
-          )
-            .map(i => i.label)
-            .toString();
+          // const hospitalitytype = Hospitalitydata.filter(
+          //   item => item.value === hospitalityvalue,
+          // )
+          //   .map(i => i.label)
+          //   .toString();
 
-          formData.append('type', hospitalitytype);
+          formData.append('type', hospitalityvalue);
           formData.append('description', description);
           formData.append('name', name);
           formData.append('price', price);
@@ -411,12 +411,10 @@ const Hospitality = () => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Hospitalitydata}
-                    // search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
-                    placeholder="Select Type"
-                    // searchPlaceholder="Search..."
+                    placeholder="Select Hospitality Type"
                     value={hospitalityvalue}
                     onChange={item => {
                       setHospitalityvalue(item.value);
@@ -462,7 +460,7 @@ const Hospitality = () => {
 
                 {selectedState && (
                   <View style={{marginTop: 10}}>
-                     <Dropdown
+                    <Dropdown
                       style={style.dropdown}
                       placeholderStyle={style.placeholderStyle}
                       selectedTextStyle={style.selectedTextStyle}

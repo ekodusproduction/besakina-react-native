@@ -22,6 +22,8 @@ import {Baseurl} from '../../constant/globalparams';
 import axios from 'axios';
 import {handleGetToken} from '../../constant/tokenUtils';
 import {useIsFocused} from '@react-navigation/native';
+import {States} from '../../json/States';
+
 
 const Editeducationadds = item => {
   const newdata = item.route.params;
@@ -31,17 +33,18 @@ const Editeducationadds = item => {
   const [domainvalue, setDomainvalue] = useState(null);
   const [loading, setLoading] = useState(false);
   const Coursedata = [
-    {label: 'Graduation', value: '1'},
-    {label: 'Diploma', value: '2'},
-    {label: 'Certification', value: '3'},
+    {label: 'Graduation', value: 'graduation'},
+    {label: 'Diploma', value: 'diploma'},
+    {label: 'Post Graduation', value: 'post_graduation'},
+    {label: 'Phd', value: 'phd'},
   ];
   const Domaindata = [
-    {label: 'Science', value: '1'},
-    {label: 'Arts', value: '2'},
-    {label: 'Commerce', value: '3'},
-    {label: 'Computer Science', value: '4'},
-    {label: 'Cooking', value: '5'},
-    {label: 'Electronics', value: '6'},
+    {label: 'Science', value: 'science'},
+    {label: 'Arts', value: 'arts'},
+    {label: 'Commerce', value: 'commerce'},
+    {label: 'Computer Science', value: 'computer_science'},
+    {label: 'Cooking', value: 'cooking'},
+    {label: 'Electronics', value: 'electronics'},
   ];
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
@@ -52,25 +55,28 @@ const Editeducationadds = item => {
   const [description, setDescription] = useState(null);
   const [price, setPrice] = useState(null);
   const [street, setStreet] = useState(null);
-  const [locality, setLocality] = useState(null);
-  const [city, setCity] = useState(null);
-  const [state, setstate] = useState(null);
+  const [locality, setLocality] = useState(null);  
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
   const [pincode, setPincode] = useState(null);
-
-
+  const [city, setCity] = useState('');
+  const [state, setstate] = useState('');
+  
   const fetchproductApibyid = id => {
     axios
       .get(`${Baseurl}/api/education/id/${id}`)
       .then(response => {
+        console.log('response--->',response)
         setCoursevalue(
           Coursedata.find(
-            item => item.label === response.data.data?.type,
+            item => item.value === response.data.data?.type,
           )?.value || null,
         );
 
         setDomainvalue(
           Domaindata.find(
-            item => item.label === response.data.data?.domain,
+            item => item.value === response.data.data?.domain,
           )?.value || null,
         );
 
@@ -81,8 +87,12 @@ const Editeducationadds = item => {
         setPrice(response.data.data?.price);
         setStreet(response.data.data?.street);
         setLocality(response.data.data?.locality);
-        setCity(response.data.data?.city);
-        setstate(response.data.data?.state);
+        setSelectedState(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setSelectedCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
@@ -95,10 +105,7 @@ const Editeducationadds = item => {
       });
   };
 
-  useEffect(() => {
-    fetchproductApibyid(newdata?.item.id);
-  }, []);
-
+   
 
   const handleCameraLaunch = () => {
     const options = {
@@ -171,16 +178,16 @@ const Editeducationadds = item => {
 
           const requestBody = {
             title: title,
-            type: Coursedata.find(item => item.value === coursevalue)?.label,
-            domain: Domaindata.find(item => item.value === domainvalue)?.label,
+            type: Coursedata.find(item => item.value === coursevalue)?.value,
+            domain: Domaindata.find(item => item.value === domainvalue)?.value,
             description: description,
             institution_name: instituname,
             course_duration: duration,
             price: price,
             street: street,
             locality: locality,
-            city: city,
-            state: state,
+            city: selectedCity,
+            state: selectedState,
             pincode: pincode,
           };
 
@@ -301,7 +308,45 @@ const Editeducationadds = item => {
         console.error('Error while handling token:', error);
       });
   };
-  
+  const isfocused = useIsFocused();
+
+  useEffect(() => {
+    if (isfocused == true) {
+      fetchproductApibyid(newdata?.item.id);
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
+    }
+  }, [isfocused]);
+
+  useEffect(() => {
+    if (selectedState) {
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
+      setCityData(cities);
+    }
+  }, [selectedState]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
+  };
+
 
   return (
     <View style={{flex: 1}}>
@@ -467,38 +512,46 @@ const Editeducationadds = item => {
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
+                 
                 <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
-                  />
-                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
