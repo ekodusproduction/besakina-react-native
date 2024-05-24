@@ -104,9 +104,9 @@ const FirstRoute = () => {
       case !registrationyear:
         missingFields.push('registrationyear');
         break;
-      case !transmission:
-        missingFields.push('transmission');
-        break;
+      // case !transmission:
+      //   missingFields.push('transmission');
+      //   break;
       case !kilometerdriven:
         missingFields.push('kilometerdriven');
         break;
@@ -124,9 +124,9 @@ const FirstRoute = () => {
       case !pincode:
         missingFields.push('Pincode');
         break;
-      case !price:
-        missingFields.push('price');
-        break;
+      // case !price:
+      //   missingFields.push('price');
+      //   break;
       case selectedImages.length === 0:
         missingFields.push('Images');
         break;
@@ -170,8 +170,8 @@ const FirstRoute = () => {
             .toString();
 
           formData.append('brand', modelvalue);
-          formData.append('type', vehicletype);
-          formData.append('fuel', fueldatatype);
+          formData.append('type', vehiclevalue);
+          formData.append('fuel', fuelvalue);
           formData.append('variant', vehiclevariant);
           formData.append('model', vehiclemodel);
           formData.append('second_hand', 1);
@@ -456,7 +456,7 @@ const FirstRoute = () => {
                           .find(item => item.value === vehiclevalue)
                           ?.models?.map(model => ({
                             label: model,
-                            value: model.toLowerCase(),
+                            value: model,
                           })) || []
                       }
                       value={modelvalue}
@@ -1474,7 +1474,7 @@ const SecondRoute = () => {
                         .find(item => item.value === vehiclevalue)
                         ?.models?.map(model => ({
                           label: model,
-                          value: model.toLowerCase(),
+                          value: model,
                         })) || []
                     }
                     value={modelvalue}

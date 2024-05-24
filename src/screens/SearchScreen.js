@@ -166,7 +166,7 @@ const SearchScreen = () => {
                       : null
                   }>
                   <Image
-                    source={{uri: `${Baseurl}/api/${item.images[0]}`}}
+                    source={{uri: `${item.images[0]}`}}
                     style={{
                       height: 120,
                       borderTopLeftRadius: 12,

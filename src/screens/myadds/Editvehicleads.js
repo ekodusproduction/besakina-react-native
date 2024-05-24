@@ -13,63 +13,33 @@ import {
   StyleSheet,
   ToastAndroid,
 } from 'react-native';
+import axios from 'axios';
+import style from '../../style';
+import {Dimensions} from 'react-native';
 import {Appbar} from 'react-native-paper';
+import {Baseurl} from '../../constant/globalparams';
+import {useIsFocused} from '@react-navigation/native';
 import {useNavigation} from '@react-navigation/native';
 import {Dropdown} from 'react-native-element-dropdown';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import style from '../../style';
-import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
-import {Dimensions} from 'react-native';
 import {handleGetToken} from '../../constant/tokenUtils';
-import {Baseurl} from '../../constant/globalparams';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useIsFocused} from '@react-navigation/native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TabView, SceneMap, TabBar} from 'react-native-tab-view';
+import {Fueldata, modelData, Vehicledata} from '../../json/Vehicle';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import {States} from '../../json/States';
 
 const FirstRoute = item => {
+  const navigation = useNavigation();
+  const screenWidth = Dimensions.get('window').width;
+  const itemWidth = (screenWidth - 20) / 4.7;
+  const isfocused = useIsFocused();
+
   const [vehiclevalue, setVehiclevalue] = useState(null);
   const [modelvalue, setModelValue] = useState(null);
   const [fuelvalue, setFuelvalue] = useState(null);
-  const navigation = useNavigation();
-
   const [loading, setLoading] = useState(false);
-
-  const modelData = [
-    {label: 'BMW', value: '1'},
-    {label: 'Ford', value: '2'},
-    {label: 'Fiat', value: '3'},
-    {label: 'Honda', value: '4'},
-    {label: 'Hyundai', value: '5'},
-    {label: 'Jeep', value: '6'},
-    {label: 'Mercedes', value: '7'},
-    {label: 'Toyota', value: '8'},
-    {label: 'Mahindra', value: '9'},
-    {label: 'Renault', value: '10'},
-    {label: 'Volkswagen', value: '11'},
-    {label: 'Audi', value: '12'},
-    {label: 'Tata Motors', value: '13'},
-    {label: 'Maruti Suzuki', value: '14'},
-    {label: 'All Brands', value: '15'},
-  ];
-  const Vehicledata = [
-    {label: 'Car', value: '1'},
-    {label: 'MotorCycle', value: '2'},
-    {label: 'Scooty', value: '3'},
-    {label: 'Bike', value: '4'},
-  ];
-  const Fueldata = [
-    {label: 'Petrol', value: '1'},
-    {label: 'Diesel', value: '2'},
-    {label: 'CNG', value: '3'},
-    {label: 'LPG', value: '4'},
-    {label: 'Electric', value: '5'},
-    {label: 'Hybrid', value: '6'},
-  ];
-
   const [selectedImages, setSelectedImages] = useState([]);
-  const screenWidth = Dimensions.get('window').width;
-  const itemWidth = (screenWidth - 20) / 4.7;
   const [registrationyear, seRegistrationyear] = useState(null);
   const [vehiclevariant, setVehiclevariant] = useState(null);
   const [vehiclemodel, setVehiclemodel] = useState(null);
@@ -84,23 +54,27 @@ const FirstRoute = item => {
   const [city, setCity] = useState(null);
   const [state, setstate] = useState(null);
   const [pincode, setPincode] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
 
   const fetchproductApibyid = id => {
     axios
       .get(`${Baseurl}/api/vehicles/id/${id}`)
       .then(response => {
         console.log('response----', response);
+
         setVehiclevalue(
-          Vehicledata.find(item => item.label === response.data.data?.type)
+          Vehicledata.find(item => item.value === response.data.data?.type)
             ?.value || null,
         );
         setModelValue(
-          modelData.find(
-            item => item.label.toLowerCase() === response.data.data?.brand,
-          )?.value || null,
+          modelData
+            .find(item => item.value === response.data.data?.type)
+            ?.models.find(model => model === response.data.data?.brand) || null,
         );
         setFuelvalue(
-          Fueldata.find(item => item.label === response.data.data?.fuel)
+          Fueldata.find(item => item.value === response.data.data?.fuel)
             ?.value || null,
         );
 
@@ -114,8 +88,12 @@ const FirstRoute = item => {
         setPrice(response.data.data?.price);
         setStreet(response.data.data?.street);
         setLocality(response.data.data?.locality);
-        setCity(response.data.data?.city);
-        setstate(response.data.data?.state);
+        setSelectedState(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setSelectedCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
@@ -127,9 +105,6 @@ const FirstRoute = item => {
         console.error('Error fetching data: ', error);
       });
   };
-  useEffect(() => {
-    fetchproductApibyid(item.item.item.id);
-  }, []);
 
   const handleCameraLaunch = () => {
     const options = {
@@ -204,15 +179,18 @@ const FirstRoute = item => {
 
           const requestBody = {
             title: adtitle,
-            brand: modelData.find(item => item.value === modelvalue)?.label,
-            type: Vehicledata.find(item => item.value === vehiclevalue)?.label,
-            fuel: Fueldata.find(item => item.value === fuelvalue)?.label,
+            brand:
+              modelData
+                .find(item => item.value === vehiclevalue)
+                ?.models.find(model => model === modelvalue) || modelvalue,
+            type: Vehicledata.find(item => item.value === vehiclevalue)?.value,
+            fuel: Fueldata.find(item => item.value === fuelvalue)?.value,
             description: description,
             price: price,
             street: street,
             locality: locality,
-            city: city,
-            state: state,
+            city: selectedCity,
+            state: selectedState,
             pincode: pincode,
             kilometer_driven: kilometerdriven,
             registration_year: registrationyear,
@@ -341,6 +319,49 @@ const FirstRoute = item => {
         console.error('Error while handling token:', error);
       });
   };
+
+  const getModelOptions = vehicleType => {
+    const models =
+      modelData.find(item => item.value === vehicleType)?.models || [];
+    return models.map(model => ({label: model, value: model}));
+  };
+
+  useEffect(() => {
+    if (isfocused == true) {
+      fetchproductApibyid(item.item.item.id);
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
+    }
+  }, [isfocused]);
+
+  useEffect(() => {
+    if (selectedState) {
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
+      setCityData(cities);
+    }
+  }, [selectedState]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
+  };
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -365,15 +386,15 @@ const FirstRoute = item => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Vehicledata}
-                    // search
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Type"
-                    // searchPlaceholder="Search..."
                     value={vehiclevalue}
                     onChange={item => {
                       setVehiclevalue(item.value);
+                      setModelValue(null);
                     }}
                   />
                 </View>
@@ -384,13 +405,12 @@ const FirstRoute = item => {
                     selectedTextStyle={style.selectedTextStyle}
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
-                    data={modelData}
-                    // search
+                    data={getModelOptions(vehiclevalue)}
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Brand"
-                    // searchPlaceholder="Search..."
                     value={modelvalue}
                     onChange={item => {
                       setModelValue(item.value);
@@ -405,12 +425,11 @@ const FirstRoute = item => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Fueldata}
-                    // search
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Fuel type"
-                    // searchPlaceholder="Search..."
                     value={fuelvalue}
                     onChange={item => {
                       setFuelvalue(item.value);
@@ -574,38 +593,46 @@ const FirstRoute = item => {
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
+
                 <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
-                  />
-                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
@@ -808,38 +835,6 @@ const SecondRoute = item => {
   const [showTokenModal, setShowTokenModal] = useState(false);
   const [verifyotpvalue, setVerifyOtpvalue] = useState(null);
 
-  const modelData = [
-    {label: 'BMW', value: '1'},
-    {label: 'Ford', value: '2'},
-    {label: 'Fiat', value: '3'},
-    {label: 'Honda', value: '4'},
-    {label: 'Hyundai', value: '5'},
-    {label: 'Jeep', value: '6'},
-    {label: 'Mercedes', value: '7'},
-    {label: 'Toyota', value: '8'},
-    {label: 'Mahindra', value: '9'},
-    {label: 'Renault', value: '10'},
-    {label: 'Volkswagen', value: '11'},
-    {label: 'Audi', value: '12'},
-    {label: 'Tata Motors', value: '13'},
-    {label: 'Maruti Suzuki', value: '14'},
-    {label: 'All Brands', value: '15'},
-  ];
-  const Vehicledata = [
-    {label: 'Car', value: '1'},
-    {label: 'MotorCycle', value: '2'},
-    {label: 'Scooty', value: '3'},
-    {label: 'Bike', value: '4'},
-  ];
-  const Fueldata = [
-    {label: 'Petrol', value: '1'},
-    {label: 'Diesel', value: '2'},
-    {label: 'CNG', value: '3'},
-    {label: 'LPG', value: '4'},
-    {label: 'Electric', value: '5'},
-    {label: 'Hybrid', value: '6'},
-  ];
-
   const [selectedImages, setSelectedImages] = useState([]);
   const screenWidth = Dimensions.get('window').width;
   const itemWidth = (screenWidth - 20) / 4.7;
@@ -859,22 +854,26 @@ const SecondRoute = item => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isValidNumber, setIsValidNumber] = useState(true);
 
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityData, setCityData] = useState([]);
+
   const fetchproductApibyid = id => {
     axios
       .get(`${Baseurl}/api/vehicles/id/${id}`)
       .then(response => {
         console.log('response----', response);
         setVehiclevalue(
-          Vehicledata.find(item => item.label === response.data.data?.type)
+          Vehicledata.find(item => item.value === response.data.data?.type)
             ?.value || null,
         );
         setModelValue(
-          modelData.find(
-            item => item.label.toLowerCase() === response.data.data?.brand,
-          )?.value || null,
+          modelData
+            .find(item => item.value === response.data.data?.type)
+            ?.models.find(model => model === response.data.data?.brand) || null,
         );
         setFuelvalue(
-          Fueldata.find(item => item.label === response.data.data?.fuel)
+          Fueldata.find(item => item.value === response.data.data?.fuel)
             ?.value || null,
         );
 
@@ -888,8 +887,12 @@ const SecondRoute = item => {
         setPrice(response.data.data?.price);
         setStreet(response.data.data?.street);
         setLocality(response.data.data?.locality);
-        setCity(response.data.data?.city);
-        setstate(response.data.data?.state);
+        setSelectedState(
+          response.data.data?.state == null ? '' : response.data.data?.state,
+        );
+        setSelectedCity(
+          response.data.data?.city == null ? '' : response.data.data?.city,
+        );
         setPincode(response.data.data?.pincode);
         setSelectedImages(
           response.data.data?.images.map(imagePath => ({
@@ -973,59 +976,40 @@ const SecondRoute = item => {
         if (token) {
           console.log('Token retrieved successfully--->', token);
           setLoading(true);
+          const requestBody = {
+            title: adtitle,
+            brand:
+              modelData
+                .find(item => item.value === vehiclevalue)
+                ?.models.find(model => model === modelvalue) || modelvalue,
+            type: Vehicledata.find(item => item.value === vehiclevalue)?.value,
+            fuel: Fueldata.find(item => item.value === fuelvalue)?.value,
+            description: description,
+            price: price,
+            street: street,
+            locality: locality,
+            city: selectedCity,
+            state: selectedState,
+            pincode: pincode,
+            kilometer_driven: kilometerdriven,
+            registration_year: registrationyear,
+            transmission: transmission,
+            model: vehiclemodel,
+            second_hand: 0,
+            variant: vehiclevariant,
+          };
 
-          const formData = new FormData();
-
-          // formData.append("plan_id", "1");
-          formData.append('title', adtitle);
-
-          const vehicletype = Vehicledata.filter(
-            item => item.value === vehiclevalue,
-          )
-            .map(i => i.label)
-            .toString();
-          const modeltype = modelData
-            .filter(item => item.value === modelvalue)
-            .map(i => i.label)
-            .toString();
-          const fueldatatype = Fueldata.filter(item => item.value === fuelvalue)
-            .map(i => i.label)
-            .toString();
-
-          formData.append('brand', modeltype);
-          formData.append('type', vehicletype);
-          formData.append('fuel', fueldatatype);
-          formData.append('variant', vehiclevariant);
-          formData.append('model', vehiclemodel);
-          formData.append('second_hand', 0);
-          formData.append('transmission', transmission);
-          formData.append('registration_year', registrationyear);
-          formData.append('kilometer_driven', kilometerdriven);
-          formData.append('description', description);
-          formData.append('price', price);
-
-          selectedImages.forEach((image, index) => {
-            formData.append(`images[${index}]`, {
-              uri: image.uri,
-              type: image.type,
-              name: image.fileName,
-            });
-          });
-
-          formData.append('street', street);
-          formData.append('locality', locality);
-          formData.append('city', city);
-          formData.append('state', state);
-          formData.append('pincode', pincode);
-
-          console.log('formData===', formData);
           axios
-            .post(`${Baseurl}/api/vehicles/add`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data',
-                Authorization: `Bearer ${token}`,
+            .put(
+              `${Baseurl}/api/vehicles/id/${item.item.item.id}`,
+              requestBody,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  Authorization: `Bearer ${token}`,
+                },
               },
-            })
+            )
             .then(response => {
               console.log('response of the api--->', response);
               navigation.goBack();
@@ -1166,6 +1150,49 @@ const SecondRoute = item => {
       setErrorMessage('');
     }
   }, [isfocused]);
+
+  const getModelOptions = vehicleType => {
+    const models =
+      modelData.find(item => item.value === vehicleType)?.models || [];
+    return models.map(model => ({label: model, value: model}));
+  };
+  useEffect(() => {
+    if (isfocused == true) {
+      fetchproductApibyid(item.item.item.id);
+      if (selectedState === null && selectedCity === null) {
+        setSelectedState(state);
+        setSelectedCity(city);
+      }
+    }
+  }, [isfocused]);
+
+  useEffect(() => {
+    if (selectedState) {
+      const selectedStateObj = States.states.find(
+        s => s.name === selectedState,
+      );
+      const cities = selectedStateObj
+        ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+        : [];
+      setCityData(cities);
+    }
+  }, [selectedState]);
+
+  const stateData = States.states.map(state => ({
+    label: state.name,
+    value: state.name,
+  }));
+
+  const handleStateChange = item => {
+    setSelectedState(item.value);
+    setSelectedCity(null);
+    const selectedStateObj = States.states.find(s => s.name === item.value);
+    const cities = selectedStateObj
+      ? selectedStateObj.cities.map(city => ({label: city, value: city}))
+      : [];
+    setCityData(cities);
+  };
+
   return (
     <View style={{flex: 1}}>
       <ScrollView style={{flex: 1}}>
@@ -1190,15 +1217,15 @@ const SecondRoute = item => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Vehicledata}
-                    // search
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Type"
-                    // searchPlaceholder="Search..."
                     value={vehiclevalue}
                     onChange={item => {
                       setVehiclevalue(item.value);
+                      setModelValue(null);
                     }}
                   />
                 </View>
@@ -1209,13 +1236,12 @@ const SecondRoute = item => {
                     selectedTextStyle={style.selectedTextStyle}
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
-                    data={modelData}
-                    // search
+                    data={getModelOptions(vehiclevalue)}
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Vehicle Brand"
-                    // searchPlaceholder="Search..."
                     value={modelvalue}
                     onChange={item => {
                       setModelValue(item.value);
@@ -1230,12 +1256,11 @@ const SecondRoute = item => {
                     inputSearchStyle={style.inputSearchStyle}
                     iconStyle={style.iconStyle}
                     data={Fueldata}
-                    // search
+                    search
                     maxHeight={300}
                     labelField="label"
                     valueField="value"
                     placeholder="Select Fuel type"
-                    // searchPlaceholder="Search..."
                     value={fuelvalue}
                     onChange={item => {
                       setFuelvalue(item.value);
@@ -1383,38 +1408,46 @@ const SecondRoute = item => {
                     onChangeText={built => setLocality(built)}
                   />
                 </View>
+
                 <View style={{marginTop: 10}}>
-                  <Text>City</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={city}
-                    onChangeText={built => setCity(built)}
+                  <Dropdown
+                    style={style.dropdown}
+                    placeholderStyle={style.placeholderStyle}
+                    selectedTextStyle={style.selectedTextStyle}
+                    inputSearchStyle={style.inputSearchStyle}
+                    iconStyle={style.iconStyle}
+                    data={stateData}
+                    search
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Select State"
+                    searchPlaceholder="Search..."
+                    value={selectedState}
+                    onChange={handleStateChange}
                   />
                 </View>
-                <View style={{marginTop: 10}}>
-                  <Text>State</Text>
-                  <TextInput
-                    placeholderTextColor="black"
-                    style={{
-                      backgroundColor: 'white',
-                      borderRadius: 5,
-                      height: 60,
-                      paddingLeft: 20,
-                      borderWidth: 0.5,
-                    }}
-                    // inputMode="numeric"
-                    value={state}
-                    onChangeText={built => setstate(built)}
-                  />
-                </View>
+
+                {selectedState && (
+                  <View style={{marginTop: 10}}>
+                    <Dropdown
+                      style={style.dropdown}
+                      placeholderStyle={style.placeholderStyle}
+                      selectedTextStyle={style.selectedTextStyle}
+                      inputSearchStyle={style.inputSearchStyle}
+                      iconStyle={style.iconStyle}
+                      data={cityData}
+                      search
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      placeholder="Select City"
+                      searchPlaceholder="Search..."
+                      value={selectedCity}
+                      onChange={item => setSelectedCity(item.value)}
+                    />
+                  </View>
+                )}
                 <View style={{marginTop: 10}}>
                   <Text>Pincode</Text>
                   <TextInput
@@ -1848,6 +1881,7 @@ const Editvehicleads = item => {
 };
 
 export default Editvehicleads;
+
 const styles = StyleSheet.create({
   header: {
     fontSize: 36 * 1.33,
