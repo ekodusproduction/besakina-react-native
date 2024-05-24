@@ -1,2 +1,2 @@
 import {Baseurldevelopment, Baseurlproduction} from '@env';
-export const Baseurl = Baseurldevelopment;
+export const Baseurl = Baseurlproduction;
