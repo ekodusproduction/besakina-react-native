@@ -76,12 +76,7 @@ const HealthCategory = ({item}) => {
   };
 
   const image = [
-    require('../../../../assets/banner1.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
+     require('../../../../assets/healthcare.jpg'), 
   ];
   const navigation = useNavigation();
   const refRBSheetHospitals = useRef();
@@ -425,20 +420,20 @@ const HealthCategory = ({item}) => {
               imageLoadingColor="white"
               autoplay={true}
               circleLoop={true}
-              resizeMode="cover"
+              resizeMode="contain"
               autoplayInterval={5000}
               sliderBoxHeight={200}
-              onCurrentImagePressed={index =>
-                index == 0
-                  ? navigation.navigate('AuthNavigator')
-                  : index == 1
-                  ? navigation.navigate('AddPost')
-                  : index == 2
-                  ? navigation.navigate('AddPost')
-                  : index == 3
-                  ? navigation.navigate('AddPost')
-                  : null
-              }
+              // onCurrentImagePressed={index =>
+              //   index == 0
+              //     ? navigation.navigate('AuthNavigator')
+              //     : index == 1
+              //     ? navigation.navigate('AddPost')
+              //     : index == 2
+              //     ? navigation.navigate('AddPost')
+              //     : index == 3
+              //     ? navigation.navigate('AddPost')
+              //     : null
+              // }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
                 position: 'absolute',

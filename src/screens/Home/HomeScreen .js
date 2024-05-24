@@ -91,10 +91,9 @@ const HomeScreen = () => {
   };
 
   const image = [
-    require('../../../assets/banner1.png'),
-    require('../../../assets/banner2.png'),
-    require('../../../assets/banner1.png'),
-    require('../../../assets/banner2.png'),
+    require('../../../assets/Divine_Optical_Web_Banner.jpg'),
+    require('../../../assets/bluetomato.jpg'),
+    require('../../../assets/SM_Medicals.png'),
   ];
 
   const onRefresh = () => {
@@ -357,40 +356,45 @@ const HomeScreen = () => {
           />
         </View>
 
-        <View style={{flex: 1, marginLeft: -5}}>
-          <SliderBox
-            images={image}
-            dotStyle={{height: 10, width: 10, borderRadius: 5, bottom: 10}}
-            dotColor="#3184b6"
-            inactiveDotColor="white"
-            autoplay={true}
-            circleLoop={true}
-            resizeMode="contain"
-            autoplayInterval={5000}
-            onCurrentImagePressed={index =>
-              index === 0
-                ? navigation.navigate('AuthNavigator')
-                : index === 1
-                ? navigation.navigate('AddPost')
-                : index === 2
-                ? navigation.navigate('AuthNavigator')
-                : index === 3
-                ? navigation.navigate('AddPost')
-                : null
-            }
-            ImageComponent={imageProps => (
-              <Image
-                {...imageProps}
-                style={[
-                  imageProps.style,
-                  {width: '95%'},
-                ]}
-              />
-            )}
-          />
-        </View>
+        <View style={style.sliderContainer}>
+            <SliderBox
+              images={image}
+              dotStyle={{height: 10, width: 10, borderRadius: 5}}
+              dotColor="#3184b6"
+              inactiveDotColor="white"
+              imageLoadingColor="white"
+              autoplay={true}
+              circleLoop={true}
+              resizeMode="cover"
+              autoplayInterval={5000}
+              sliderBoxHeight={200}
+              // onCurrentImagePressed={index =>
+              //   index == 0
+              //     ? navigation.navigate('AuthNavigator')
+              //     : index == 1
+              //     ? navigation.navigate('AddPost')
+              //     : index == 2
+              //     ? navigation.navigate('AddPost')
+              //     : index == 3
+              //     ? navigation.navigate('AddPost')
+              //     : index == 4
+              //     ? navigation.navigate('AddPost')
+              //     : null
+              // }
+              paginationBoxVerticalPadding={20}
+              paginationBoxStyle={{
+                position: 'absolute',
+                bottom: 0,
+                padding: 0,
+                alignItems: 'center',
+                alignSelf: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+              }}
+            />
+          </View>
 
-        <View style={{marginTop: 0}}>
+        <View style={{marginTop: 10}}>
           <FlatList
             data={[
               {id: 1, img: require('../../../assets/banner1.png')},
@@ -530,16 +534,13 @@ const HomeScreen = () => {
                           <View style={{marginTop: 10, marginLeft: 10}}>
                             <Text
                               numberOfLines={1}
-                              style={{width: 250, fontWeight: 'bold'}}
+                              style={{width: 250, fontWeight: '900'}}
                               variant="bodyMedium">
                               {item.title}
                             </Text>
 
-                            <Text variant="titleLarge">
-                              ₹{' '}
-                              {formatIndianCurrency(
-                                parseFloat(item.price).toFixed(2),
-                              )}
+                            <Text style={{fontWeight: '500'}}>
+                              Category : {item.category}
                             </Text>
                           </View>
                           <View
@@ -676,14 +677,11 @@ const HomeScreen = () => {
                       <View style={{marginTop: 10, marginLeft: 10}}>
                         <Text
                           numberOfLines={1}
-                          style={{width: 150, fontWeight: 'bold'}}>
+                          style={{width: 150, fontWeight: '900'}}>
                           {item.title}
                         </Text>
-                        <Text variant="titleLarge">
-                          ₹{' '}
-                          {formatIndianCurrency(
-                            parseFloat(item.price).toFixed(2),
-                          )}
+                        <Text style={{fontWeight: '500'}}>
+                          Category : {item.category}
                         </Text>
                       </View>
 

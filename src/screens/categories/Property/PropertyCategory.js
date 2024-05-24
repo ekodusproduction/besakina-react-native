@@ -71,11 +71,8 @@ const PropertyCategory = ({item}) => {
     return wishlist.includes(id);
   };
   const image = [
-    require('../../../../assets/banner1.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
-    require('../../../../assets/banner2.png'),
+     require('../../../../assets/properties_banner.png'), 
+    require('../../../../assets/real-estate-banner.png'), 
   ];
   const navigation = useNavigation();
   const refRBSheet = useRef();
@@ -349,22 +346,22 @@ const PropertyCategory = ({item}) => {
               imageLoadingColor="white"
               autoplay={true}
               circleLoop={true}
-              resizeMode="cover"
+              resizeMode="contain"
               autoplayInterval={5000}
               sliderBoxHeight={200}
-              onCurrentImagePressed={index =>
-                index == 0
-                  ? navigation.navigate('AuthNavigator')
-                  : index == 1
-                  ? navigation.navigate('AddPost')
-                  : index == 2
-                  ? navigation.navigate('AddPost')
-                  : index == 3
-                  ? navigation.navigate('AddPost')
-                  : index == 4
-                  ? navigation.navigate('AddPost')
-                  : null
-              }
+              // onCurrentImagePressed={index =>
+              //   index == 0
+              //     ? navigation.navigate('AuthNavigator')
+              //     : index == 1
+              //     ? navigation.navigate('AddPost')
+              //     : index == 2
+              //     ? navigation.navigate('AddPost')
+              //     : index == 3
+              //     ? navigation.navigate('AddPost')
+              //     : index == 4
+              //     ? navigation.navigate('AddPost')
+              //     : null
+              // }
               paginationBoxVerticalPadding={20}
               paginationBoxStyle={{
                 position: 'absolute',
